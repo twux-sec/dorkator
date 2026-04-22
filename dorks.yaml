@@ -1,0 +1,308 @@
+# Dorkator - OSINT dork library
+# Placeholders: {target} - domain or keyword
+# Severity levels: critical, high, medium, low, info
+#
+# Adding a dork: pick the right category, follow the existing format.
+# Adding a category: copy the structure (name + description + dorks list).
+
+categories:
+
+  identities:
+    name: "Identities & Contacts"
+    description: "Emails, names, phone numbers, personnel information"
+    dorks:
+      - name: "Domain emails (text)"
+        query: 'site:{target} intext:"@{target}"'
+        severity: medium
+      - name: "Emails in documents"
+        query: 'site:{target} (filetype:pdf OR filetype:docx OR filetype:xlsx) intext:"@{target}"'
+        severity: medium
+      - name: "Contact / team pages"
+        query: 'site:{target} (inurl:contact OR inurl:team OR inurl:about OR inurl:staff OR inurl:equipe)'
+        severity: low
+      - name: "Phone numbers (FR)"
+        query: 'site:{target} (intext:"+33" OR intext:"06." OR intext:"07.")'
+        severity: low
+      - name: "Internal directories"
+        query: 'site:{target} (inurl:annuaire OR inurl:directory OR inurl:employees)'
+        severity: medium
+      # --- v0.2 additions ---
+      - name: "Whois / DNS exposure"
+        query: '(site:whois.com OR site:dnsdumpster.com OR site:viewdns.info) "{target}"'
+        severity: low
+      - name: "Gravatar profiles linked to target"
+        query: 'site:gravatar.com "{target}"'
+        severity: low
+      - name: "Disqus comments mentioning target"
+        query: 'site:disqus.com "{target}"'
+        severity: info
+
+  documents:
+    name: "Exposed Documents"
+    description: "Potentially confidential files indexed publicly"
+    dorks:
+      - name: "PDFs flagged confidential"
+        query: 'site:{target} filetype:pdf (intext:confidential OR intext:confidentiel OR intext:internal OR intext:"do not distribute" OR intext:"usage interne")'
+        severity: high
+      - name: "Spreadsheets (XLS/XLSX/CSV)"
+        query: 'site:{target} (filetype:xls OR filetype:xlsx OR filetype:csv)'
+        severity: high
+      - name: "Word documents"
+        query: 'site:{target} (filetype:doc OR filetype:docx)'
+        severity: medium
+      - name: "PowerPoint presentations"
+        query: 'site:{target} (filetype:ppt OR filetype:pptx)'
+        severity: medium
+      - name: "Text / log files"
+        query: 'site:{target} (filetype:txt OR filetype:log)'
+        severity: medium
+      - name: "SQL dumps"
+        query: 'site:{target} filetype:sql'
+        severity: critical
+      - name: "Backup files"
+        query: 'site:{target} (ext:bak OR ext:backup OR ext:old OR ext:save OR ext:swp)'
+        severity: high
+      # --- v0.2 additions ---
+      - name: "Compressed archives"
+        query: 'site:{target} (ext:zip OR ext:rar OR ext:7z OR ext:tar OR ext:gz OR ext:tgz)'
+        severity: high
+      - name: "Office macro-enabled files"
+        query: 'site:{target} (ext:xlsm OR ext:docm OR ext:pptm)'
+        severity: high
+      - name: "Visio diagrams (architecture leaks)"
+        query: 'site:{target} (ext:vsd OR ext:vsdx)'
+        severity: medium
+      - name: "KeePass databases"
+        query: 'site:{target} ext:kdbx'
+        severity: critical
+      - name: "Email containers (PST/MBOX/MSG/EML)"
+        query: 'site:{target} (ext:pst OR ext:mbox OR ext:msg OR ext:eml)'
+        severity: critical
+      - name: "VPN / remote-access profiles"
+        query: 'site:{target} (ext:ovpn OR ext:rdp OR ext:pcf)'
+        severity: critical
+      # --- Broad enumeration sweeps (low severity, useful as a wide first pass) ---
+      - name: "All PDFs (broad enumeration)"
+        query: 'site:{target} filetype:pdf'
+        severity: low
+      - name: "All Office files (broad enumeration)"
+        query: 'site:{target} (filetype:doc OR filetype:docx OR filetype:xls OR filetype:xlsx OR filetype:ppt OR filetype:pptx)'
+        severity: low
+      - name: "All images (potential EXIF metadata)"
+        query: 'site:{target} (filetype:jpg OR filetype:jpeg OR filetype:png OR filetype:tiff)'
+        severity: info
+
+  technical:
+    name: "Technical Exposure"
+    description: "Admin panels, login pages, server misconfigurations"
+    dorks:
+      - name: "Admin panels"
+        query: 'site:{target} (inurl:admin OR inurl:administrator OR inurl:backend OR inurl:dashboard)'
+        severity: high
+      - name: "Login pages"
+        query: 'site:{target} (inurl:login OR inurl:signin OR inurl:auth OR intitle:"login")'
+        severity: medium
+      - name: "Open directory listings"
+        query: 'site:{target} intitle:"index of"'
+        severity: high
+      - name: "phpinfo() exposure"
+        query: 'site:{target} ext:php intitle:phpinfo "PHP Version"'
+        severity: critical
+      - name: "Apache server-status / server-info"
+        query: 'site:{target} (inurl:server-status OR inurl:server-info)'
+        severity: high
+      - name: "Version control leaks (.git/.svn/.env)"
+        query: 'site:{target} (inurl:".git" OR inurl:".svn" OR inurl:".env")'
+        severity: critical
+      - name: "Swagger / API docs exposed"
+        query: 'site:{target} (inurl:swagger OR inurl:api-docs OR inurl:redoc OR inurl:graphql)'
+        severity: medium
+      - name: "Verbose error messages"
+        query: 'site:{target} (intext:"SQL syntax" OR intext:"fatal error" OR intext:"stack trace" OR intext:"warning: include")'
+        severity: high
+      - name: "Config files"
+        query: 'site:{target} (ext:htaccess OR ext:conf OR ext:config OR ext:ini OR ext:yaml OR ext:yml)'
+        severity: critical
+      - name: "Exposed DB admin interfaces"
+        query: 'site:{target} (inurl:phpmyadmin OR inurl:adminer OR inurl:pgadmin)'
+        severity: critical
+      - name: "WordPress wp-admin / wp-config"
+        query: 'site:{target} (inurl:wp-admin OR inurl:wp-config OR inurl:wp-content/uploads)'
+        severity: medium
+      # --- v0.2 additions ---
+      - name: "Jenkins / CI dashboards"
+        query: 'site:{target} (inurl:jenkins OR inurl:jobs/build OR intitle:"Dashboard [Jenkins]")'
+        severity: high
+      - name: "Monitoring stacks (Grafana/Kibana/Prometheus)"
+        query: 'site:{target} (inurl:grafana OR inurl:kibana OR inurl:prometheus OR inurl:9090 OR intitle:"Grafana")'
+        severity: high
+      - name: "Webcam / IoT panels"
+        query: 'site:{target} (inurl:axis-cgi OR intitle:"camera" OR intitle:"webcam" OR inurl:viewerframe)'
+        severity: high
+      - name: "Webmail interfaces (Roundcube/Zimbra/OWA)"
+        query: 'site:{target} (inurl:roundcube OR inurl:webmail OR inurl:owa OR inurl:zimbra)'
+        severity: medium
+      - name: "Open Elasticsearch / cluster endpoints"
+        query: 'site:{target} (inurl:_cluster OR inurl:_cat OR inurl:9200)'
+        severity: critical
+
+  credentials:
+    name: "Credentials & Secrets"
+    description: "Passwords, API keys, tokens potentially exposed"
+    dorks:
+      - name: "Environment files"
+        query: 'site:{target} ext:env'
+        severity: critical
+      - name: "Passwords in text"
+        query: 'site:{target} (intext:"password" OR intext:"passwd" OR intext:"motdepasse" OR intext:"mot de passe")'
+        severity: high
+      - name: "API keys / tokens"
+        query: 'site:{target} (intext:"api_key" OR intext:"api_token" OR intext:"access_token" OR intext:"bearer ")'
+        severity: critical
+      - name: "AWS keys"
+        query: 'site:{target} (intext:"AKIA" OR intext:"aws_secret" OR intext:"aws_access_key")'
+        severity: critical
+      - name: "Private keys (RSA/SSH/PGP)"
+        query: 'site:{target} (intext:"BEGIN RSA PRIVATE KEY" OR intext:"BEGIN OPENSSH PRIVATE KEY" OR intext:"BEGIN PRIVATE KEY" OR intext:"BEGIN PGP PRIVATE")'
+        severity: critical
+      - name: "DB connection strings"
+        query: 'site:{target} (intext:"jdbc:" OR intext:"mongodb://" OR intext:"postgres://" OR intext:"mysql://")'
+        severity: critical
+      # --- v0.2 additions ---
+      - name: "Slack tokens"
+        query: 'site:{target} (intext:"xoxb-" OR intext:"xoxa-" OR intext:"xoxp-" OR intext:"xoxs-")'
+        severity: critical
+      - name: "Stripe live keys"
+        query: 'site:{target} intext:"sk_live_"'
+        severity: critical
+      - name: "GitHub PAT / fine-grained tokens"
+        query: 'site:{target} (intext:"ghp_" OR intext:"github_pat_" OR intext:"ghs_" OR intext:"gho_")'
+        severity: critical
+      - name: "JWT tokens visible in pages"
+        query: 'site:{target} intext:"eyJhbGciOi"'
+        severity: high
+      - name: "Google OAuth client secrets"
+        query: 'site:{target} (intext:"GOCSPX-" OR intext:"client_secret")'
+        severity: critical
+      - name: "Generic secret leakage patterns"
+        query: 'site:{target} (intext:"private_token" OR intext:"refresh_token" OR intext:"auth_token" OR intext:"session_secret")'
+        severity: high
+
+  subdomains:
+    name: "Subdomains & Assets"
+    description: "Discover related subdomains and hidden assets"
+    dorks:
+      - name: "All subdomains (excl. www)"
+        query: 'site:*.{target} -site:www.{target}'
+        severity: low
+      - name: "Dev / staging / preprod"
+        query: 'site:*.{target} (inurl:dev OR inurl:staging OR inurl:test OR inurl:preprod OR inurl:uat OR inurl:recette)'
+        severity: medium
+      - name: "Internal-looking paths"
+        query: 'site:{target} (inurl:internal OR inurl:intranet OR inurl:private)'
+        severity: medium
+      # --- v0.2 additions ---
+      - name: "crt.sh certificate transparency"
+        query: 'site:crt.sh "{target}"'
+        severity: low
+      - name: "Censys exposed assets"
+        query: 'site:censys.io "{target}"'
+        severity: medium
+      - name: "Shodan exposed assets"
+        query: 'site:shodan.io "{target}"'
+        severity: medium
+
+  cloud:
+    name: "Cloud Storage Exposure"
+    description: "Public buckets and managed-cloud assets carrying the target"
+    dorks:
+      - name: "Google Cloud Storage buckets"
+        query: 'site:storage.googleapis.com "{target}"'
+        severity: high
+      - name: "DigitalOcean Spaces"
+        query: 'site:digitaloceanspaces.com "{target}"'
+        severity: high
+      - name: "Backblaze B2 buckets"
+        query: 'site:backblazeb2.com "{target}"'
+        severity: high
+      - name: "Wasabi storage"
+        query: 'site:wasabisys.com "{target}"'
+        severity: high
+      - name: "Firebase databases / hosting"
+        query: '(site:firebaseio.com OR site:firebaseapp.com OR site:web.app) "{target}"'
+        severity: high
+      - name: "Supabase exposed projects"
+        query: 'site:supabase.co "{target}"'
+        severity: high
+
+  external:
+    name: "External Leaks"
+    description: "Target mentions on third-party platforms"
+    dorks:
+      - name: "Pastebin leaks"
+        query: 'site:pastebin.com "{target}"'
+        severity: high
+      - name: "GitHub - secrets"
+        query: 'site:github.com "{target}" (password OR api_key OR token OR secret)'
+        severity: critical
+      - name: "GitLab mentions"
+        query: 'site:gitlab.com "{target}"'
+        severity: high
+      - name: "StackOverflow mentions"
+        query: 'site:stackoverflow.com "{target}"'
+        severity: low
+      - name: "Public Trello boards"
+        query: 'site:trello.com "{target}"'
+        severity: medium
+      - name: "S3 buckets"
+        query: 'site:s3.amazonaws.com "{target}"'
+        severity: high
+      - name: "Azure blob storage"
+        query: 'site:blob.core.windows.net "{target}"'
+        severity: high
+      - name: "Public Google Docs"
+        query: 'site:docs.google.com "{target}"'
+        severity: medium
+      - name: "Archive.org snapshots"
+        query: 'site:web.archive.org "{target}"'
+        severity: info
+      # --- v0.2 additions ---
+      - name: "BitBucket repositories"
+        query: 'site:bitbucket.org "{target}"'
+        severity: high
+      - name: "GitHub gists (often leak snippets)"
+        query: 'site:gist.github.com "{target}"'
+        severity: high
+      - name: "npm packages / READMEs"
+        query: 'site:npmjs.com "{target}"'
+        severity: medium
+      - name: "PyPI packages / READMEs"
+        query: 'site:pypi.org "{target}"'
+        severity: medium
+      - name: "Docker Hub images / descriptions"
+        query: 'site:hub.docker.com "{target}"'
+        severity: medium
+
+  personnel:
+    name: "Personnel Intelligence"
+    description: "Individuals linked to the target (social engineering awareness)"
+    dorks:
+      - name: "LinkedIn profiles mentioning target"
+        query: 'site:linkedin.com/in "{target}"'
+        severity: low
+      - name: "CVs / resumes mentioning target"
+        query: '("CV" OR "resume" OR "curriculum vitae") "{target}" filetype:pdf'
+        severity: low
+      - name: "Twitter / X mentions"
+        query: '(site:twitter.com OR site:x.com) "{target}"'
+        severity: info
+      - name: "Viadeo profiles"
+        query: 'site:viadeo.com "{target}"'
+        severity: low
+      # --- v0.2 additions ---
+      - name: "Mastodon / Fediverse mentions"
+        query: '(site:mastodon.social OR site:mastodon.online OR site:piaille.fr) "{target}"'
+        severity: info
+      - name: "Reddit mentions"
+        query: 'site:reddit.com "{target}"'
+        severity: info

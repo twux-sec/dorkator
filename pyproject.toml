@@ -1,0 +1,47 @@
+# PEP 621 packaging metadata.
+# Install in editable mode for local dev:
+#   python -m pip install -e .
+# Then `dorkator` is available as a global command.
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dorkator"
+version = "0.2.0"
+description = "OSINT dork generator for authorized reconnaissance."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+keywords = ["osint", "dork", "recon", "security"]
+authors = [{ name = "twux-sec" }]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Security",
+]
+dependencies = [
+  "PyYAML>=6.0",
+  "Jinja2>=3.1",
+]
+
+[project.scripts]
+# Installs a `dorkator` command in the venv's bin/Scripts dir.
+dorkator = "dorkator.cli:main"
+
+[project.urls]
+# Update once the GitHub repo is created.
+Homepage = "https://github.com/twux-sec/dorkator"
+
+[tool.setuptools.packages.find]
+# Auto-discover the `dorkator` Python package.
+include = ["dorkator*"]
+
+[tool.setuptools.package-data]
+# Ship the Jinja template alongside the package code so a non-editable
+# install still finds it via importlib.resources.
+"dorkator" = ["templates/*.j2"]

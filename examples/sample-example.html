@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dorkator — example.com</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-elev: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --critical: #f85149;
+    --high: #ff8c42;
+    --medium: #e3b341;
+    --low: #3fb950;
+    --info: #8b949e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px; line-height: 1.5;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  h1 { margin: 0 0 0.4rem; font-size: 1.6rem; font-weight: 600; }
+  h1 .brand {
+    color: var(--accent);
+    font-family: "SF Mono", Monaco, "Courier New", monospace;
+  }
+  .meta { color: var(--text-dim); font-size: 0.875rem; }
+  .meta code { background: var(--bg-elev); padding: 2px 6px; border-radius: 4px; }
+  .controls {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+    padding: 0.85rem; background: var(--bg-elev);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  input[type="text"] {
+    background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem; border-radius: 6px;
+    font-family: inherit; font-size: 0.875rem;
+    flex: 1; min-width: 220px;
+  }
+  input[type="text"]:focus { outline: none; border-color: var(--accent); }
+  .sev-pills { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+  .sev-pill {
+    padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.72rem;
+    cursor: pointer; border: 1px solid var(--border); user-select: none;
+    background: var(--bg); text-transform: uppercase;
+    font-weight: 600; letter-spacing: 0.5px; transition: all 0.15s;
+  }
+  .sev-pill:hover { border-color: var(--accent); }
+  .sev-pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .category {
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: 8px; margin-bottom: 0.75rem; overflow: hidden;
+  }
+  .category-header {
+    padding: 0.85rem 1.1rem; cursor: pointer; display: flex;
+    justify-content: space-between; align-items: center; user-select: none;
+  }
+  .category-header:hover { background: rgba(255,255,255,0.02); }
+  .category-title { font-weight: 600; font-size: 0.95rem; }
+  .category-count { color: var(--text-dim); font-size: 0.8rem; }
+  .chevron { transition: transform 0.2s; display: inline-block; color: var(--text-dim); }
+  .category.collapsed .chevron { transform: rotate(-90deg); }
+  .category-body { padding: 0 1.1rem 0.5rem; display: block; }
+  .category.collapsed .category-body { display: none; }
+  .dork { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+  .dork-head {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 0.4rem; flex-wrap: wrap;
+  }
+  .sev {
+    font-size: 0.68rem; font-weight: 700; padding: 2px 8px;
+    border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .sev.critical { background: rgba(248,81,73,0.15); color: var(--critical); }
+  .sev.high { background: rgba(255,140,66,0.15); color: var(--high); }
+  .sev.medium { background: rgba(227,179,65,0.15); color: var(--medium); }
+  .sev.low { background: rgba(63,185,80,0.15); color: var(--low); }
+  .sev.info { background: rgba(139,148,158,0.15); color: var(--info); }
+  .dork-name { font-weight: 500; flex: 1; min-width: 200px; }
+  .dork-query {
+    font-family: "SF Mono", Monaco, "Courier New", monospace; font-size: 0.78rem;
+    background: var(--bg); padding: 0.55rem 0.75rem; border-radius: 4px;
+    border: 1px solid var(--border); color: var(--text-dim);
+    word-break: break-all; margin: 0.4rem 0;
+  }
+  .dork-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .dork-links a {
+    padding: 0.28rem 0.7rem; border-radius: 4px; text-decoration: none;
+    font-size: 0.78rem; background: var(--bg);
+    border: 1px solid var(--border); color: var(--accent); transition: all 0.15s;
+  }
+  .dork-links a:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .warn {
+    background: rgba(227,179,65,0.08); border-left: 3px solid var(--medium);
+    padding: 0.7rem 1rem; margin-bottom: 1.25rem;
+    font-size: 0.82rem; border-radius: 0 6px 6px 0;
+  }
+  .warn strong { color: var(--medium); }
+  .hidden { display: none !important; }
+  .no-results {
+    text-align: center; padding: 2rem; color: var(--text-dim);
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: 8px; display: none;
+  }
+  .no-results.show { display: block; }
+  footer {
+    margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border);
+    color: var(--text-dim); font-size: 0.75rem; text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1><span class="brand">dorkator</span> — <code>example.com</code></h1>
+    <div class="meta">
+      Generated 2026-04-22 13:17:30 · 45 dorks · 7 categories
+    </div>
+  </header>
+
+  <div class="warn">
+    <strong>Legal notice:</strong> These dorks query public search indexes only.
+    Run them against domains you own or are explicitly authorized to assess.
+  </div>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Filter by name or query…" autocomplete="off">
+    <div class="sev-pills" id="sev-filter">
+      <span class="sev-pill active" data-sev="all">All</span>
+      <span class="sev-pill" data-sev="critical">Critical</span>
+      <span class="sev-pill" data-sev="high">High</span>
+      <span class="sev-pill" data-sev="medium">Medium</span>
+      <span class="sev-pill" data-sev="low">Low</span>
+      <span class="sev-pill" data-sev="info">Info</span>
+    </div>
+  </div>
+
+  <div id="results">
+  
+  <div class="category" data-category="credentials">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Credentials & Secrets</span>
+        <span class="category-count"> · 6 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      <div class="dork" data-sev="critical" data-text="api keys / tokens site:example.com (intext:"api_key" or intext:"api_token" or intext:"access_token" or intext:"bearer ")">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">API keys / tokens</span>
+        </div>
+        <div class="dork-query">site:example.com (intext:"api_key" OR intext:"api_token" OR intext:"access_token" OR intext:"bearer ")</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22api_key%22+OR+intext%3A%22api_token%22+OR+intext%3A%22access_token%22+OR+intext%3A%22bearer+%22%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22api_key%22+OR+intext%3A%22api_token%22+OR+intext%3A%22access_token%22+OR+intext%3A%22bearer+%22%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22api_key%22+OR+intext%3A%22api_token%22+OR+intext%3A%22access_token%22+OR+intext%3A%22bearer+%22%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="critical" data-text="aws keys site:example.com (intext:"akia" or intext:"aws_secret" or intext:"aws_access_key")">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">AWS keys</span>
+        </div>
+        <div class="dork-query">site:example.com (intext:"AKIA" OR intext:"aws_secret" OR intext:"aws_access_key")</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22AKIA%22+OR+intext%3A%22aws_secret%22+OR+intext%3A%22aws_access_key%22%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22AKIA%22+OR+intext%3A%22aws_secret%22+OR+intext%3A%22aws_access_key%22%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22AKIA%22+OR+intext%3A%22aws_secret%22+OR+intext%3A%22aws_access_key%22%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="critical" data-text="db connection strings site:example.com (intext:"jdbc:" or intext:"mongodb://" or intext:"postgres://" or intext:"mysql://")">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">DB connection strings</span>
+        </div>
+        <div class="dork-query">site:example.com (intext:"jdbc:" OR intext:"mongodb://" OR intext:"postgres://" OR intext:"mysql://")</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22jdbc%3A%22+OR+intext%3A%22mongodb%3A%2F%2F%22+OR+intext%3A%22postgres%3A%2F%2F%22+OR+intext%3A%22mysql%3A%2F%2F%22%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22jdbc%3A%22+OR+intext%3A%22mongodb%3A%2F%2F%22+OR+intext%3A%22postgres%3A%2F%2F%22+OR+intext%3A%22mysql%3A%2F%2F%22%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22jdbc%3A%22+OR+intext%3A%22mongodb%3A%2F%2F%22+OR+intext%3A%22postgres%3A%2F%2F%22+OR+intext%3A%22mysql%3A%2F%2F%22%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="critical" data-text="environment files site:example.com ext:env">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Environment files</span>
+        </div>
+        <div class="dork-query">site:example.com ext:env</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+ext%3Aenv" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+ext%3Aenv" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+ext%3Aenv" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="critical" data-text="private keys (rsa/ssh/pgp) site:example.com (intext:"begin rsa private key" or intext:"begin openssh private key" or intext:"begin private key" or intext:"begin pgp private")">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Private keys (RSA/SSH/PGP)</span>
+        </div>
+        <div class="dork-query">site:example.com (intext:"BEGIN RSA PRIVATE KEY" OR intext:"BEGIN OPENSSH PRIVATE KEY" OR intext:"BEGIN PRIVATE KEY" OR intext:"BEGIN PGP PRIVATE")</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22BEGIN+RSA+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+OPENSSH+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PGP+PRIVATE%22%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22BEGIN+RSA+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+OPENSSH+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PGP+PRIVATE%22%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22BEGIN+RSA+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+OPENSSH+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PGP+PRIVATE%22%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="passwords in text site:example.com (intext:"password" or intext:"passwd" or intext:"motdepasse" or intext:"mot de passe")">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Passwords in text</span>
+        </div>
+        <div class="dork-query">site:example.com (intext:"password" OR intext:"passwd" OR intext:"motdepasse" OR intext:"mot de passe")</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22password%22+OR+intext%3A%22passwd%22+OR+intext%3A%22motdepasse%22+OR+intext%3A%22mot+de+passe%22%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22password%22+OR+intext%3A%22passwd%22+OR+intext%3A%22motdepasse%22+OR+intext%3A%22mot+de+passe%22%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22password%22+OR+intext%3A%22passwd%22+OR+intext%3A%22motdepasse%22+OR+intext%3A%22mot+de+passe%22%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="documents">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Exposed Documents</span>
+        <span class="category-count"> · 7 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      <div class="dork" data-sev="critical" data-text="sql dumps site:example.com filetype:sql">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">SQL dumps</span>
+        </div>
+        <div class="dork-query">site:example.com filetype:sql</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+filetype%3Asql" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Asql" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+filetype%3Asql" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="backup files site:example.com (ext:bak or ext:backup or ext:old or ext:save or ext:swp)">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Backup files</span>
+        </div>
+        <div class="dork-query">site:example.com (ext:bak OR ext:backup OR ext:old OR ext:save OR ext:swp)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28ext%3Abak+OR+ext%3Abackup+OR+ext%3Aold+OR+ext%3Asave+OR+ext%3Aswp%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Abak+OR+ext%3Abackup+OR+ext%3Aold+OR+ext%3Asave+OR+ext%3Aswp%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Abak+OR+ext%3Abackup+OR+ext%3Aold+OR+ext%3Asave+OR+ext%3Aswp%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="pdfs flagged confidential site:example.com filetype:pdf (intext:confidential or intext:confidentiel or intext:internal or intext:"do not distribute" or intext:"usage interne")">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">PDFs flagged confidential</span>
+        </div>
+        <div class="dork-query">site:example.com filetype:pdf (intext:confidential OR intext:confidentiel OR intext:internal OR intext:"do not distribute" OR intext:"usage interne")</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+filetype%3Apdf+%28intext%3Aconfidential+OR+intext%3Aconfidentiel+OR+intext%3Ainternal+OR+intext%3A%22do+not+distribute%22+OR+intext%3A%22usage+interne%22%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Apdf+%28intext%3Aconfidential+OR+intext%3Aconfidentiel+OR+intext%3Ainternal+OR+intext%3A%22do+not+distribute%22+OR+intext%3A%22usage+interne%22%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+filetype%3Apdf+%28intext%3Aconfidential+OR+intext%3Aconfidentiel+OR+intext%3Ainternal+OR+intext%3A%22do+not+distribute%22+OR+intext%3A%22usage+interne%22%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="spreadsheets (xls/xlsx/csv) site:example.com (filetype:xls or filetype:xlsx or filetype:csv)">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Spreadsheets (XLS/XLSX/CSV)</span>
+        </div>
+        <div class="dork-query">site:example.com (filetype:xls OR filetype:xlsx OR filetype:csv)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Axls+OR+filetype%3Axlsx+OR+filetype%3Acsv%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Axls+OR+filetype%3Axlsx+OR+filetype%3Acsv%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Axls+OR+filetype%3Axlsx+OR+filetype%3Acsv%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="medium" data-text="powerpoint presentations site:example.com (filetype:ppt or filetype:pptx)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">PowerPoint presentations</span>
+        </div>
+        <div class="dork-query">site:example.com (filetype:ppt OR filetype:pptx)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Appt+OR+filetype%3Apptx%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Appt+OR+filetype%3Apptx%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Appt+OR+filetype%3Apptx%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="medium" data-text="text / log files site:example.com (filetype:txt or filetype:log)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Text / log files</span>
+        </div>
+        <div class="dork-query">site:example.com (filetype:txt OR filetype:log)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Atxt+OR+filetype%3Alog%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Atxt+OR+filetype%3Alog%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Atxt+OR+filetype%3Alog%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="medium" data-text="word documents site:example.com (filetype:doc or filetype:docx)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Word documents</span>
+        </div>
+        <div class="dork-query">site:example.com (filetype:doc OR filetype:docx)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="external">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">External Leaks</span>
+        <span class="category-count"> · 9 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      <div class="dork" data-sev="critical" data-text="github - secrets site:github.com "example.com" (password or api_key or token or secret)">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">GitHub - secrets</span>
+        </div>
+        <div class="dork-query">site:github.com "example.com" (password OR api_key OR token OR secret)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Agithub.com+%22example.com%22+%28password+OR+api_key+OR+token+OR+secret%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Agithub.com+%22example.com%22+%28password+OR+api_key+OR+token+OR+secret%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Agithub.com+%22example.com%22+%28password+OR+api_key+OR+token+OR+secret%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="azure blob storage site:blob.core.windows.net "example.com"">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Azure blob storage</span>
+        </div>
+        <div class="dork-query">site:blob.core.windows.net "example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Ablob.core.windows.net+%22example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Ablob.core.windows.net+%22example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Ablob.core.windows.net+%22example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="gitlab mentions site:gitlab.com "example.com"">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">GitLab mentions</span>
+        </div>
+        <div class="dork-query">site:gitlab.com "example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Agitlab.com+%22example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Agitlab.com+%22example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Agitlab.com+%22example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="pastebin leaks site:pastebin.com "example.com"">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Pastebin leaks</span>
+        </div>
+        <div class="dork-query">site:pastebin.com "example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Apastebin.com+%22example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Apastebin.com+%22example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Apastebin.com+%22example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="s3 buckets site:s3.amazonaws.com "example.com"">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">S3 buckets</span>
+        </div>
+        <div class="dork-query">site:s3.amazonaws.com "example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3As3.amazonaws.com+%22example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3As3.amazonaws.com+%22example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3As3.amazonaws.com+%22example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="medium" data-text="public google docs site:docs.google.com "example.com"">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Public Google Docs</span>
+        </div>
+        <div class="dork-query">site:docs.google.com "example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Adocs.google.com+%22example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Adocs.google.com+%22example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Adocs.google.com+%22example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="medium" data-text="public trello boards site:trello.com "example.com"">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Public Trello boards</span>
+        </div>
+        <div class="dork-query">site:trello.com "example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Atrello.com+%22example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Atrello.com+%22example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Atrello.com+%22example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="low" data-text="stackoverflow mentions site:stackoverflow.com "example.com"">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">StackOverflow mentions</span>
+        </div>
+        <div class="dork-query">site:stackoverflow.com "example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Astackoverflow.com+%22example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Astackoverflow.com+%22example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Astackoverflow.com+%22example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="info" data-text="archive.org snapshots site:web.archive.org "example.com"">
+        <div class="dork-head">
+          <span class="sev info">info</span>
+          <span class="dork-name">Archive.org snapshots</span>
+        </div>
+        <div class="dork-query">site:web.archive.org "example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aweb.archive.org+%22example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aweb.archive.org+%22example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aweb.archive.org+%22example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="technical">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Technical Exposure</span>
+        <span class="category-count"> · 11 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      <div class="dork" data-sev="critical" data-text="config files site:example.com (ext:htaccess or ext:conf or ext:config or ext:ini or ext:yaml or ext:yml)">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Config files</span>
+        </div>
+        <div class="dork-query">site:example.com (ext:htaccess OR ext:conf OR ext:config OR ext:ini OR ext:yaml OR ext:yml)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28ext%3Ahtaccess+OR+ext%3Aconf+OR+ext%3Aconfig+OR+ext%3Aini+OR+ext%3Ayaml+OR+ext%3Ayml%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Ahtaccess+OR+ext%3Aconf+OR+ext%3Aconfig+OR+ext%3Aini+OR+ext%3Ayaml+OR+ext%3Ayml%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Ahtaccess+OR+ext%3Aconf+OR+ext%3Aconfig+OR+ext%3Aini+OR+ext%3Ayaml+OR+ext%3Ayml%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="critical" data-text="exposed db admin interfaces site:example.com (inurl:phpmyadmin or inurl:adminer or inurl:pgadmin)">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Exposed DB admin interfaces</span>
+        </div>
+        <div class="dork-query">site:example.com (inurl:phpmyadmin OR inurl:adminer OR inurl:pgadmin)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aphpmyadmin+OR+inurl%3Aadminer+OR+inurl%3Apgadmin%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aphpmyadmin+OR+inurl%3Aadminer+OR+inurl%3Apgadmin%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aphpmyadmin+OR+inurl%3Aadminer+OR+inurl%3Apgadmin%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="critical" data-text="version control leaks (.git/.svn/.env) site:example.com (inurl:".git" or inurl:".svn" or inurl:".env")">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Version control leaks (.git/.svn/.env)</span>
+        </div>
+        <div class="dork-query">site:example.com (inurl:".git" OR inurl:".svn" OR inurl:".env")</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28inurl%3A%22.git%22+OR+inurl%3A%22.svn%22+OR+inurl%3A%22.env%22%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3A%22.git%22+OR+inurl%3A%22.svn%22+OR+inurl%3A%22.env%22%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3A%22.git%22+OR+inurl%3A%22.svn%22+OR+inurl%3A%22.env%22%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="critical" data-text="phpinfo() exposure site:example.com ext:php intitle:phpinfo "php version"">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">phpinfo() exposure</span>
+        </div>
+        <div class="dork-query">site:example.com ext:php intitle:phpinfo "PHP Version"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+ext%3Aphp+intitle%3Aphpinfo+%22PHP+Version%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+ext%3Aphp+intitle%3Aphpinfo+%22PHP+Version%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+ext%3Aphp+intitle%3Aphpinfo+%22PHP+Version%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="admin panels site:example.com (inurl:admin or inurl:administrator or inurl:backend or inurl:dashboard)">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Admin panels</span>
+        </div>
+        <div class="dork-query">site:example.com (inurl:admin OR inurl:administrator OR inurl:backend OR inurl:dashboard)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aadmin+OR+inurl%3Aadministrator+OR+inurl%3Abackend+OR+inurl%3Adashboard%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aadmin+OR+inurl%3Aadministrator+OR+inurl%3Abackend+OR+inurl%3Adashboard%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aadmin+OR+inurl%3Aadministrator+OR+inurl%3Abackend+OR+inurl%3Adashboard%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="apache server-status / server-info site:example.com (inurl:server-status or inurl:server-info)">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Apache server-status / server-info</span>
+        </div>
+        <div class="dork-query">site:example.com (inurl:server-status OR inurl:server-info)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aserver-status+OR+inurl%3Aserver-info%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aserver-status+OR+inurl%3Aserver-info%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aserver-status+OR+inurl%3Aserver-info%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="open directory listings site:example.com intitle:"index of"">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Open directory listings</span>
+        </div>
+        <div class="dork-query">site:example.com intitle:"index of"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+intitle%3A%22index+of%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+intitle%3A%22index+of%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+intitle%3A%22index+of%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="high" data-text="verbose error messages site:example.com (intext:"sql syntax" or intext:"fatal error" or intext:"stack trace" or intext:"warning: include")">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Verbose error messages</span>
+        </div>
+        <div class="dork-query">site:example.com (intext:"SQL syntax" OR intext:"fatal error" OR intext:"stack trace" OR intext:"warning: include")</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22SQL+syntax%22+OR+intext%3A%22fatal+error%22+OR+intext%3A%22stack+trace%22+OR+intext%3A%22warning%3A+include%22%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22SQL+syntax%22+OR+intext%3A%22fatal+error%22+OR+intext%3A%22stack+trace%22+OR+intext%3A%22warning%3A+include%22%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22SQL+syntax%22+OR+intext%3A%22fatal+error%22+OR+intext%3A%22stack+trace%22+OR+intext%3A%22warning%3A+include%22%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="medium" data-text="login pages site:example.com (inurl:login or inurl:signin or inurl:auth or intitle:"login")">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Login pages</span>
+        </div>
+        <div class="dork-query">site:example.com (inurl:login OR inurl:signin OR inurl:auth OR intitle:"login")</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Alogin+OR+inurl%3Asignin+OR+inurl%3Aauth+OR+intitle%3A%22login%22%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Alogin+OR+inurl%3Asignin+OR+inurl%3Aauth+OR+intitle%3A%22login%22%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Alogin+OR+inurl%3Asignin+OR+inurl%3Aauth+OR+intitle%3A%22login%22%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="medium" data-text="swagger / api docs exposed site:example.com (inurl:swagger or inurl:api-docs or inurl:redoc or inurl:graphql)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Swagger / API docs exposed</span>
+        </div>
+        <div class="dork-query">site:example.com (inurl:swagger OR inurl:api-docs OR inurl:redoc OR inurl:graphql)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aswagger+OR+inurl%3Aapi-docs+OR+inurl%3Aredoc+OR+inurl%3Agraphql%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aswagger+OR+inurl%3Aapi-docs+OR+inurl%3Aredoc+OR+inurl%3Agraphql%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aswagger+OR+inurl%3Aapi-docs+OR+inurl%3Aredoc+OR+inurl%3Agraphql%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="medium" data-text="wordpress wp-admin / wp-config site:example.com (inurl:wp-admin or inurl:wp-config or inurl:wp-content/uploads)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">WordPress wp-admin / wp-config</span>
+        </div>
+        <div class="dork-query">site:example.com (inurl:wp-admin OR inurl:wp-config OR inurl:wp-content/uploads)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Awp-admin+OR+inurl%3Awp-config+OR+inurl%3Awp-content%2Fuploads%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Awp-admin+OR+inurl%3Awp-config+OR+inurl%3Awp-content%2Fuploads%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Awp-admin+OR+inurl%3Awp-config+OR+inurl%3Awp-content%2Fuploads%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="identities">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Identities & Contacts</span>
+        <span class="category-count"> · 5 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      <div class="dork" data-sev="medium" data-text="domain emails (text) site:example.com intext:"@example.com"">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Domain emails (text)</span>
+        </div>
+        <div class="dork-query">site:example.com intext:"@example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+intext%3A%22%40example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+intext%3A%22%40example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+intext%3A%22%40example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="medium" data-text="emails in documents site:example.com (filetype:pdf or filetype:docx or filetype:xlsx) intext:"@example.com"">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Emails in documents</span>
+        </div>
+        <div class="dork-query">site:example.com (filetype:pdf OR filetype:docx OR filetype:xlsx) intext:"@example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Adocx+OR+filetype%3Axlsx%29+intext%3A%22%40example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Adocx+OR+filetype%3Axlsx%29+intext%3A%22%40example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Adocx+OR+filetype%3Axlsx%29+intext%3A%22%40example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="medium" data-text="internal directories site:example.com (inurl:annuaire or inurl:directory or inurl:employees)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Internal directories</span>
+        </div>
+        <div class="dork-query">site:example.com (inurl:annuaire OR inurl:directory OR inurl:employees)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aannuaire+OR+inurl%3Adirectory+OR+inurl%3Aemployees%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aannuaire+OR+inurl%3Adirectory+OR+inurl%3Aemployees%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aannuaire+OR+inurl%3Adirectory+OR+inurl%3Aemployees%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="low" data-text="contact / team pages site:example.com (inurl:contact or inurl:team or inurl:about or inurl:staff or inurl:equipe)">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">Contact / team pages</span>
+        </div>
+        <div class="dork-query">site:example.com (inurl:contact OR inurl:team OR inurl:about OR inurl:staff OR inurl:equipe)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Acontact+OR+inurl%3Ateam+OR+inurl%3Aabout+OR+inurl%3Astaff+OR+inurl%3Aequipe%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Acontact+OR+inurl%3Ateam+OR+inurl%3Aabout+OR+inurl%3Astaff+OR+inurl%3Aequipe%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Acontact+OR+inurl%3Ateam+OR+inurl%3Aabout+OR+inurl%3Astaff+OR+inurl%3Aequipe%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="low" data-text="phone numbers (fr) site:example.com (intext:"+33" or intext:"06." or intext:"07.")">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">Phone numbers (FR)</span>
+        </div>
+        <div class="dork-query">site:example.com (intext:"+33" OR intext:"06." OR intext:"07.")</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22%2B33%22+OR+intext%3A%2206.%22+OR+intext%3A%2207.%22%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22%2B33%22+OR+intext%3A%2206.%22+OR+intext%3A%2207.%22%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22%2B33%22+OR+intext%3A%2206.%22+OR+intext%3A%2207.%22%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="subdomains">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Subdomains & Assets</span>
+        <span class="category-count"> · 3 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      <div class="dork" data-sev="medium" data-text="dev / staging / preprod site:*.example.com (inurl:dev or inurl:staging or inurl:test or inurl:preprod or inurl:uat or inurl:recette)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Dev / staging / preprod</span>
+        </div>
+        <div class="dork-query">site:*.example.com (inurl:dev OR inurl:staging OR inurl:test OR inurl:preprod OR inurl:uat OR inurl:recette)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3A%2A.example.com+%28inurl%3Adev+OR+inurl%3Astaging+OR+inurl%3Atest+OR+inurl%3Apreprod+OR+inurl%3Auat+OR+inurl%3Arecette%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3A%2A.example.com+%28inurl%3Adev+OR+inurl%3Astaging+OR+inurl%3Atest+OR+inurl%3Apreprod+OR+inurl%3Auat+OR+inurl%3Arecette%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3A%2A.example.com+%28inurl%3Adev+OR+inurl%3Astaging+OR+inurl%3Atest+OR+inurl%3Apreprod+OR+inurl%3Auat+OR+inurl%3Arecette%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="medium" data-text="internal-looking paths site:example.com (inurl:internal or inurl:intranet or inurl:private)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Internal-looking paths</span>
+        </div>
+        <div class="dork-query">site:example.com (inurl:internal OR inurl:intranet OR inurl:private)</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Ainternal+OR+inurl%3Aintranet+OR+inurl%3Aprivate%29" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Ainternal+OR+inurl%3Aintranet+OR+inurl%3Aprivate%29" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Ainternal+OR+inurl%3Aintranet+OR+inurl%3Aprivate%29" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="low" data-text="all subdomains (excl. www) site:*.example.com -site:www.example.com">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">All subdomains (excl. www)</span>
+        </div>
+        <div class="dork-query">site:*.example.com -site:www.example.com</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3A%2A.example.com+-site%3Awww.example.com" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3A%2A.example.com+-site%3Awww.example.com" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3A%2A.example.com+-site%3Awww.example.com" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="personnel">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Personnel Intelligence</span>
+        <span class="category-count"> · 4 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      <div class="dork" data-sev="low" data-text="cvs / resumes mentioning target ("cv" or "resume" or "curriculum vitae") "example.com" filetype:pdf">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">CVs / resumes mentioning target</span>
+        </div>
+        <div class="dork-query">("CV" OR "resume" OR "curriculum vitae") "example.com" filetype:pdf</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=%28%22CV%22+OR+%22resume%22+OR+%22curriculum+vitae%22%29+%22example.com%22+filetype%3Apdf" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=%28%22CV%22+OR+%22resume%22+OR+%22curriculum+vitae%22%29+%22example.com%22+filetype%3Apdf" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=%28%22CV%22+OR+%22resume%22+OR+%22curriculum+vitae%22%29+%22example.com%22+filetype%3Apdf" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="low" data-text="linkedin profiles mentioning target site:linkedin.com/in "example.com"">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">LinkedIn profiles mentioning target</span>
+        </div>
+        <div class="dork-query">site:linkedin.com/in "example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Alinkedin.com%2Fin+%22example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Alinkedin.com%2Fin+%22example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Alinkedin.com%2Fin+%22example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="low" data-text="viadeo profiles site:viadeo.com "example.com"">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">Viadeo profiles</span>
+        </div>
+        <div class="dork-query">site:viadeo.com "example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=site%3Aviadeo.com+%22example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=site%3Aviadeo.com+%22example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=site%3Aviadeo.com+%22example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      <div class="dork" data-sev="info" data-text="twitter / x mentions (site:twitter.com or site:x.com) "example.com"">
+        <div class="dork-head">
+          <span class="sev info">info</span>
+          <span class="dork-name">Twitter / X mentions</span>
+        </div>
+        <div class="dork-query">(site:twitter.com OR site:x.com) "example.com"</div>
+        <div class="dork-links">
+          <a href="https://www.google.com/search?q=%28site%3Atwitter.com+OR+site%3Ax.com%29+%22example.com%22" target="_blank" rel="noopener">Google ↗</a>
+          <a href="https://duckduckgo.com/?q=%28site%3Atwitter.com+OR+site%3Ax.com%29+%22example.com%22" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="https://www.bing.com/search?q=%28site%3Atwitter.com+OR+site%3Ax.com%29+%22example.com%22" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  </div>
+
+  <div class="no-results" id="no-results">No dorks match your filters.</div>
+
+  <footer>
+    Dorkator · Use responsibly · For authorized testing and personal OSINT only
+  </footer>
+</div>
+
+<script>
+  const search = document.getElementById('search');
+  const sevPills = document.querySelectorAll('.sev-pill');
+  const noResults = document.getElementById('no-results');
+  let activeSev = 'all';
+
+  function applyFilters() {
+    const q = search.value.toLowerCase().trim();
+    let totalVisible = 0;
+    document.querySelectorAll('.category').forEach(cat => {
+      let visible = 0;
+      cat.querySelectorAll('.dork').forEach(d => {
+        const matchesSev = activeSev === 'all' || d.dataset.sev === activeSev;
+        const matchesText = !q || d.dataset.text.includes(q);
+        const show = matchesSev && matchesText;
+        d.classList.toggle('hidden', !show);
+        if (show) visible++;
+      });
+      cat.classList.toggle('hidden', visible === 0);
+      totalVisible += visible;
+    });
+    noResults.classList.toggle('show', totalVisible === 0);
+  }
+
+  search.addEventListener('input', applyFilters);
+  sevPills.forEach(p => p.addEventListener('click', () => {
+    sevPills.forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    activeSev = p.dataset.sev;
+    applyFilters();
+  }));
+
+  // Keyboard shortcut: "/" to focus search
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== search) {
+      e.preventDefault();
+      search.focus();
+    }
+  });
+</script>
+</body>
+</html>

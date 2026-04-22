@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# Reports
+report.html
+report.md
+report.json
+*.report.html
+*.report.md
+*.report.json
+out/
+reports/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store

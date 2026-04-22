@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dorkator — {{ target }}</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-elev: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --critical: #f85149;
+    --high: #ff8c42;
+    --medium: #e3b341;
+    --low: #3fb950;
+    --info: #8b949e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px; line-height: 1.5;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  h1 { margin: 0 0 0.4rem; font-size: 1.6rem; font-weight: 600; }
+  h1 .brand {
+    color: var(--accent);
+    font-family: "SF Mono", Monaco, "Courier New", monospace;
+  }
+  .meta { color: var(--text-dim); font-size: 0.875rem; }
+  .meta code { background: var(--bg-elev); padding: 2px 6px; border-radius: 4px; }
+  .controls {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+    padding: 0.85rem; background: var(--bg-elev);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  input[type="text"] {
+    background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem; border-radius: 6px;
+    font-family: inherit; font-size: 0.875rem;
+    flex: 1; min-width: 220px;
+  }
+  input[type="text"]:focus { outline: none; border-color: var(--accent); }
+  .sev-pills { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+  .sev-pill {
+    padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.72rem;
+    cursor: pointer; border: 1px solid var(--border); user-select: none;
+    background: var(--bg); text-transform: uppercase;
+    font-weight: 600; letter-spacing: 0.5px; transition: all 0.15s;
+  }
+  .sev-pill:hover { border-color: var(--accent); }
+  .sev-pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .category {
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: 8px; margin-bottom: 0.75rem; overflow: hidden;
+  }
+  .category-header {
+    padding: 0.85rem 1.1rem; cursor: pointer; display: flex;
+    justify-content: space-between; align-items: center; user-select: none;
+  }
+  .category-header:hover { background: rgba(255,255,255,0.02); }
+  .category-title { font-weight: 600; font-size: 0.95rem; }
+  .category-count { color: var(--text-dim); font-size: 0.8rem; }
+  .chevron { transition: transform 0.2s; display: inline-block; color: var(--text-dim); }
+  .category.collapsed .chevron { transform: rotate(-90deg); }
+  .category-body { padding: 0 1.1rem 0.5rem; display: block; }
+  .category.collapsed .category-body { display: none; }
+  .dork { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+  .dork-head {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 0.4rem; flex-wrap: wrap;
+  }
+  .sev {
+    font-size: 0.68rem; font-weight: 700; padding: 2px 8px;
+    border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .sev.critical { background: rgba(248,81,73,0.15); color: var(--critical); }
+  .sev.high { background: rgba(255,140,66,0.15); color: var(--high); }
+  .sev.medium { background: rgba(227,179,65,0.15); color: var(--medium); }
+  .sev.low { background: rgba(63,185,80,0.15); color: var(--low); }
+  .sev.info { background: rgba(139,148,158,0.15); color: var(--info); }
+  .dork-name { font-weight: 500; flex: 1; min-width: 200px; }
+  .dork-query {
+    font-family: "SF Mono", Monaco, "Courier New", monospace; font-size: 0.78rem;
+    background: var(--bg); padding: 0.55rem 0.75rem; border-radius: 4px;
+    border: 1px solid var(--border); color: var(--text-dim);
+    word-break: break-all; margin: 0.4rem 0;
+  }
+  .dork-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .dork-links a {
+    padding: 0.28rem 0.7rem; border-radius: 4px; text-decoration: none;
+    font-size: 0.78rem; background: var(--bg);
+    border: 1px solid var(--border); color: var(--accent); transition: all 0.15s;
+  }
+  .dork-links a:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .warn {
+    background: rgba(227,179,65,0.08); border-left: 3px solid var(--medium);
+    padding: 0.7rem 1rem; margin-bottom: 1.25rem;
+    font-size: 0.82rem; border-radius: 0 6px 6px 0;
+  }
+  .warn strong { color: var(--medium); }
+  .hidden { display: none !important; }
+  .no-results {
+    text-align: center; padding: 2rem; color: var(--text-dim);
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: 8px; display: none;
+  }
+  .no-results.show { display: block; }
+  footer {
+    margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border);
+    color: var(--text-dim); font-size: 0.75rem; text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1><span class="brand">dorkator</span> — <code>{{ target }}</code></h1>
+    <div class="meta">
+      Generated {{ generated_at }} · {{ total }} dorks · {{ categories|length }} categories
+    </div>
+  </header>
+
+  <div class="warn">
+    <strong>Legal notice:</strong> These dorks query public search indexes only.
+    Run them against domains you own or are explicitly authorized to assess.
+  </div>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Filter by name or query…" autocomplete="off">
+    <div class="sev-pills" id="sev-filter">
+      <span class="sev-pill active" data-sev="all">All</span>
+      <span class="sev-pill" data-sev="critical">Critical</span>
+      <span class="sev-pill" data-sev="high">High</span>
+      <span class="sev-pill" data-sev="medium">Medium</span>
+      <span class="sev-pill" data-sev="low">Low</span>
+      <span class="sev-pill" data-sev="info">Info</span>
+    </div>
+  </div>
+
+  <div id="results">
+  {% for cat_key, cat in categories.items() %}
+  <div class="category" data-category="{{ cat_key }}">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">{{ cat.name }}</span>
+        <span class="category-count"> · {{ cat.dorks|length }} dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      {% for d in cat.dorks %}
+      <div class="dork" data-sev="{{ d.severity }}" data-text="{{ (d.name ~ ' ' ~ d.query)|lower }}">
+        <div class="dork-head">
+          <span class="sev {{ d.severity }}">{{ d.severity }}</span>
+          <span class="dork-name">{{ d.name }}</span>
+        </div>
+        <div class="dork-query">{{ d.query }}</div>
+        <div class="dork-links">
+          <a href="{{ d.google_url }}" target="_blank" rel="noopener">Google ↗</a>
+          <a href="{{ d.duckduckgo_url }}" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a href="{{ d.bing_url }}" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+  </div>
+
+  <div class="no-results" id="no-results">No dorks match your filters.</div>
+
+  <footer>
+    Dorkator · Use responsibly · For authorized testing and personal OSINT only
+  </footer>
+</div>
+
+<script>
+  const search = document.getElementById('search');
+  const sevPills = document.querySelectorAll('.sev-pill');
+  const noResults = document.getElementById('no-results');
+  let activeSev = 'all';
+
+  function applyFilters() {
+    const q = search.value.toLowerCase().trim();
+    let totalVisible = 0;
+    document.querySelectorAll('.category').forEach(cat => {
+      let visible = 0;
+      cat.querySelectorAll('.dork').forEach(d => {
+        const matchesSev = activeSev === 'all' || d.dataset.sev === activeSev;
+        const matchesText = !q || d.dataset.text.includes(q);
+        const show = matchesSev && matchesText;
+        d.classList.toggle('hidden', !show);
+        if (show) visible++;
+      });
+      cat.classList.toggle('hidden', visible === 0);
+      totalVisible += visible;
+    });
+    noResults.classList.toggle('show', totalVisible === 0);
+  }
+
+  search.addEventListener('input', applyFilters);
+  sevPills.forEach(p => p.addEventListener('click', () => {
+    sevPills.forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    activeSev = p.dataset.sev;
+    applyFilters();
+  }));
+
+  // Keyboard shortcut: "/" to focus search
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== search) {
+      e.preventDefault();
+      search.focus();
+    }
+  });
+</script>
+</body>
+</html>
