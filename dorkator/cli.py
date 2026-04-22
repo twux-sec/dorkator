@@ -19,6 +19,7 @@ from . import __version__
 from .core import build_dorks, list_categories, load_library
 from .exporters import export_html, export_json, export_markdown
 from .opener import open_batches
+from .wizard import run_wizard
 
 # Path to the dorks.yaml shipped with the package. Resolved via __file__ so it
 # still works when the package is installed elsewhere on disk.
@@ -38,6 +39,7 @@ BANNER = rf"""
 # `dorkator` with no target (instead of the bare argparse error).
 QUICK_HELP = """\
 Common commands:
+  dorkator --wizard                                           Interactive mode (4 questions)
   dorkator --list-categories                                  Show categories & dork count
   dorkator -t example.com                                     Generate HTML report
   dorkator -t example.com -f all -o report                    Generate HTML + Markdown + JSON
@@ -145,6 +147,14 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="List available categories and exit.",
     )
+    parser.add_argument(
+        "--wizard",
+        action="store_true",
+        help=(
+            "Run the interactive wizard (4 questions). "
+            "Overrides target/category/format/open if those flags are also set."
+        ),
+    )
 
     # ---- Batch opener ---------------------------------------------------
     # All --open-* flags are only effective when --open is set.
@@ -233,6 +243,20 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{'TOTAL':<14} {total:<7}")
         return 0
 
+    # --- Wizard mode: ask 4 questions and overwrite the relevant args ---
+    # Done before the target check, since the wizard supplies the target.
+    if args.wizard:
+        answers = run_wizard(library)
+        args.target = answers["target"]
+        args.category = answers["category"]
+        # Map "do_file" to format: keep -f if user already set something other
+        # than the default html, otherwise honour the wizard answer.
+        if not answers["do_file"]:
+            args.format = "none"
+        args.open = answers["do_open"]
+        if answers["severity"]:
+            args.open_severity = _parse_severities(answers["severity"])
+
     # --- Validation: a target is required to render dorks ---------------
     # When no target is given, show the quick-help cheatsheet under the banner
     # rather than the bare argparse error. More useful for new users.
@@ -240,7 +264,7 @@ def main(argv: list[str] | None = None) -> int:
         if not args.quiet:
             print(QUICK_HELP, file=sys.stderr)
         print(
-            "[!] --target is required (unless using --list-categories)",
+            "[!] --target is required (unless using --list-categories or --wizard)",
             file=sys.stderr,
         )
         return 2

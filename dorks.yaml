@@ -145,6 +145,35 @@ categories:
       - name: "Open Elasticsearch / cluster endpoints"
         query: 'site:{target} (inurl:_cluster OR inurl:_cat OR inurl:9200)'
         severity: critical
+      # --- PII leaks in documents (recon -> IDOR/data-exposure starting point) ---
+      - name: "Date of birth in documents"
+        query: 'site:{target} (filetype:pdf OR filetype:xlsx OR filetype:docx) (intext:"date of birth" OR intext:"date de naissance" OR intext:"DOB" OR intext:"ne le" OR intext:"née le")'
+        severity: critical
+      - name: "ID / passport numbers in documents"
+        query: 'site:{target} (filetype:pdf OR filetype:xlsx) (intext:"passport" OR intext:"passeport" OR intext:"carte d''identite" OR intext:"national ID" OR intext:"CNI")'
+        severity: critical
+      - name: "Social security / NIR / SSN exposure"
+        query: 'site:{target} (filetype:pdf OR filetype:xlsx) (intext:"SSN" OR intext:"social security" OR intext:"numero de securite sociale" OR intext:"NIR")'
+        severity: critical
+      - name: "Banking info (IBAN / RIB / SWIFT)"
+        query: 'site:{target} (filetype:pdf OR filetype:xlsx) (intext:"IBAN" OR intext:"BIC" OR intext:"RIB" OR intext:"SWIFT")'
+        severity: critical
+      - name: "Customer records (invoices / orders / clients)"
+        query: 'site:{target} (filetype:pdf OR filetype:xlsx) (intext:"facture" OR intext:"invoice" OR intext:"n° client" OR intext:"customer ID" OR intext:"order #")'
+        severity: high
+      - name: "Medical / health data exposure"
+        query: 'site:{target} (filetype:pdf OR filetype:xlsx) (intext:"diagnostic" OR intext:"patient" OR intext:"prescription" OR intext:"ordonnance")'
+        severity: critical
+      # --- IDOR-friendly URL patterns (enumerable IDs in document delivery) ---
+      - name: "Sequential download endpoints (IDOR-prone)"
+        query: 'site:{target} inurl:download (inurl:"id=" OR inurl:"file=" OR inurl:"doc=")'
+        severity: high
+      - name: "Documents served by path ID (IDOR-prone)"
+        query: 'site:{target} (inurl:"/files/" OR inurl:"/documents/" OR inurl:"/uploads/" OR inurl:"/getfile/") filetype:pdf'
+        severity: high
+      - name: "Object IDs in query strings"
+        query: 'site:{target} (inurl:"customer_id=" OR inurl:"invoice_id=" OR inurl:"order_id=" OR inurl:"user_id=" OR inurl:"client_id=")'
+        severity: high
 
   credentials:
     name: "Credentials & Secrets"

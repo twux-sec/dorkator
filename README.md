@@ -18,9 +18,10 @@ dorkator -t example.com --open --open-severity critical,high
 
 ## Features
 
-- **80+ curated dorks** across 8 categories (identities, documents, technical
+- **90+ curated dorks** across 8 categories (identities, documents, technical
   exposure, credentials, subdomains, cloud storage, external leaks, personnel
-  intel)
+  intel) — including PII leak patterns and IDOR-prone URL patterns
+- **Interactive wizard** (`--wizard`) — 4 questions, no flags to remember
 - **Severity levels** (critical → info) to prioritize triage
 - **Three search engines** per dork (Google, DuckDuckGo, Bing)
 - **Interactive batch opener** — opens N tabs at a time, asks before next

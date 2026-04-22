@@ -1,7 +1,7 @@
 # Dorkator Report — `example.com`
 
-- **Generated:** 2026-04-22 15:49:05
-- **Total dorks:** 84
+- **Generated:** 2026-04-22 16:26:56
+- **Total dorks:** 93
 
 > Legal notice: only run against domains you own or are authorized to assess.
 
@@ -115,12 +115,26 @@ site:github.com "example.com" (password OR api_key OR token OR secret)
 
 ## Technical Exposure
 
+### `[CRITICAL]` Banking info (IBAN / RIB / SWIFT)
+
+```
+site:example.com (filetype:pdf OR filetype:xlsx) (intext:"IBAN" OR intext:"BIC" OR intext:"RIB" OR intext:"SWIFT")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22IBAN%22+OR+intext%3A%22BIC%22+OR+intext%3A%22RIB%22+OR+intext%3A%22SWIFT%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22IBAN%22+OR+intext%3A%22BIC%22+OR+intext%3A%22RIB%22+OR+intext%3A%22SWIFT%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22IBAN%22+OR+intext%3A%22BIC%22+OR+intext%3A%22RIB%22+OR+intext%3A%22SWIFT%22%29)
+
 ### `[CRITICAL]` Config files
 
 ```
 site:example.com (ext:htaccess OR ext:conf OR ext:config OR ext:ini OR ext:yaml OR ext:yml)
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28ext%3Ahtaccess+OR+ext%3Aconf+OR+ext%3Aconfig+OR+ext%3Aini+OR+ext%3Ayaml+OR+ext%3Ayml%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Ahtaccess+OR+ext%3Aconf+OR+ext%3Aconfig+OR+ext%3Aini+OR+ext%3Ayaml+OR+ext%3Ayml%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Ahtaccess+OR+ext%3Aconf+OR+ext%3Aconfig+OR+ext%3Aini+OR+ext%3Ayaml+OR+ext%3Ayml%29)
+
+### `[CRITICAL]` Date of birth in documents
+
+```
+site:example.com (filetype:pdf OR filetype:xlsx OR filetype:docx) (intext:"date of birth" OR intext:"date de naissance" OR intext:"DOB" OR intext:"ne le" OR intext:"née le")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx+OR+filetype%3Adocx%29+%28intext%3A%22date+of+birth%22+OR+intext%3A%22date+de+naissance%22+OR+intext%3A%22DOB%22+OR+intext%3A%22ne+le%22+OR+intext%3A%22n%C3%A9e+le%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx+OR+filetype%3Adocx%29+%28intext%3A%22date+of+birth%22+OR+intext%3A%22date+de+naissance%22+OR+intext%3A%22DOB%22+OR+intext%3A%22ne+le%22+OR+intext%3A%22n%C3%A9e+le%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx+OR+filetype%3Adocx%29+%28intext%3A%22date+of+birth%22+OR+intext%3A%22date+de+naissance%22+OR+intext%3A%22DOB%22+OR+intext%3A%22ne+le%22+OR+intext%3A%22n%C3%A9e+le%22%29)
 
 ### `[CRITICAL]` Exposed DB admin interfaces
 
@@ -129,12 +143,33 @@ site:example.com (inurl:phpmyadmin OR inurl:adminer OR inurl:pgadmin)
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aphpmyadmin+OR+inurl%3Aadminer+OR+inurl%3Apgadmin%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aphpmyadmin+OR+inurl%3Aadminer+OR+inurl%3Apgadmin%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aphpmyadmin+OR+inurl%3Aadminer+OR+inurl%3Apgadmin%29)
 
+### `[CRITICAL]` ID / passport numbers in documents
+
+```
+site:example.com (filetype:pdf OR filetype:xlsx) (intext:"passport" OR intext:"passeport" OR intext:"carte d'identite" OR intext:"national ID" OR intext:"CNI")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22passport%22+OR+intext%3A%22passeport%22+OR+intext%3A%22carte+d%27identite%22+OR+intext%3A%22national+ID%22+OR+intext%3A%22CNI%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22passport%22+OR+intext%3A%22passeport%22+OR+intext%3A%22carte+d%27identite%22+OR+intext%3A%22national+ID%22+OR+intext%3A%22CNI%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22passport%22+OR+intext%3A%22passeport%22+OR+intext%3A%22carte+d%27identite%22+OR+intext%3A%22national+ID%22+OR+intext%3A%22CNI%22%29)
+
+### `[CRITICAL]` Medical / health data exposure
+
+```
+site:example.com (filetype:pdf OR filetype:xlsx) (intext:"diagnostic" OR intext:"patient" OR intext:"prescription" OR intext:"ordonnance")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22diagnostic%22+OR+intext%3A%22patient%22+OR+intext%3A%22prescription%22+OR+intext%3A%22ordonnance%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22diagnostic%22+OR+intext%3A%22patient%22+OR+intext%3A%22prescription%22+OR+intext%3A%22ordonnance%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22diagnostic%22+OR+intext%3A%22patient%22+OR+intext%3A%22prescription%22+OR+intext%3A%22ordonnance%22%29)
+
 ### `[CRITICAL]` Open Elasticsearch / cluster endpoints
 
 ```
 site:example.com (inurl:_cluster OR inurl:_cat OR inurl:9200)
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3A_cluster+OR+inurl%3A_cat+OR+inurl%3A9200%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3A_cluster+OR+inurl%3A_cat+OR+inurl%3A9200%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3A_cluster+OR+inurl%3A_cat+OR+inurl%3A9200%29)
+
+### `[CRITICAL]` Social security / NIR / SSN exposure
+
+```
+site:example.com (filetype:pdf OR filetype:xlsx) (intext:"SSN" OR intext:"social security" OR intext:"numero de securite sociale" OR intext:"NIR")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22SSN%22+OR+intext%3A%22social+security%22+OR+intext%3A%22numero+de+securite+sociale%22+OR+intext%3A%22NIR%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22SSN%22+OR+intext%3A%22social+security%22+OR+intext%3A%22numero+de+securite+sociale%22+OR+intext%3A%22NIR%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22SSN%22+OR+intext%3A%22social+security%22+OR+intext%3A%22numero+de+securite+sociale%22+OR+intext%3A%22NIR%22%29)
 
 ### `[CRITICAL]` Version control leaks (.git/.svn/.env)
 
@@ -319,6 +354,20 @@ site:example.com (inurl:server-status OR inurl:server-info)
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aserver-status+OR+inurl%3Aserver-info%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aserver-status+OR+inurl%3Aserver-info%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aserver-status+OR+inurl%3Aserver-info%29)
 
+### `[HIGH]` Customer records (invoices / orders / clients)
+
+```
+site:example.com (filetype:pdf OR filetype:xlsx) (intext:"facture" OR intext:"invoice" OR intext:"n° client" OR intext:"customer ID" OR intext:"order #")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22facture%22+OR+intext%3A%22invoice%22+OR+intext%3A%22n%C2%B0+client%22+OR+intext%3A%22customer+ID%22+OR+intext%3A%22order+%23%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22facture%22+OR+intext%3A%22invoice%22+OR+intext%3A%22n%C2%B0+client%22+OR+intext%3A%22customer+ID%22+OR+intext%3A%22order+%23%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Apdf+OR+filetype%3Axlsx%29+%28intext%3A%22facture%22+OR+intext%3A%22invoice%22+OR+intext%3A%22n%C2%B0+client%22+OR+intext%3A%22customer+ID%22+OR+intext%3A%22order+%23%22%29)
+
+### `[HIGH]` Documents served by path ID (IDOR-prone)
+
+```
+site:example.com (inurl:"/files/" OR inurl:"/documents/" OR inurl:"/uploads/" OR inurl:"/getfile/") filetype:pdf
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3A%22%2Ffiles%2F%22+OR+inurl%3A%22%2Fdocuments%2F%22+OR+inurl%3A%22%2Fuploads%2F%22+OR+inurl%3A%22%2Fgetfile%2F%22%29+filetype%3Apdf) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3A%22%2Ffiles%2F%22+OR+inurl%3A%22%2Fdocuments%2F%22+OR+inurl%3A%22%2Fuploads%2F%22+OR+inurl%3A%22%2Fgetfile%2F%22%29+filetype%3Apdf) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3A%22%2Ffiles%2F%22+OR+inurl%3A%22%2Fdocuments%2F%22+OR+inurl%3A%22%2Fuploads%2F%22+OR+inurl%3A%22%2Fgetfile%2F%22%29+filetype%3Apdf)
+
 ### `[HIGH]` Jenkins / CI dashboards
 
 ```
@@ -333,12 +382,26 @@ site:example.com (inurl:grafana OR inurl:kibana OR inurl:prometheus OR inurl:909
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Agrafana+OR+inurl%3Akibana+OR+inurl%3Aprometheus+OR+inurl%3A9090+OR+intitle%3A%22Grafana%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Agrafana+OR+inurl%3Akibana+OR+inurl%3Aprometheus+OR+inurl%3A9090+OR+intitle%3A%22Grafana%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Agrafana+OR+inurl%3Akibana+OR+inurl%3Aprometheus+OR+inurl%3A9090+OR+intitle%3A%22Grafana%22%29)
 
+### `[HIGH]` Object IDs in query strings
+
+```
+site:example.com (inurl:"customer_id=" OR inurl:"invoice_id=" OR inurl:"order_id=" OR inurl:"user_id=" OR inurl:"client_id=")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3A%22customer_id%3D%22+OR+inurl%3A%22invoice_id%3D%22+OR+inurl%3A%22order_id%3D%22+OR+inurl%3A%22user_id%3D%22+OR+inurl%3A%22client_id%3D%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3A%22customer_id%3D%22+OR+inurl%3A%22invoice_id%3D%22+OR+inurl%3A%22order_id%3D%22+OR+inurl%3A%22user_id%3D%22+OR+inurl%3A%22client_id%3D%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3A%22customer_id%3D%22+OR+inurl%3A%22invoice_id%3D%22+OR+inurl%3A%22order_id%3D%22+OR+inurl%3A%22user_id%3D%22+OR+inurl%3A%22client_id%3D%22%29)
+
 ### `[HIGH]` Open directory listings
 
 ```
 site:example.com intitle:"index of"
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+intitle%3A%22index+of%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+intitle%3A%22index+of%22) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+intitle%3A%22index+of%22)
+
+### `[HIGH]` Sequential download endpoints (IDOR-prone)
+
+```
+site:example.com inurl:download (inurl:"id=" OR inurl:"file=" OR inurl:"doc=")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+inurl%3Adownload+%28inurl%3A%22id%3D%22+OR+inurl%3A%22file%3D%22+OR+inurl%3A%22doc%3D%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+inurl%3Adownload+%28inurl%3A%22id%3D%22+OR+inurl%3A%22file%3D%22+OR+inurl%3A%22doc%3D%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+inurl%3Adownload+%28inurl%3A%22id%3D%22+OR+inurl%3A%22file%3D%22+OR+inurl%3A%22doc%3D%22%29)
 
 ### `[HIGH]` Verbose error messages
 
