@@ -3,432 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dorkator — Interactive OSINT Dork Library</title>
+<title>dorkator — interactive dork library</title>
 <meta name="description" content="OSINT dork library — set your target and get clickable Google / DuckDuckGo / Bing links for {{ total }} curated dorks.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    /* Surfaces */
-    --bg:        #0a0a0f;
-    --bg-soft:   #11111a;
-    --bg-card:   #15151f;
-    --bg-elev:   #1c1c28;
-    --border:    #25253a;
-    --border-strong: #34344e;
-
-    /* Text */
-    --text:      #f1f1f6;
-    --text-soft: #a8a8b8;
-    --text-dim:  #6e6e85;
-
-    /* Brand */
-    --accent:        #a78bfa;       /* violet */
-    --accent-strong: #c4b5fd;
-    --accent-glow:   rgba(167,139,250,0.35);
-
-    /* Severity */
-    --critical: #ff5b6f;
-    --high:     #ff9b46;
-    --medium:   #f3c537;
-    --low:      #46d493;
-    --info:     #6e6e85;
-
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
-
+  /* Reset + base ------------------------------------------------------ */
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
 
+  :root {
+    --bg:        #fafaf7;
+    --surface:   #ffffff;
+    --border:    #e3e3df;
+    --border-2:  #c9c9c2;
+    --text:      #1a1a1a;
+    --text-2:    #555;
+    --text-3:    #888;
+    --accent:    #1d4ed8;
+    --critical:  #b91c1c;
+    --high:      #c2410c;
+    --medium:    #a16207;
+    --low:       #15803d;
+    --info:      #6b7280;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
   body {
     background: var(--bg);
-    background-image:
-      radial-gradient(ellipse 800px 400px at top, rgba(167,139,250,0.10), transparent 60%),
-      radial-gradient(ellipse 600px 400px at bottom right, rgba(70,212,147,0.05), transparent 70%);
     color: var(--text);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 14.5px;
+    font-family: var(--sans);
+    font-size: 14px;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    min-height: 100vh;
   }
 
-  .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
 
-  /* ---- Hero ---- */
-  .hero {
-    padding: 4rem 0 2.5rem;
-    text-align: center;
-  }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.35rem 0.8rem;
-    background: rgba(167,139,250,0.08);
-    border: 1px solid rgba(167,139,250,0.25);
-    border-radius: 999px;
-    color: var(--accent-strong);
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-    margin-bottom: 1.25rem;
-  }
-  .hero-badge .dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent-glow);
-  }
-  .hero h1 {
-    font-size: clamp(2.2rem, 5vw, 3.4rem);
-    font-weight: 700;
-    margin: 0 0 0.6rem;
-    letter-spacing: -0.02em;
-    background: linear-gradient(180deg, #fff 0%, #b9b9cc 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .hero p.tagline {
-    color: var(--text-soft);
-    font-size: 1.05rem;
-    max-width: 600px;
-    margin: 0 auto 1.5rem;
-  }
-  .hero-stats {
-    display: inline-flex; gap: 1.4rem; flex-wrap: wrap; justify-content: center;
-    color: var(--text-dim);
-    font-size: 0.82rem;
-  }
-  .hero-stats .stat strong { color: var(--text); font-weight: 600; }
-  .hero-stats .sep { color: var(--border-strong); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
 
-  /* ---- Legal banner ---- */
-  .legal {
-    background: rgba(243,197,55,0.06);
-    border: 1px solid rgba(243,197,55,0.2);
-    border-radius: var(--radius-sm);
-    padding: 0.75rem 1rem;
-    font-size: 0.82rem;
-    color: var(--text-soft);
-    margin-bottom: 1.5rem;
-  }
-  .legal strong { color: var(--medium); font-weight: 600; }
-
-  /* ---- Target input (the star of the show) ---- */
-  .target-card {
-    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-elev) 100%);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-  }
-  .target-label {
-    font-size: 0.75rem;
+  /* Header ------------------------------------------------------------ */
+  header { margin-bottom: 1.75rem; }
+  h1 {
+    font-family: var(--mono);
+    font-size: 1.45rem;
     font-weight: 600;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: var(--accent-strong);
-    margin-bottom: 0.55rem;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
   }
-  .target-input-wrap {
-    position: relative;
+  h1 .v { color: var(--text-3); font-weight: 400; font-size: 0.85rem; margin-left: 0.4rem; }
+  .sub { color: var(--text-2); margin: 0 0 0.5rem; font-size: 0.92rem; }
+  .stats {
+    color: var(--text-3); font-size: 0.8rem; font-family: var(--mono);
   }
-  .target-input-wrap::before {
-    content: '>'; position: absolute; left: 0.95rem; top: 50%;
-    transform: translateY(-50%);
-    color: var(--accent); font-family: 'JetBrains Mono', monospace;
-    font-weight: 600; pointer-events: none;
+  .stats .sep { padding: 0 0.45rem; color: var(--border-2); }
+
+  /* Legal note -------------------------------------------------------- */
+  .legal {
+    margin: 1.25rem 0 1.5rem;
+    padding: 0.55rem 0.8rem;
+    border-left: 2px solid var(--medium);
+    background: #fffbe6;
+    color: #5b4a00;
+    font-size: 0.82rem;
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* Target input ------------------------------------------------------ */
+  .target-row {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .target-row label {
+    font-family: var(--mono); font-size: 0.85rem;
+    color: var(--text-2); flex-shrink: 0;
   }
   #target {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border-2);
     color: var(--text);
-    padding: 0.85rem 1rem 0.85rem 2.1rem;
-    border-radius: var(--radius-sm);
-    font-family: 'JetBrains Mono', Monaco, "Courier New", monospace;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    padding: 0.55rem 0.7rem;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 0.92rem;
   }
-  #target:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-glow);
-  }
-  .target-hint {
-    margin-top: 0.6rem;
-    font-size: 0.78rem;
-    color: var(--text-dim);
-  }
+  #target:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
+  .target-hint { color: var(--text-3); font-size: 0.78rem; margin: -0.4rem 0 1.25rem; padding-left: 0.1rem; }
 
-  /* ---- Filters bar ---- */
+  /* Filters ----------------------------------------------------------- */
   .filters {
-    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 0.75rem;
-    margin-bottom: 1.5rem;
-    position: sticky; top: 0.75rem; z-index: 10;
-    backdrop-filter: blur(10px);
-    background: rgba(21,21,31,0.92);
+    display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
+    margin-bottom: 1.5rem; padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
   }
   #search {
     flex: 1; min-width: 200px;
-    background: var(--bg);
-    border: 1px solid var(--border);
+    background: var(--surface);
+    border: 1px solid var(--border-2);
     color: var(--text);
-    padding: 0.55rem 0.85rem;
-    border-radius: var(--radius-sm);
-    font-family: inherit;
-    font-size: 0.88rem;
-    transition: border-color 0.15s;
-  }
-  #search:focus { outline: none; border-color: var(--accent); }
-  .sev-pills { display: flex; gap: 0.35rem; flex-wrap: wrap; }
-  .sev-pill {
-    padding: 0.4rem 0.85rem;
-    border-radius: 999px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text-soft);
-    user-select: none;
-    transition: all 0.15s;
-  }
-  .sev-pill:hover { border-color: var(--accent); color: var(--text); }
-  .sev-pill.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--bg);
-  }
-
-  /* ---- Categories ---- */
-  .category {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 0.85rem;
-    overflow: hidden;
-    transition: border-color 0.15s;
-  }
-  .category:hover { border-color: var(--border-strong); }
-  .category-header {
-    padding: 1rem 1.25rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-    transition: background 0.15s;
-  }
-  .category-header:hover { background: rgba(255,255,255,0.015); }
-  .category-title {
-    display: flex; align-items: center; gap: 0.7rem;
-  }
-  .category-title .key {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--accent);
-    background: rgba(167,139,250,0.1);
-    padding: 0.2rem 0.55rem;
+    padding: 0.45rem 0.65rem;
     border-radius: 4px;
+    font-family: var(--sans); font-size: 0.85rem;
+  }
+  #search:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
+  .pills { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+  .pill {
+    padding: 0.35rem 0.65rem;
+    border: 1px solid var(--border-2);
+    background: var(--surface);
+    color: var(--text-2);
+    font-family: var(--mono); font-size: 0.72rem;
+    border-radius: 4px;
+    cursor: pointer; user-select: none;
     text-transform: lowercase;
   }
-  .category-title .name {
-    font-weight: 600;
-    font-size: 1rem;
-  }
-  .category-count {
-    color: var(--text-dim);
-    font-size: 0.78rem;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .chevron {
-    color: var(--text-dim);
-    transition: transform 0.2s;
-    display: inline-block;
-    font-size: 0.85rem;
-    margin-left: 0.75rem;
-  }
-  .category.collapsed .chevron { transform: rotate(-90deg); }
-  .category-body {
-    padding: 0 1.25rem 0.5rem;
-    display: block;
-  }
-  .category.collapsed .category-body { display: none; }
+  .pill:hover { border-color: var(--text-2); color: var(--text); }
+  .pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
 
-  /* ---- Dork ---- */
-  .dork {
-    padding: 1rem 0;
-    border-top: 1px solid var(--border);
+  /* Categories -------------------------------------------------------- */
+  .category {
+    margin-bottom: 1.5rem;
   }
+  .category-h {
+    display: flex; align-items: baseline; gap: 0.55rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+    cursor: pointer; user-select: none;
+  }
+  .category-h:hover .name { color: var(--accent); }
+  .category-h .key {
+    font-family: var(--mono); font-size: 0.78rem; color: var(--text-3);
+  }
+  .category-h .name {
+    font-weight: 600; font-size: 0.95rem;
+  }
+  .category-h .count {
+    margin-left: auto;
+    font-family: var(--mono); font-size: 0.75rem; color: var(--text-3);
+  }
+  .category-h .chev { color: var(--text-3); font-size: 0.7rem; transition: transform 0.15s; margin-left: 0.45rem; }
+  .category.collapsed .chev { transform: rotate(-90deg); }
+  .category.collapsed .body { display: none; }
+
+  /* Dork -------------------------------------------------------------- */
+  .dork { padding: 0.65rem 0; }
+  .dork + .dork { border-top: 1px solid var(--border); }
   .dork-head {
-    display: flex; align-items: center; gap: 0.7rem;
-    margin-bottom: 0.55rem; flex-wrap: wrap;
+    display: flex; align-items: baseline; gap: 0.55rem;
+    margin-bottom: 0.35rem; flex-wrap: wrap;
   }
   .sev {
-    font-size: 0.65rem; font-weight: 700;
-    padding: 3px 8px; border-radius: 4px;
-    text-transform: uppercase; letter-spacing: 0.6px;
-    flex-shrink: 0;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--mono); font-size: 0.66rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.4px;
+    padding: 1px 6px; border-radius: 3px; flex-shrink: 0;
   }
-  .sev.critical { background: rgba(255,91,111,0.13); color: var(--critical); border: 1px solid rgba(255,91,111,0.25); }
-  .sev.high     { background: rgba(255,155,70,0.13); color: var(--high);     border: 1px solid rgba(255,155,70,0.25); }
-  .sev.medium   { background: rgba(243,197,55,0.13); color: var(--medium);   border: 1px solid rgba(243,197,55,0.25); }
-  .sev.low      { background: rgba(70,212,147,0.13); color: var(--low);      border: 1px solid rgba(70,212,147,0.25); }
-  .sev.info     { background: rgba(110,110,133,0.13); color: var(--info);    border: 1px solid rgba(110,110,133,0.25); }
-  .dork-name {
-    font-weight: 500;
-    flex: 1; min-width: 200px;
-    color: var(--text);
-  }
+  .sev.critical { background: #fee2e2; color: var(--critical); }
+  .sev.high     { background: #ffedd5; color: var(--high); }
+  .sev.medium   { background: #fef3c7; color: var(--medium); }
+  .sev.low      { background: #dcfce7; color: var(--low); }
+  .sev.info     { background: #f3f4f6; color: var(--info); }
+  .dork-name { font-weight: 500; flex: 1; min-width: 200px; color: var(--text); font-size: 0.9rem; }
   .dork-query {
-    font-family: 'JetBrains Mono', Monaco, "Courier New", monospace;
-    font-size: 0.78rem;
-    background: var(--bg);
-    padding: 0.7rem 0.85rem;
-    border-radius: var(--radius-sm);
+    font-family: var(--mono); font-size: 0.78rem;
+    background: #f5f5ef;
+    color: #2a2a2a;
+    padding: 0.5rem 0.65rem;
+    border-radius: 3px;
     border: 1px solid var(--border);
-    color: var(--text-soft);
     word-break: break-all;
-    margin: 0.5rem 0 0.65rem;
-    transition: border-color 0.15s;
+    margin: 0.35rem 0 0.45rem;
   }
-  .dork-query:hover { border-color: var(--border-strong); }
-  .dork-links { display: flex; gap: 0.45rem; flex-wrap: wrap; }
-  .dork-links a {
-    padding: 0.4rem 0.85rem;
-    border-radius: var(--radius-sm);
-    text-decoration: none;
+  .dork-links {
+    display: flex; gap: 0.4rem; flex-wrap: wrap;
     font-size: 0.78rem;
-    font-weight: 500;
-    background: var(--bg-elev);
-    border: 1px solid var(--border);
-    color: var(--accent-strong);
-    transition: all 0.15s;
-    display: inline-flex; align-items: center; gap: 0.35rem;
   }
-  .dork-links a:hover {
-    background: var(--accent);
-    color: var(--bg);
-    border-color: var(--accent);
-    transform: translateY(-1px);
+  .dork-links a {
+    color: var(--accent);
+  }
+  .dork-links a + a::before {
+    content: "·"; color: var(--text-3); margin-right: 0.4rem;
+    text-decoration: none;
   }
   .dork-links a.disabled {
-    pointer-events: none; opacity: 0.4;
-    color: var(--text-dim);
-  }
-  .dork-links svg {
-    width: 12px; height: 12px;
-    stroke: currentColor; fill: none;
-    stroke-width: 2;
+    pointer-events: none; opacity: 0.4; color: var(--text-3);
+    text-decoration: none;
   }
 
-  /* ---- Misc ---- */
+  /* Misc -------------------------------------------------------------- */
   .hidden { display: none !important; }
   .no-results {
-    text-align: center; padding: 3rem;
-    color: var(--text-dim);
-    background: var(--bg-card);
-    border: 1px dashed var(--border);
-    border-radius: var(--radius);
+    text-align: center; padding: 2rem;
+    color: var(--text-3); font-size: 0.88rem;
+    border: 1px dashed var(--border-2);
+    border-radius: 4px;
     display: none;
   }
   .no-results.show { display: block; }
+
   footer {
-    margin: 4rem 0 2rem;
-    padding-top: 1.5rem;
+    margin-top: 3rem; padding-top: 1rem;
     border-top: 1px solid var(--border);
-    color: var(--text-dim);
-    font-size: 0.78rem;
-    text-align: center;
+    color: var(--text-3); font-size: 0.78rem;
   }
-  footer a {
-    color: var(--accent-strong);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-  footer a:hover { color: var(--accent); text-decoration: underline; }
-  footer .muted { color: var(--text-dim); }
 
-  ::selection { background: var(--accent); color: var(--bg); }
-
-  @media (max-width: 600px) {
-    .hero { padding: 2rem 0 1.5rem; }
-    .filters { position: static; }
-    .target-card, .filters { padding: 1rem; }
-    .dork-links { gap: 0.3rem; }
-    .dork-links a { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
-  }
+  ::selection { background: var(--accent); color: #fff; }
 </style>
 </head>
 <body>
 
-<div class="container">
+<div class="wrap">
 
-  <section class="hero">
-    <div class="hero-badge">
-      <span class="dot"></span> v0.3 · interactive build
+  <header>
+    <h1>dorkator<span class="v">v0.3</span></h1>
+    <p class="sub">An interactive OSINT dork library. Set a target, copy a query, or open it in Google / DuckDuckGo / Bing.</p>
+    <div class="stats">
+      {{ total }} dorks <span class="sep">·</span>
+      {{ categories|length }} categories <span class="sep">·</span>
+      built {{ generated_at }}
     </div>
-    <h1>Dorkator</h1>
-    <p class="tagline">An interactive OSINT dork library. Set your target, copy a query, or open it directly in Google / DuckDuckGo / Bing.</p>
-    <div class="hero-stats">
-      <span class="stat"><strong>{{ total }}</strong> dorks</span>
-      <span class="sep">·</span>
-      <span class="stat"><strong>{{ categories|length }}</strong> categories</span>
-      <span class="sep">·</span>
-      <span class="stat">last build <strong>{{ generated_at }}</strong></span>
-    </div>
-  </section>
+  </header>
 
   <div class="legal">
-    <strong>Legal:</strong> these queries hit public search indexes. Only run them against assets you own or are explicitly authorized to test.
+    <strong>Legal notice.</strong> These queries hit public search indexes only.
+    Run them against assets you own or are explicitly authorized to test.
   </div>
 
-  <div class="target-card">
-    <div class="target-label">Target</div>
-    <div class="target-input-wrap">
-      <input type="text" id="target" placeholder="example.com" autocomplete="off" autofocus spellcheck="false">
-    </div>
-    <div class="target-hint">Type a domain — every query and link below updates live. Saved locally for next visit.</div>
+  <div class="target-row">
+    <label for="target">target&nbsp;&gt;</label>
+    <input type="text" id="target" placeholder="example.com" autocomplete="off" autofocus spellcheck="false">
   </div>
+  <div class="target-hint">Type a domain — every query and search-engine link below updates live. Saved locally for next visit.</div>
 
   <div class="filters">
-    <input type="text" id="search" placeholder="Filter dorks by name or query…" autocomplete="off">
-    <div class="sev-pills" id="sev-filter">
-      <span class="sev-pill active" data-sev="all">All</span>
-      <span class="sev-pill" data-sev="critical">Critical</span>
-      <span class="sev-pill" data-sev="high">High</span>
-      <span class="sev-pill" data-sev="medium">Medium</span>
-      <span class="sev-pill" data-sev="low">Low</span>
-      <span class="sev-pill" data-sev="info">Info</span>
+    <input type="text" id="search" placeholder="filter by name or query…" autocomplete="off">
+    <div class="pills" id="sev-filter">
+      <span class="pill active" data-sev="all">all</span>
+      <span class="pill" data-sev="critical">critical</span>
+      <span class="pill" data-sev="high">high</span>
+      <span class="pill" data-sev="medium">medium</span>
+      <span class="pill" data-sev="low">low</span>
+      <span class="pill" data-sev="info">info</span>
     </div>
   </div>
 
   <div id="results">
   {% for cat in categories %}
-  <div class="category" data-category="{{ cat.key }}">
-    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
-      <div class="category-title">
-        <span class="key">{{ cat.key }}</span>
-        <span class="name">{{ cat.name }}</span>
-      </div>
-      <div>
-        <span class="category-count">{{ cat.dorks|length }} dorks</span>
-        <span class="chevron">▾</span>
-      </div>
+  <section class="category" data-category="{{ cat.key }}">
+    <div class="category-h" onclick="this.parentElement.classList.toggle('collapsed')">
+      <span class="key">{{ cat.key }}/</span>
+      <span class="name">{{ cat.name }}</span>
+      <span class="count">{{ cat.dorks|length }}</span>
+      <span class="chev">▾</span>
     </div>
-    <div class="category-body">
+    <div class="body">
       {% for d in cat.dorks %}
       <div class="dork"
            data-sev="{{ d.severity }}"
@@ -440,48 +269,36 @@
         </div>
         <div class="dork-query">{{ d.query }}</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">
-            Google
-            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
-          </a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">
-            DuckDuckGo
-            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
-          </a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">
-            Bing
-            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
-          </a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing</a>
         </div>
       </div>
       {% endfor %}
     </div>
-  </div>
+  </section>
   {% endfor %}
   </div>
 
   <div class="no-results" id="no-results">No dorks match your filters.</div>
 
   <footer>
-    <a href="https://github.com/twux-sec/dorkator">github.com/twux-sec/dorkator</a>
-    <span class="muted"> · MIT · Built by twux-sec in pair-coding with Claude · Use responsibly</span>
+    <a href="https://github.com/twux-sec/dorkator">github.com/twux-sec/dorkator</a> · MIT · Use responsibly.
   </footer>
 
 </div>
 
 <script>
-  // ---------------------------------------------------------------------
-  // State
-  // ---------------------------------------------------------------------
+  // State -------------------------------------------------------------
   const targetInput = document.getElementById('target');
   const searchInput = document.getElementById('search');
-  const sevPills    = document.querySelectorAll('.sev-pill');
+  const sevPills    = document.querySelectorAll('.pill');
   const noResults   = document.getElementById('no-results');
   const dorks       = document.querySelectorAll('.dork');
 
   let activeSev = 'all';
 
-  // Search-engine URL builders (match Python core.Dork properties)
+  // Search-engine URL builders (mirror Python core.Dork properties)
   const ENGINES = {
     google: q => 'https://www.google.com/search?q=' + encodeURIComponent(q),
     ddg:    q => 'https://duckduckgo.com/?q='     + encodeURIComponent(q),
@@ -490,9 +307,7 @@
 
   const STORAGE_KEY = 'dorkator.target';
 
-  // ---------------------------------------------------------------------
-  // Live rewriting: substitute {target} in every dork's query + links
-  // ---------------------------------------------------------------------
+  // Live rewriting ----------------------------------------------------
   function applyTarget(raw) {
     const t = raw.trim();
     const display = t || '{target}';
@@ -531,9 +346,7 @@
     applyFilters();
   }
 
-  // ---------------------------------------------------------------------
-  // Filters: severity pills + text search
-  // ---------------------------------------------------------------------
+  // Filters -----------------------------------------------------------
   function applyFilters() {
     const q = searchInput.value.toLowerCase().trim();
     let totalVisible = 0;
@@ -554,9 +367,7 @@
     noResults.classList.toggle('show', totalVisible === 0);
   }
 
-  // ---------------------------------------------------------------------
-  // Wire up events
-  // ---------------------------------------------------------------------
+  // Events ------------------------------------------------------------
   targetInput.addEventListener('input', e => applyTarget(e.target.value));
   searchInput.addEventListener('input', applyFilters);
   sevPills.forEach(p => p.addEventListener('click', () => {
@@ -566,7 +377,7 @@
     applyFilters();
   }));
 
-  // Press "/" anywhere to focus the search input (skips when already typing)
+  // "/" focuses the search input from anywhere
   document.addEventListener('keydown', e => {
     if (e.key === '/' && document.activeElement !== searchInput
                       && document.activeElement !== targetInput) {
@@ -575,9 +386,7 @@
     }
   });
 
-  // ---------------------------------------------------------------------
-  // Boot — restore previous target if any, else render placeholder state
-  // ---------------------------------------------------------------------
+  // Boot --------------------------------------------------------------
   const restored = localStorage.getItem(STORAGE_KEY) || '';
   if (restored) targetInput.value = restored;
   applyTarget(targetInput.value);

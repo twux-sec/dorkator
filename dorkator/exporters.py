@@ -20,12 +20,19 @@ def _jinja_env() -> Environment:
 
     Caching matters when callers export to multiple formats / targets in the
     same process: re-creating the environment + reparsing the template each
-    time is wasteful. autoescape is on for HTML output — dork queries are
-    rendered as text, so any rogue char in a custom dork won't break out.
+    time is wasteful.
+
+    autoescape: enabled for any html template (incl. .html.j2). Without this,
+    quotes in dork queries (e.g. intext:"@target") would close HTML attribute
+    boundaries and silently truncate the data-raw-query payload — breaking
+    the live rewrite on the static site.
     """
     return Environment(
         loader=FileSystemLoader(str(TEMPLATES_DIR)),
-        autoescape=select_autoescape(["html"]),
+        autoescape=select_autoescape(
+            enabled_extensions=("html", "htm", "xml", "j2", "html.j2"),
+            default=True,
+        ),
     )
 
 
