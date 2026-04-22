@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dorkator — Interactive Dork Library</title>
+<meta name="description" content="OSINT dork library — set your target and get clickable Google/DuckDuckGo/Bing links.">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-elev: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --critical: #f85149;
+    --high: #ff8c42;
+    --medium: #e3b341;
+    --low: #3fb950;
+    --info: #8b949e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px; line-height: 1.5;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  h1 { margin: 0 0 0.4rem; font-size: 1.6rem; font-weight: 600; }
+  h1 .brand { color: var(--accent); font-family: "SF Mono", Monaco, "Courier New", monospace; }
+  .meta { color: var(--text-dim); font-size: 0.875rem; }
+
+  /* Target input — bigger and front and center */
+  .target-row {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem; background: var(--bg-elev);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .target-row label { font-weight: 600; white-space: nowrap; }
+  #target {
+    flex: 1; min-width: 240px;
+    background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    padding: 0.65rem 0.85rem; border-radius: 6px;
+    font-family: "SF Mono", Monaco, "Courier New", monospace; font-size: 0.95rem;
+  }
+  #target:focus { outline: none; border-color: var(--accent); }
+  .target-hint { color: var(--text-dim); font-size: 0.78rem; }
+
+  .controls {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+    padding: 0.85rem; background: var(--bg-elev);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  input[type="text"]#search {
+    background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem; border-radius: 6px;
+    font-family: inherit; font-size: 0.875rem;
+    flex: 1; min-width: 220px;
+  }
+  input[type="text"]#search:focus { outline: none; border-color: var(--accent); }
+  .sev-pills { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+  .sev-pill {
+    padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.72rem;
+    cursor: pointer; border: 1px solid var(--border); user-select: none;
+    background: var(--bg); text-transform: uppercase;
+    font-weight: 600; letter-spacing: 0.5px; transition: all 0.15s;
+  }
+  .sev-pill:hover { border-color: var(--accent); }
+  .sev-pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .category {
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: 8px; margin-bottom: 0.75rem; overflow: hidden;
+  }
+  .category-header {
+    padding: 0.85rem 1.1rem; cursor: pointer; display: flex;
+    justify-content: space-between; align-items: center; user-select: none;
+  }
+  .category-header:hover { background: rgba(255,255,255,0.02); }
+  .category-title { font-weight: 600; font-size: 0.95rem; }
+  .category-count { color: var(--text-dim); font-size: 0.8rem; }
+  .chevron { transition: transform 0.2s; display: inline-block; color: var(--text-dim); }
+  .category.collapsed .chevron { transform: rotate(-90deg); }
+  .category-body { padding: 0 1.1rem 0.5rem; display: block; }
+  .category.collapsed .category-body { display: none; }
+  .dork { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+  .dork-head {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 0.4rem; flex-wrap: wrap;
+  }
+  .sev {
+    font-size: 0.68rem; font-weight: 700; padding: 2px 8px;
+    border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .sev.critical { background: rgba(248,81,73,0.15); color: var(--critical); }
+  .sev.high { background: rgba(255,140,66,0.15); color: var(--high); }
+  .sev.medium { background: rgba(227,179,65,0.15); color: var(--medium); }
+  .sev.low { background: rgba(63,185,80,0.15); color: var(--low); }
+  .sev.info { background: rgba(139,148,158,0.15); color: var(--info); }
+  .dork-name { font-weight: 500; flex: 1; min-width: 200px; }
+  .dork-query {
+    font-family: "SF Mono", Monaco, "Courier New", monospace; font-size: 0.78rem;
+    background: var(--bg); padding: 0.55rem 0.75rem; border-radius: 4px;
+    border: 1px solid var(--border); color: var(--text-dim);
+    word-break: break-all; margin: 0.4rem 0;
+  }
+  .dork-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .dork-links a {
+    padding: 0.28rem 0.7rem; border-radius: 4px; text-decoration: none;
+    font-size: 0.78rem; background: var(--bg);
+    border: 1px solid var(--border); color: var(--accent); transition: all 0.15s;
+  }
+  .dork-links a:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .dork-links a.disabled {
+    pointer-events: none; opacity: 0.4; color: var(--text-dim);
+  }
+  .warn {
+    background: rgba(227,179,65,0.08); border-left: 3px solid var(--medium);
+    padding: 0.7rem 1rem; margin-bottom: 1.25rem;
+    font-size: 0.82rem; border-radius: 0 6px 6px 0;
+  }
+  .warn strong { color: var(--medium); }
+  .hidden { display: none !important; }
+  .no-results {
+    text-align: center; padding: 2rem; color: var(--text-dim);
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: 8px; display: none;
+  }
+  .no-results.show { display: block; }
+  footer {
+    margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border);
+    color: var(--text-dim); font-size: 0.75rem; text-align: center;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1><span class="brand">dorkator</span> — interactive dork library</h1>
+    <div class="meta">
+      93 dorks · 8 categories · last build 2026-04-22 16:45:34
+    </div>
+  </header>
+
+  <div class="warn">
+    <strong>Legal notice:</strong> These dorks query public search indexes only.
+    Run them against domains you own or are explicitly authorized to assess.
+  </div>
+
+  
+  <div class="target-row">
+    <label for="target">Target:</label>
+    <input type="text" id="target" placeholder="example.com" autocomplete="off" autofocus>
+    <span class="target-hint">Type a domain — links update live.</span>
+  </div>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Filter by name or query…" autocomplete="off">
+    <div class="sev-pills" id="sev-filter">
+      <span class="sev-pill active" data-sev="all">All</span>
+      <span class="sev-pill" data-sev="critical">Critical</span>
+      <span class="sev-pill" data-sev="high">High</span>
+      <span class="sev-pill" data-sev="medium">Medium</span>
+      <span class="sev-pill" data-sev="low">Low</span>
+      <span class="sev-pill" data-sev="info">Info</span>
+    </div>
+  </div>
+
+  <div id="results">
+  
+  <div class="category" data-category="identities">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Identities & Contacts</span>
+        <span class="category-count"> · 8 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} intext:"@{target}""
+           data-name="domain emails (text)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Domain emails (text)</span>
+        </div>
+        <div class="dork-query">site:{target} intext:"@{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (filetype:pdf OR filetype:docx OR filetype:xlsx) intext:"@{target}""
+           data-name="emails in documents">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Emails in documents</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:pdf OR filetype:docx OR filetype:xlsx) intext:"@{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="site:{target} (inurl:contact OR inurl:team OR inurl:about OR inurl:staff OR inurl:equipe)"
+           data-name="contact / team pages">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">Contact / team pages</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:contact OR inurl:team OR inurl:about OR inurl:staff OR inurl:equipe)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="site:{target} (intext:"+33" OR intext:"06." OR intext:"07.")"
+           data-name="phone numbers (fr)">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">Phone numbers (FR)</span>
+        </div>
+        <div class="dork-query">site:{target} (intext:"+33" OR intext:"06." OR intext:"07.")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (inurl:annuaire OR inurl:directory OR inurl:employees)"
+           data-name="internal directories">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Internal directories</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:annuaire OR inurl:directory OR inurl:employees)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="(site:whois.com OR site:dnsdumpster.com OR site:viewdns.info) "{target}""
+           data-name="whois / dns exposure">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">Whois / DNS exposure</span>
+        </div>
+        <div class="dork-query">(site:whois.com OR site:dnsdumpster.com OR site:viewdns.info) "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="site:gravatar.com "{target}""
+           data-name="gravatar profiles linked to target">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">Gravatar profiles linked to target</span>
+        </div>
+        <div class="dork-query">site:gravatar.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="info"
+           data-raw-query="site:disqus.com "{target}""
+           data-name="disqus comments mentioning target">
+        <div class="dork-head">
+          <span class="sev info">info</span>
+          <span class="dork-name">Disqus comments mentioning target</span>
+        </div>
+        <div class="dork-query">site:disqus.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="documents">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Exposed Documents</span>
+        <span class="category-count"> · 16 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} filetype:pdf (intext:confidential OR intext:confidentiel OR intext:internal OR intext:"do not distribute" OR intext:"usage interne")"
+           data-name="pdfs flagged confidential">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">PDFs flagged confidential</span>
+        </div>
+        <div class="dork-query">site:{target} filetype:pdf (intext:confidential OR intext:confidentiel OR intext:internal OR intext:"do not distribute" OR intext:"usage interne")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (filetype:xls OR filetype:xlsx OR filetype:csv)"
+           data-name="spreadsheets (xls/xlsx/csv)">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Spreadsheets (XLS/XLSX/CSV)</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:xls OR filetype:xlsx OR filetype:csv)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (filetype:doc OR filetype:docx)"
+           data-name="word documents">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Word documents</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:doc OR filetype:docx)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (filetype:ppt OR filetype:pptx)"
+           data-name="powerpoint presentations">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">PowerPoint presentations</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:ppt OR filetype:pptx)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (filetype:txt OR filetype:log)"
+           data-name="text / log files">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Text / log files</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:txt OR filetype:log)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} filetype:sql"
+           data-name="sql dumps">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">SQL dumps</span>
+        </div>
+        <div class="dork-query">site:{target} filetype:sql</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (ext:bak OR ext:backup OR ext:old OR ext:save OR ext:swp)"
+           data-name="backup files">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Backup files</span>
+        </div>
+        <div class="dork-query">site:{target} (ext:bak OR ext:backup OR ext:old OR ext:save OR ext:swp)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (ext:zip OR ext:rar OR ext:7z OR ext:tar OR ext:gz OR ext:tgz)"
+           data-name="compressed archives">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Compressed archives</span>
+        </div>
+        <div class="dork-query">site:{target} (ext:zip OR ext:rar OR ext:7z OR ext:tar OR ext:gz OR ext:tgz)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (ext:xlsm OR ext:docm OR ext:pptm)"
+           data-name="office macro-enabled files">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Office macro-enabled files</span>
+        </div>
+        <div class="dork-query">site:{target} (ext:xlsm OR ext:docm OR ext:pptm)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (ext:vsd OR ext:vsdx)"
+           data-name="visio diagrams (architecture leaks)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Visio diagrams (architecture leaks)</span>
+        </div>
+        <div class="dork-query">site:{target} (ext:vsd OR ext:vsdx)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} ext:kdbx"
+           data-name="keepass databases">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">KeePass databases</span>
+        </div>
+        <div class="dork-query">site:{target} ext:kdbx</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (ext:pst OR ext:mbox OR ext:msg OR ext:eml)"
+           data-name="email containers (pst/mbox/msg/eml)">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Email containers (PST/MBOX/MSG/EML)</span>
+        </div>
+        <div class="dork-query">site:{target} (ext:pst OR ext:mbox OR ext:msg OR ext:eml)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (ext:ovpn OR ext:rdp OR ext:pcf)"
+           data-name="vpn / remote-access profiles">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">VPN / remote-access profiles</span>
+        </div>
+        <div class="dork-query">site:{target} (ext:ovpn OR ext:rdp OR ext:pcf)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="site:{target} filetype:pdf"
+           data-name="all pdfs (broad enumeration)">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">All PDFs (broad enumeration)</span>
+        </div>
+        <div class="dork-query">site:{target} filetype:pdf</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="site:{target} (filetype:doc OR filetype:docx OR filetype:xls OR filetype:xlsx OR filetype:ppt OR filetype:pptx)"
+           data-name="all office files (broad enumeration)">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">All Office files (broad enumeration)</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:doc OR filetype:docx OR filetype:xls OR filetype:xlsx OR filetype:ppt OR filetype:pptx)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="info"
+           data-raw-query="site:{target} (filetype:jpg OR filetype:jpeg OR filetype:png OR filetype:tiff)"
+           data-name="all images (potential exif metadata)">
+        <div class="dork-head">
+          <span class="sev info">info</span>
+          <span class="dork-name">All images (potential EXIF metadata)</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:jpg OR filetype:jpeg OR filetype:png OR filetype:tiff)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="technical">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Technical Exposure</span>
+        <span class="category-count"> · 25 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (inurl:admin OR inurl:administrator OR inurl:backend OR inurl:dashboard)"
+           data-name="admin panels">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Admin panels</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:admin OR inurl:administrator OR inurl:backend OR inurl:dashboard)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (inurl:login OR inurl:signin OR inurl:auth OR intitle:"login")"
+           data-name="login pages">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Login pages</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:login OR inurl:signin OR inurl:auth OR intitle:"login")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} intitle:"index of""
+           data-name="open directory listings">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Open directory listings</span>
+        </div>
+        <div class="dork-query">site:{target} intitle:"index of"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} ext:php intitle:phpinfo "PHP Version""
+           data-name="phpinfo() exposure">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">phpinfo() exposure</span>
+        </div>
+        <div class="dork-query">site:{target} ext:php intitle:phpinfo "PHP Version"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (inurl:server-status OR inurl:server-info)"
+           data-name="apache server-status / server-info">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Apache server-status / server-info</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:server-status OR inurl:server-info)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (inurl:".git" OR inurl:".svn" OR inurl:".env")"
+           data-name="version control leaks (.git/.svn/.env)">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Version control leaks (.git/.svn/.env)</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:".git" OR inurl:".svn" OR inurl:".env")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (inurl:swagger OR inurl:api-docs OR inurl:redoc OR inurl:graphql)"
+           data-name="swagger / api docs exposed">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Swagger / API docs exposed</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:swagger OR inurl:api-docs OR inurl:redoc OR inurl:graphql)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (intext:"SQL syntax" OR intext:"fatal error" OR intext:"stack trace" OR intext:"warning: include")"
+           data-name="verbose error messages">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Verbose error messages</span>
+        </div>
+        <div class="dork-query">site:{target} (intext:"SQL syntax" OR intext:"fatal error" OR intext:"stack trace" OR intext:"warning: include")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (ext:htaccess OR ext:conf OR ext:config OR ext:ini OR ext:yaml OR ext:yml)"
+           data-name="config files">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Config files</span>
+        </div>
+        <div class="dork-query">site:{target} (ext:htaccess OR ext:conf OR ext:config OR ext:ini OR ext:yaml OR ext:yml)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (inurl:phpmyadmin OR inurl:adminer OR inurl:pgadmin)"
+           data-name="exposed db admin interfaces">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Exposed DB admin interfaces</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:phpmyadmin OR inurl:adminer OR inurl:pgadmin)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (inurl:wp-admin OR inurl:wp-config OR inurl:wp-content/uploads)"
+           data-name="wordpress wp-admin / wp-config">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">WordPress wp-admin / wp-config</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:wp-admin OR inurl:wp-config OR inurl:wp-content/uploads)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (inurl:jenkins OR inurl:jobs/build OR intitle:"Dashboard [Jenkins]")"
+           data-name="jenkins / ci dashboards">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Jenkins / CI dashboards</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:jenkins OR inurl:jobs/build OR intitle:"Dashboard [Jenkins]")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (inurl:grafana OR inurl:kibana OR inurl:prometheus OR inurl:9090 OR intitle:"Grafana")"
+           data-name="monitoring stacks (grafana/kibana/prometheus)">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Monitoring stacks (Grafana/Kibana/Prometheus)</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:grafana OR inurl:kibana OR inurl:prometheus OR inurl:9090 OR intitle:"Grafana")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (inurl:axis-cgi OR intitle:"camera" OR intitle:"webcam" OR inurl:viewerframe)"
+           data-name="webcam / iot panels">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Webcam / IoT panels</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:axis-cgi OR intitle:"camera" OR intitle:"webcam" OR inurl:viewerframe)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (inurl:roundcube OR inurl:webmail OR inurl:owa OR inurl:zimbra)"
+           data-name="webmail interfaces (roundcube/zimbra/owa)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Webmail interfaces (Roundcube/Zimbra/OWA)</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:roundcube OR inurl:webmail OR inurl:owa OR inurl:zimbra)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (inurl:_cluster OR inurl:_cat OR inurl:9200)"
+           data-name="open elasticsearch / cluster endpoints">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Open Elasticsearch / cluster endpoints</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:_cluster OR inurl:_cat OR inurl:9200)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (filetype:pdf OR filetype:xlsx OR filetype:docx) (intext:"date of birth" OR intext:"date de naissance" OR intext:"DOB" OR intext:"ne le" OR intext:"née le")"
+           data-name="date of birth in documents">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Date of birth in documents</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx OR filetype:docx) (intext:"date of birth" OR intext:"date de naissance" OR intext:"DOB" OR intext:"ne le" OR intext:"née le")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (filetype:pdf OR filetype:xlsx) (intext:"passport" OR intext:"passeport" OR intext:"carte d'identite" OR intext:"national ID" OR intext:"CNI")"
+           data-name="id / passport numbers in documents">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">ID / passport numbers in documents</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx) (intext:"passport" OR intext:"passeport" OR intext:"carte d'identite" OR intext:"national ID" OR intext:"CNI")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (filetype:pdf OR filetype:xlsx) (intext:"SSN" OR intext:"social security" OR intext:"numero de securite sociale" OR intext:"NIR")"
+           data-name="social security / nir / ssn exposure">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Social security / NIR / SSN exposure</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx) (intext:"SSN" OR intext:"social security" OR intext:"numero de securite sociale" OR intext:"NIR")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (filetype:pdf OR filetype:xlsx) (intext:"IBAN" OR intext:"BIC" OR intext:"RIB" OR intext:"SWIFT")"
+           data-name="banking info (iban / rib / swift)">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Banking info (IBAN / RIB / SWIFT)</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx) (intext:"IBAN" OR intext:"BIC" OR intext:"RIB" OR intext:"SWIFT")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (filetype:pdf OR filetype:xlsx) (intext:"facture" OR intext:"invoice" OR intext:"n° client" OR intext:"customer ID" OR intext:"order #")"
+           data-name="customer records (invoices / orders / clients)">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Customer records (invoices / orders / clients)</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx) (intext:"facture" OR intext:"invoice" OR intext:"n° client" OR intext:"customer ID" OR intext:"order #")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (filetype:pdf OR filetype:xlsx) (intext:"diagnostic" OR intext:"patient" OR intext:"prescription" OR intext:"ordonnance")"
+           data-name="medical / health data exposure">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Medical / health data exposure</span>
+        </div>
+        <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx) (intext:"diagnostic" OR intext:"patient" OR intext:"prescription" OR intext:"ordonnance")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} inurl:download (inurl:"id=" OR inurl:"file=" OR inurl:"doc=")"
+           data-name="sequential download endpoints (idor-prone)">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Sequential download endpoints (IDOR-prone)</span>
+        </div>
+        <div class="dork-query">site:{target} inurl:download (inurl:"id=" OR inurl:"file=" OR inurl:"doc=")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (inurl:"/files/" OR inurl:"/documents/" OR inurl:"/uploads/" OR inurl:"/getfile/") filetype:pdf"
+           data-name="documents served by path id (idor-prone)">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Documents served by path ID (IDOR-prone)</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:"/files/" OR inurl:"/documents/" OR inurl:"/uploads/" OR inurl:"/getfile/") filetype:pdf</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (inurl:"customer_id=" OR inurl:"invoice_id=" OR inurl:"order_id=" OR inurl:"user_id=" OR inurl:"client_id=")"
+           data-name="object ids in query strings">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Object IDs in query strings</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:"customer_id=" OR inurl:"invoice_id=" OR inurl:"order_id=" OR inurl:"user_id=" OR inurl:"client_id=")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="credentials">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Credentials & Secrets</span>
+        <span class="category-count"> · 12 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} ext:env"
+           data-name="environment files">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Environment files</span>
+        </div>
+        <div class="dork-query">site:{target} ext:env</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (intext:"password" OR intext:"passwd" OR intext:"motdepasse" OR intext:"mot de passe")"
+           data-name="passwords in text">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Passwords in text</span>
+        </div>
+        <div class="dork-query">site:{target} (intext:"password" OR intext:"passwd" OR intext:"motdepasse" OR intext:"mot de passe")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (intext:"api_key" OR intext:"api_token" OR intext:"access_token" OR intext:"bearer ")"
+           data-name="api keys / tokens">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">API keys / tokens</span>
+        </div>
+        <div class="dork-query">site:{target} (intext:"api_key" OR intext:"api_token" OR intext:"access_token" OR intext:"bearer ")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (intext:"AKIA" OR intext:"aws_secret" OR intext:"aws_access_key")"
+           data-name="aws keys">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">AWS keys</span>
+        </div>
+        <div class="dork-query">site:{target} (intext:"AKIA" OR intext:"aws_secret" OR intext:"aws_access_key")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (intext:"BEGIN RSA PRIVATE KEY" OR intext:"BEGIN OPENSSH PRIVATE KEY" OR intext:"BEGIN PRIVATE KEY" OR intext:"BEGIN PGP PRIVATE")"
+           data-name="private keys (rsa/ssh/pgp)">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Private keys (RSA/SSH/PGP)</span>
+        </div>
+        <div class="dork-query">site:{target} (intext:"BEGIN RSA PRIVATE KEY" OR intext:"BEGIN OPENSSH PRIVATE KEY" OR intext:"BEGIN PRIVATE KEY" OR intext:"BEGIN PGP PRIVATE")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (intext:"jdbc:" OR intext:"mongodb://" OR intext:"postgres://" OR intext:"mysql://")"
+           data-name="db connection strings">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">DB connection strings</span>
+        </div>
+        <div class="dork-query">site:{target} (intext:"jdbc:" OR intext:"mongodb://" OR intext:"postgres://" OR intext:"mysql://")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (intext:"xoxb-" OR intext:"xoxa-" OR intext:"xoxp-" OR intext:"xoxs-")"
+           data-name="slack tokens">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Slack tokens</span>
+        </div>
+        <div class="dork-query">site:{target} (intext:"xoxb-" OR intext:"xoxa-" OR intext:"xoxp-" OR intext:"xoxs-")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} intext:"sk_live_""
+           data-name="stripe live keys">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Stripe live keys</span>
+        </div>
+        <div class="dork-query">site:{target} intext:"sk_live_"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (intext:"ghp_" OR intext:"github_pat_" OR intext:"ghs_" OR intext:"gho_")"
+           data-name="github pat / fine-grained tokens">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">GitHub PAT / fine-grained tokens</span>
+        </div>
+        <div class="dork-query">site:{target} (intext:"ghp_" OR intext:"github_pat_" OR intext:"ghs_" OR intext:"gho_")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} intext:"eyJhbGciOi""
+           data-name="jwt tokens visible in pages">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">JWT tokens visible in pages</span>
+        </div>
+        <div class="dork-query">site:{target} intext:"eyJhbGciOi"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} (intext:"GOCSPX-" OR intext:"client_secret")"
+           data-name="google oauth client secrets">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">Google OAuth client secrets</span>
+        </div>
+        <div class="dork-query">site:{target} (intext:"GOCSPX-" OR intext:"client_secret")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (intext:"private_token" OR intext:"refresh_token" OR intext:"auth_token" OR intext:"session_secret")"
+           data-name="generic secret leakage patterns">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Generic secret leakage patterns</span>
+        </div>
+        <div class="dork-query">site:{target} (intext:"private_token" OR intext:"refresh_token" OR intext:"auth_token" OR intext:"session_secret")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="subdomains">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Subdomains & Assets</span>
+        <span class="category-count"> · 6 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="site:*.{target} -site:www.{target}"
+           data-name="all subdomains (excl. www)">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">All subdomains (excl. www)</span>
+        </div>
+        <div class="dork-query">site:*.{target} -site:www.{target}</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:*.{target} (inurl:dev OR inurl:staging OR inurl:test OR inurl:preprod OR inurl:uat OR inurl:recette)"
+           data-name="dev / staging / preprod">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Dev / staging / preprod</span>
+        </div>
+        <div class="dork-query">site:*.{target} (inurl:dev OR inurl:staging OR inurl:test OR inurl:preprod OR inurl:uat OR inurl:recette)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (inurl:internal OR inurl:intranet OR inurl:private)"
+           data-name="internal-looking paths">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Internal-looking paths</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:internal OR inurl:intranet OR inurl:private)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="site:crt.sh "{target}""
+           data-name="crt.sh certificate transparency">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">crt.sh certificate transparency</span>
+        </div>
+        <div class="dork-query">site:crt.sh "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:censys.io "{target}""
+           data-name="censys exposed assets">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Censys exposed assets</span>
+        </div>
+        <div class="dork-query">site:censys.io "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:shodan.io "{target}""
+           data-name="shodan exposed assets">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Shodan exposed assets</span>
+        </div>
+        <div class="dork-query">site:shodan.io "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="cloud">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Cloud Storage Exposure</span>
+        <span class="category-count"> · 6 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:storage.googleapis.com "{target}""
+           data-name="google cloud storage buckets">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Google Cloud Storage buckets</span>
+        </div>
+        <div class="dork-query">site:storage.googleapis.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:digitaloceanspaces.com "{target}""
+           data-name="digitalocean spaces">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">DigitalOcean Spaces</span>
+        </div>
+        <div class="dork-query">site:digitaloceanspaces.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:backblazeb2.com "{target}""
+           data-name="backblaze b2 buckets">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Backblaze B2 buckets</span>
+        </div>
+        <div class="dork-query">site:backblazeb2.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:wasabisys.com "{target}""
+           data-name="wasabi storage">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Wasabi storage</span>
+        </div>
+        <div class="dork-query">site:wasabisys.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="(site:firebaseio.com OR site:firebaseapp.com OR site:web.app) "{target}""
+           data-name="firebase databases / hosting">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Firebase databases / hosting</span>
+        </div>
+        <div class="dork-query">(site:firebaseio.com OR site:firebaseapp.com OR site:web.app) "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:supabase.co "{target}""
+           data-name="supabase exposed projects">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Supabase exposed projects</span>
+        </div>
+        <div class="dork-query">site:supabase.co "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="external">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">External Leaks</span>
+        <span class="category-count"> · 14 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:pastebin.com "{target}""
+           data-name="pastebin leaks">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Pastebin leaks</span>
+        </div>
+        <div class="dork-query">site:pastebin.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:github.com "{target}" (password OR api_key OR token OR secret)"
+           data-name="github - secrets">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">GitHub - secrets</span>
+        </div>
+        <div class="dork-query">site:github.com "{target}" (password OR api_key OR token OR secret)</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:gitlab.com "{target}""
+           data-name="gitlab mentions">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">GitLab mentions</span>
+        </div>
+        <div class="dork-query">site:gitlab.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="site:stackoverflow.com "{target}""
+           data-name="stackoverflow mentions">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">StackOverflow mentions</span>
+        </div>
+        <div class="dork-query">site:stackoverflow.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:trello.com "{target}""
+           data-name="public trello boards">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Public Trello boards</span>
+        </div>
+        <div class="dork-query">site:trello.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:s3.amazonaws.com "{target}""
+           data-name="s3 buckets">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">S3 buckets</span>
+        </div>
+        <div class="dork-query">site:s3.amazonaws.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:blob.core.windows.net "{target}""
+           data-name="azure blob storage">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Azure blob storage</span>
+        </div>
+        <div class="dork-query">site:blob.core.windows.net "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:docs.google.com "{target}""
+           data-name="public google docs">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Public Google Docs</span>
+        </div>
+        <div class="dork-query">site:docs.google.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="info"
+           data-raw-query="site:web.archive.org "{target}""
+           data-name="archive.org snapshots">
+        <div class="dork-head">
+          <span class="sev info">info</span>
+          <span class="dork-name">Archive.org snapshots</span>
+        </div>
+        <div class="dork-query">site:web.archive.org "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:bitbucket.org "{target}""
+           data-name="bitbucket repositories">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">BitBucket repositories</span>
+        </div>
+        <div class="dork-query">site:bitbucket.org "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:gist.github.com "{target}""
+           data-name="github gists (often leak snippets)">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">GitHub gists (often leak snippets)</span>
+        </div>
+        <div class="dork-query">site:gist.github.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:npmjs.com "{target}""
+           data-name="npm packages / readmes">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">npm packages / READMEs</span>
+        </div>
+        <div class="dork-query">site:npmjs.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:pypi.org "{target}""
+           data-name="pypi packages / readmes">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">PyPI packages / READMEs</span>
+        </div>
+        <div class="dork-query">site:pypi.org "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:hub.docker.com "{target}""
+           data-name="docker hub images / descriptions">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Docker Hub images / descriptions</span>
+        </div>
+        <div class="dork-query">site:hub.docker.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="category" data-category="personnel">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">Personnel Intelligence</span>
+        <span class="category-count"> · 6 dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="site:linkedin.com/in "{target}""
+           data-name="linkedin profiles mentioning target">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">LinkedIn profiles mentioning target</span>
+        </div>
+        <div class="dork-query">site:linkedin.com/in "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="("CV" OR "resume" OR "curriculum vitae") "{target}" filetype:pdf"
+           data-name="cvs / resumes mentioning target">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">CVs / resumes mentioning target</span>
+        </div>
+        <div class="dork-query">("CV" OR "resume" OR "curriculum vitae") "{target}" filetype:pdf</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="info"
+           data-raw-query="(site:twitter.com OR site:x.com) "{target}""
+           data-name="twitter / x mentions">
+        <div class="dork-head">
+          <span class="sev info">info</span>
+          <span class="dork-name">Twitter / X mentions</span>
+        </div>
+        <div class="dork-query">(site:twitter.com OR site:x.com) "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="low"
+           data-raw-query="site:viadeo.com "{target}""
+           data-name="viadeo profiles">
+        <div class="dork-head">
+          <span class="sev low">low</span>
+          <span class="dork-name">Viadeo profiles</span>
+        </div>
+        <div class="dork-query">site:viadeo.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="info"
+           data-raw-query="(site:mastodon.social OR site:mastodon.online OR site:piaille.fr) "{target}""
+           data-name="mastodon / fediverse mentions">
+        <div class="dork-head">
+          <span class="sev info">info</span>
+          <span class="dork-name">Mastodon / Fediverse mentions</span>
+        </div>
+        <div class="dork-query">(site:mastodon.social OR site:mastodon.online OR site:piaille.fr) "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+      
+      <div class="dork"
+           data-sev="info"
+           data-raw-query="site:reddit.com "{target}""
+           data-name="reddit mentions">
+        <div class="dork-head">
+          <span class="sev info">info</span>
+          <span class="dork-name">Reddit mentions</span>
+        </div>
+        <div class="dork-query">site:reddit.com "{target}"</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  </div>
+
+  <div class="no-results" id="no-results">No dorks match your filters.</div>
+
+  <footer>
+    Dorkator · <a href="https://github.com/twux-sec/dorkator">github.com/twux-sec/dorkator</a> · For authorized testing and personal OSINT only
+  </footer>
+</div>
+
+<script>
+  // ---------------------------------------------------------------------
+  // State
+  // ---------------------------------------------------------------------
+  const targetInput = document.getElementById('target');
+  const searchInput = document.getElementById('search');
+  const sevPills = document.querySelectorAll('.sev-pill');
+  const noResults = document.getElementById('no-results');
+  const dorks = document.querySelectorAll('.dork');
+
+  let activeSev = 'all';
+
+  // Search-engine URL builders (same shape as Python core.Dork properties).
+  const ENGINES = {
+    google:  q => 'https://www.google.com/search?q=' + encodeURIComponent(q),
+    ddg:     q => 'https://duckduckgo.com/?q='     + encodeURIComponent(q),
+    bing:    q => 'https://www.bing.com/search?q=' + encodeURIComponent(q),
+  };
+
+  // Persist the target across reloads so the user doesn't retype it.
+  const STORAGE_KEY = 'dorkator.target';
+
+  // ---------------------------------------------------------------------
+  // Live rewriting: substitute {target} in every dork's query + links
+  // ---------------------------------------------------------------------
+  function applyTarget(raw) {
+    const t = raw.trim();
+    // If empty, render the placeholder visually but disable the links so the
+    // user can't open a meaningless search.
+    const display = t || '{target}';
+    const linksLive = Boolean(t);
+
+    dorks.forEach(d => {
+      const rawQuery = d.dataset.rawQuery;
+      // Cheap global replace — `replaceAll` is fine on modern browsers.
+      const rendered = rawQuery.replaceAll('{target}', display);
+
+      // Update the visible query text
+      d.querySelector('.dork-query').textContent = rendered;
+
+      // Refresh the search-engine links
+      const linkG = d.querySelector('.link-google');
+      const linkD = d.querySelector('.link-ddg');
+      const linkB = d.querySelector('.link-bing');
+
+      if (linksLive) {
+        linkG.href = ENGINES.google(rendered);
+        linkD.href = ENGINES.ddg(rendered);
+        linkB.href = ENGINES.bing(rendered);
+        linkG.classList.remove('disabled');
+        linkD.classList.remove('disabled');
+        linkB.classList.remove('disabled');
+      } else {
+        linkG.href = '#'; linkD.href = '#'; linkB.href = '#';
+        linkG.classList.add('disabled');
+        linkD.classList.add('disabled');
+        linkB.classList.add('disabled');
+      }
+
+      // Refresh the lowercased text used by the search filter
+      d.dataset.text = (d.dataset.name + ' ' + rendered).toLowerCase();
+    });
+
+    // Persist for next visit
+    if (t) localStorage.setItem(STORAGE_KEY, t);
+    else   localStorage.removeItem(STORAGE_KEY);
+
+    // Re-apply the search/severity filters since the text content changed
+    applyFilters();
+  }
+
+  // ---------------------------------------------------------------------
+  // Filters: severity pills + text search
+  // ---------------------------------------------------------------------
+  function applyFilters() {
+    const q = searchInput.value.toLowerCase().trim();
+    let totalVisible = 0;
+
+    document.querySelectorAll('.category').forEach(cat => {
+      let visible = 0;
+      cat.querySelectorAll('.dork').forEach(d => {
+        const matchesSev = activeSev === 'all' || d.dataset.sev === activeSev;
+        const matchesText = !q || (d.dataset.text || '').includes(q);
+        const show = matchesSev && matchesText;
+        d.classList.toggle('hidden', !show);
+        if (show) visible++;
+      });
+      cat.classList.toggle('hidden', visible === 0);
+      totalVisible += visible;
+    });
+
+    noResults.classList.toggle('show', totalVisible === 0);
+  }
+
+  // ---------------------------------------------------------------------
+  // Wire up events
+  // ---------------------------------------------------------------------
+  targetInput.addEventListener('input', e => applyTarget(e.target.value));
+  searchInput.addEventListener('input', applyFilters);
+  sevPills.forEach(p => p.addEventListener('click', () => {
+    sevPills.forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    activeSev = p.dataset.sev;
+    applyFilters();
+  }));
+
+  // Press "/" anywhere to focus the search input (skips when already typing)
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement !== searchInput
+                      && document.activeElement !== targetInput) {
+      e.preventDefault();
+      searchInput.focus();
+    }
+  });
+
+  // ---------------------------------------------------------------------
+  // Boot — restore previous target if any, else render placeholder state
+  // ---------------------------------------------------------------------
+  const restored = localStorage.getItem(STORAGE_KEY) || '';
+  if (restored) targetInput.value = restored;
+  applyTarget(targetInput.value);
+</script>
+</body>
+</html>

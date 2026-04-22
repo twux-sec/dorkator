@@ -17,7 +17,7 @@ from pathlib import Path
 
 from . import __version__
 from .core import build_dorks, list_categories, load_library
-from .exporters import export_html, export_json, export_markdown
+from .exporters import export_html, export_json, export_markdown, export_static_site
 from .opener import open_batches
 from .wizard import run_wizard
 
@@ -155,6 +155,17 @@ def main(argv: list[str] | None = None) -> int:
             "Overrides target/category/format/open if those flags are also set."
         ),
     )
+    parser.add_argument(
+        "--static-site",
+        metavar="PATH",
+        default=None,
+        help=(
+            "Generate a standalone interactive HTML site (no fixed target). "
+            "The page lets the visitor type a target and updates the dork "
+            "links live. Ideal for hosting on GitHub Pages. "
+            "Example: --static-site docs/index.html"
+        ),
+    )
 
     # ---- Batch opener ---------------------------------------------------
     # All --open-* flags are only effective when --open is set.
@@ -241,6 +252,18 @@ def main(argv: list[str] | None = None) -> int:
         total = sum(c["count"] for c in cats)
         print("-" * 60)
         print(f"{'TOTAL':<14} {total:<7}")
+        return 0
+
+    # --- Special case: --static-site renders the standalone site --------
+    # This output is target-agnostic: visitors type the target in the page
+    # itself. So we don't need --target and we skip phases 2/3 entirely.
+    if args.static_site:
+        out = Path(args.static_site)
+        # Make sure the parent dir exists (e.g. `docs/` for GitHub Pages)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        export_static_site(library, out)
+        total = sum(len(c.get("dorks", [])) for c in library["categories"].values())
+        print(f"[+] Static site -> {out}  ({total} dorks)")
         return 0
 
     # --- Wizard mode: ask 4 questions and overwrite the relevant args ---

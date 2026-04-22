@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dorkator — Interactive Dork Library</title>
+<meta name="description" content="OSINT dork library — set your target and get clickable Google/DuckDuckGo/Bing links.">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-elev: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --critical: #f85149;
+    --high: #ff8c42;
+    --medium: #e3b341;
+    --low: #3fb950;
+    --info: #8b949e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px; line-height: 1.5;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  h1 { margin: 0 0 0.4rem; font-size: 1.6rem; font-weight: 600; }
+  h1 .brand { color: var(--accent); font-family: "SF Mono", Monaco, "Courier New", monospace; }
+  .meta { color: var(--text-dim); font-size: 0.875rem; }
+
+  /* Target input — bigger and front and center */
+  .target-row {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem; background: var(--bg-elev);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .target-row label { font-weight: 600; white-space: nowrap; }
+  #target {
+    flex: 1; min-width: 240px;
+    background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    padding: 0.65rem 0.85rem; border-radius: 6px;
+    font-family: "SF Mono", Monaco, "Courier New", monospace; font-size: 0.95rem;
+  }
+  #target:focus { outline: none; border-color: var(--accent); }
+  .target-hint { color: var(--text-dim); font-size: 0.78rem; }
+
+  .controls {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+    padding: 0.85rem; background: var(--bg-elev);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  input[type="text"]#search {
+    background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem; border-radius: 6px;
+    font-family: inherit; font-size: 0.875rem;
+    flex: 1; min-width: 220px;
+  }
+  input[type="text"]#search:focus { outline: none; border-color: var(--accent); }
+  .sev-pills { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+  .sev-pill {
+    padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.72rem;
+    cursor: pointer; border: 1px solid var(--border); user-select: none;
+    background: var(--bg); text-transform: uppercase;
+    font-weight: 600; letter-spacing: 0.5px; transition: all 0.15s;
+  }
+  .sev-pill:hover { border-color: var(--accent); }
+  .sev-pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .category {
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: 8px; margin-bottom: 0.75rem; overflow: hidden;
+  }
+  .category-header {
+    padding: 0.85rem 1.1rem; cursor: pointer; display: flex;
+    justify-content: space-between; align-items: center; user-select: none;
+  }
+  .category-header:hover { background: rgba(255,255,255,0.02); }
+  .category-title { font-weight: 600; font-size: 0.95rem; }
+  .category-count { color: var(--text-dim); font-size: 0.8rem; }
+  .chevron { transition: transform 0.2s; display: inline-block; color: var(--text-dim); }
+  .category.collapsed .chevron { transform: rotate(-90deg); }
+  .category-body { padding: 0 1.1rem 0.5rem; display: block; }
+  .category.collapsed .category-body { display: none; }
+  .dork { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+  .dork-head {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 0.4rem; flex-wrap: wrap;
+  }
+  .sev {
+    font-size: 0.68rem; font-weight: 700; padding: 2px 8px;
+    border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .sev.critical { background: rgba(248,81,73,0.15); color: var(--critical); }
+  .sev.high { background: rgba(255,140,66,0.15); color: var(--high); }
+  .sev.medium { background: rgba(227,179,65,0.15); color: var(--medium); }
+  .sev.low { background: rgba(63,185,80,0.15); color: var(--low); }
+  .sev.info { background: rgba(139,148,158,0.15); color: var(--info); }
+  .dork-name { font-weight: 500; flex: 1; min-width: 200px; }
+  .dork-query {
+    font-family: "SF Mono", Monaco, "Courier New", monospace; font-size: 0.78rem;
+    background: var(--bg); padding: 0.55rem 0.75rem; border-radius: 4px;
+    border: 1px solid var(--border); color: var(--text-dim);
+    word-break: break-all; margin: 0.4rem 0;
+  }
+  .dork-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .dork-links a {
+    padding: 0.28rem 0.7rem; border-radius: 4px; text-decoration: none;
+    font-size: 0.78rem; background: var(--bg);
+    border: 1px solid var(--border); color: var(--accent); transition: all 0.15s;
+  }
+  .dork-links a:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .dork-links a.disabled {
+    pointer-events: none; opacity: 0.4; color: var(--text-dim);
+  }
+  .warn {
+    background: rgba(227,179,65,0.08); border-left: 3px solid var(--medium);
+    padding: 0.7rem 1rem; margin-bottom: 1.25rem;
+    font-size: 0.82rem; border-radius: 0 6px 6px 0;
+  }
+  .warn strong { color: var(--medium); }
+  .hidden { display: none !important; }
+  .no-results {
+    text-align: center; padding: 2rem; color: var(--text-dim);
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: 8px; display: none;
+  }
+  .no-results.show { display: block; }
+  footer {
+    margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border);
+    color: var(--text-dim); font-size: 0.75rem; text-align: center;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1><span class="brand">dorkator</span> — interactive dork library</h1>
+    <div class="meta">
+      {{ total }} dorks · {{ categories|length }} categories · last build {{ generated_at }}
+    </div>
+  </header>
+
+  <div class="warn">
+    <strong>Legal notice:</strong> These dorks query public search indexes only.
+    Run them against domains you own or are explicitly authorized to assess.
+  </div>
+
+  {# Target input — JS rewrites every query + link below as the user types. #}
+  <div class="target-row">
+    <label for="target">Target:</label>
+    <input type="text" id="target" placeholder="example.com" autocomplete="off" autofocus>
+    <span class="target-hint">Type a domain — links update live.</span>
+  </div>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Filter by name or query…" autocomplete="off">
+    <div class="sev-pills" id="sev-filter">
+      <span class="sev-pill active" data-sev="all">All</span>
+      <span class="sev-pill" data-sev="critical">Critical</span>
+      <span class="sev-pill" data-sev="high">High</span>
+      <span class="sev-pill" data-sev="medium">Medium</span>
+      <span class="sev-pill" data-sev="low">Low</span>
+      <span class="sev-pill" data-sev="info">Info</span>
+    </div>
+  </div>
+
+  <div id="results">
+  {% for cat in categories %}
+  <div class="category" data-category="{{ cat.key }}">
+    <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div>
+        <span class="category-title">{{ cat.name }}</span>
+        <span class="category-count"> · {{ cat.dorks|length }} dorks</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="category-body">
+      {% for d in cat.dorks %}
+      {# data-raw-query keeps the {target} placeholder verbatim — the JS below
+         substitutes it on every keystroke and rebuilds the search URLs. #}
+      <div class="dork"
+           data-sev="{{ d.severity }}"
+           data-raw-query="{{ d.query }}"
+           data-name="{{ d.name|lower }}">
+        <div class="dork-head">
+          <span class="sev {{ d.severity }}">{{ d.severity }}</span>
+          <span class="dork-name">{{ d.name }}</span>
+        </div>
+        <div class="dork-query">{{ d.query }}</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+  </div>
+
+  <div class="no-results" id="no-results">No dorks match your filters.</div>
+
+  <footer>
+    Dorkator · <a href="https://github.com/twux-sec/dorkator">github.com/twux-sec/dorkator</a> · For authorized testing and personal OSINT only
+  </footer>
+</div>
+
+<script>
+  // ---------------------------------------------------------------------
+  // State
+  // ---------------------------------------------------------------------
+  const targetInput = document.getElementById('target');
+  const searchInput = document.getElementById('search');
+  const sevPills = document.querySelectorAll('.sev-pill');
+  const noResults = document.getElementById('no-results');
+  const dorks = document.querySelectorAll('.dork');
+
+  let activeSev = 'all';
+
+  // Search-engine URL builders (same shape as Python core.Dork properties).
+  const ENGINES = {
+    google:  q => 'https://www.google.com/search?q=' + encodeURIComponent(q),
+    ddg:     q => 'https://duckduckgo.com/?q='     + encodeURIComponent(q),
+    bing:    q => 'https://www.bing.com/search?q=' + encodeURIComponent(q),
+  };
+
+  // Persist the target across reloads so the user doesn't retype it.
+  const STORAGE_KEY = 'dorkator.target';
+
+  // ---------------------------------------------------------------------
+  // Live rewriting: substitute {target} in every dork's query + links
+  // ---------------------------------------------------------------------
+  function applyTarget(raw) {
+    const t = raw.trim();
+    // If empty, render the placeholder visually but disable the links so the
+    // user can't open a meaningless search.
+    const display = t || '{target}';
+    const linksLive = Boolean(t);
+
+    dorks.forEach(d => {
+      const rawQuery = d.dataset.rawQuery;
+      // Cheap global replace — `replaceAll` is fine on modern browsers.
+      const rendered = rawQuery.replaceAll('{target}', display);
+
+      // Update the visible query text
+      d.querySelector('.dork-query').textContent = rendered;
+
+      // Refresh the search-engine links
+      const linkG = d.querySelector('.link-google');
+      const linkD = d.querySelector('.link-ddg');
+      const linkB = d.querySelector('.link-bing');
+
+      if (linksLive) {
+        linkG.href = ENGINES.google(rendered);
+        linkD.href = ENGINES.ddg(rendered);
+        linkB.href = ENGINES.bing(rendered);
+        linkG.classList.remove('disabled');
+        linkD.classList.remove('disabled');
+        linkB.classList.remove('disabled');
+      } else {
+        linkG.href = '#'; linkD.href = '#'; linkB.href = '#';
+        linkG.classList.add('disabled');
+        linkD.classList.add('disabled');
+        linkB.classList.add('disabled');
+      }
+
+      // Refresh the lowercased text used by the search filter
+      d.dataset.text = (d.dataset.name + ' ' + rendered).toLowerCase();
+    });
+
+    // Persist for next visit
+    if (t) localStorage.setItem(STORAGE_KEY, t);
+    else   localStorage.removeItem(STORAGE_KEY);
+
+    // Re-apply the search/severity filters since the text content changed
+    applyFilters();
+  }
+
+  // ---------------------------------------------------------------------
+  // Filters: severity pills + text search
+  // ---------------------------------------------------------------------
+  function applyFilters() {
+    const q = searchInput.value.toLowerCase().trim();
+    let totalVisible = 0;
+
+    document.querySelectorAll('.category').forEach(cat => {
+      let visible = 0;
+      cat.querySelectorAll('.dork').forEach(d => {
+        const matchesSev = activeSev === 'all' || d.dataset.sev === activeSev;
+        const matchesText = !q || (d.dataset.text || '').includes(q);
+        const show = matchesSev && matchesText;
+        d.classList.toggle('hidden', !show);
+        if (show) visible++;
+      });
+      cat.classList.toggle('hidden', visible === 0);
+      totalVisible += visible;
+    });
+
+    noResults.classList.toggle('show', totalVisible === 0);
+  }
+
+  // ---------------------------------------------------------------------
+  // Wire up events
+  // ---------------------------------------------------------------------
+  targetInput.addEventListener('input', e => applyTarget(e.target.value));
+  searchInput.addEventListener('input', applyFilters);
+  sevPills.forEach(p => p.addEventListener('click', () => {
+    sevPills.forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    activeSev = p.dataset.sev;
+    applyFilters();
+  }));
+
+  // Press "/" anywhere to focus the search input (skips when already typing)
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement !== searchInput
+                      && document.activeElement !== targetInput) {
+      e.preventDefault();
+      searchInput.focus();
+    }
+  });
+
+  // ---------------------------------------------------------------------
+  // Boot — restore previous target if any, else render placeholder state
+  // ---------------------------------------------------------------------
+  const restored = localStorage.getItem(STORAGE_KEY) || '';
+  if (restored) targetInput.value = restored;
+  applyTarget(targetInput.value);
+</script>
+</body>
+</html>

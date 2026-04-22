@@ -92,3 +92,40 @@ def export_json(dorks: Sequence[Dork], target: str, output: Path) -> None:
         json.dumps(payload, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
+
+
+def export_static_site(library: dict, output: Path) -> None:
+    """Render a standalone interactive HTML site (no fixed target).
+
+    Unlike `export_html`, this output ships every dork with its raw
+    `{target}` placeholder. The page contains an input and a small JS
+    block that rewrites every query and rebuilds the search-engine URLs
+    on each keystroke. Suitable for hosting on GitHub Pages: one HTML
+    file, no backend, no build step at view time.
+    """
+    template = _jinja_env().get_template("static_site.html.j2")
+
+    # Reshape the YAML library into a render-friendly list-of-dicts so the
+    # template never has to call methods on dataclass objects.
+    categories = []
+    for cat_key, cat_data in library["categories"].items():
+        categories.append({
+            "key": cat_key,
+            "name": cat_data.get("name", cat_key),
+            "dorks": [
+                {
+                    "name": d["name"],
+                    "query": d["query"],          # keeps {target} verbatim
+                    "severity": d.get("severity", "info"),
+                }
+                for d in cat_data.get("dorks", [])
+            ],
+        })
+
+    total = sum(len(c["dorks"]) for c in categories)
+    html = template.render(
+        categories=categories,
+        total=total,
+        generated_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    )
+    output.write_text(html, encoding="utf-8")
