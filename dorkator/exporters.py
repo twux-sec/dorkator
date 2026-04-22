@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
 from typing import Sequence
 
@@ -13,7 +14,23 @@ from .core import Dork
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 
 
+@lru_cache(maxsize=1)
+def _jinja_env() -> Environment:
+    """Build (once) and reuse the Jinja2 environment.
+
+    Caching matters when callers export to multiple formats / targets in the
+    same process: re-creating the environment + reparsing the template each
+    time is wasteful. autoescape is on for HTML output — dork queries are
+    rendered as text, so any rogue char in a custom dork won't break out.
+    """
+    return Environment(
+        loader=FileSystemLoader(str(TEMPLATES_DIR)),
+        autoescape=select_autoescape(["html"]),
+    )
+
+
 def _group_by_category(dorks: Sequence[Dork]) -> dict[str, dict]:
+    """Group already-sorted dorks by category, preserving order."""
     categories: dict[str, dict] = {}
     for d in dorks:
         categories.setdefault(
@@ -25,11 +42,7 @@ def _group_by_category(dorks: Sequence[Dork]) -> dict[str, dict]:
 
 def export_html(dorks: Sequence[Dork], target: str, output: Path) -> None:
     """Render a self-contained HTML report with filtering."""
-    env = Environment(
-        loader=FileSystemLoader(str(TEMPLATES_DIR)),
-        autoescape=select_autoescape(["html"]),
-    )
-    template = env.get_template("report.html.j2")
+    template = _jinja_env().get_template("report.html.j2")
     html = template.render(
         target=target,
         categories=_group_by_category(dorks),

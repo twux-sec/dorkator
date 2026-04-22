@@ -15,6 +15,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from . import __version__
 from .core import build_dorks, list_categories, load_library
 from .exporters import export_html, export_json, export_markdown
 from .opener import open_batches
@@ -23,13 +24,14 @@ from .opener import open_batches
 # still works when the package is installed elsewhere on disk.
 DEFAULT_DORKS = Path(__file__).parent.parent / "dorks.yaml"
 
-BANNER = r"""
+# Banner is built from __version__ so it stays in sync with the package.
+BANNER = rf"""
  ____             _         _
 |  _ \  ___  _ __| | ____ _| |_ ___  _ __
 | | | |/ _ \| '__| |/ / _` | __/ _ \| '__|
 | |_| | (_) | |  |   < (_| | || (_) | |
 |____/ \___/|_|  |_|\_\__,_|\__\___/|_|
-                                       v0.2
+                                       v{__version__}
 """
 
 # Quick-reference cheatsheet shown under the banner when the user runs
@@ -68,6 +70,32 @@ def _parse_severities(raw: str | None) -> set[str] | None:
             f"Expected one of: {sorted(VALID_SEVERITIES)}"
         )
     return parts
+
+
+def _positive_int(raw: str) -> int:
+    """argparse type for a strictly positive integer (>= 1)."""
+    try:
+        value = int(raw)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"expected an integer, got {raw!r}")
+    if value < 1:
+        raise argparse.ArgumentTypeError(
+            f"expected an integer >= 1, got {value}"
+        )
+    return value
+
+
+def _non_negative_float(raw: str) -> float:
+    """argparse type for a float >= 0 (a negative pause would crash sleep)."""
+    try:
+        value = float(raw)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"expected a number, got {raw!r}")
+    if value < 0:
+        raise argparse.ArgumentTypeError(
+            f"expected a number >= 0, got {value}"
+        )
+    return value
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -136,20 +164,20 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--open-batch",
-        type=int,
+        type=_positive_int,
         default=5,
         metavar="N",
         help=(
-            "Number of tabs opened per batch (default: 5). "
+            "Number of tabs opened per batch (default: 5, must be >= 1). "
             "The bigger, the higher the captcha risk."
         ),
     )
     parser.add_argument(
         "--open-pause",
-        type=float,
+        type=_non_negative_float,
         default=2.0,
         metavar="SEC",
-        help="Pause (seconds) between two batches (default: 2.0).",
+        help="Pause (seconds) between two batches (default: 2.0, must be >= 0).",
     )
     parser.add_argument(
         "--open-severity",
@@ -172,6 +200,11 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     # ---- Misc -----------------------------------------------------------
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"dorkator {__version__}",
+    )
     parser.add_argument(
         "--quiet", "-q",
         action="store_true",

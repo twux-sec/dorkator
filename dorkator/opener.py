@@ -75,7 +75,7 @@ def _confirm_start(total: int, batch_size: int, engine: str) -> bool:
     except EOFError:
         # No stdin available (e.g. piped invocation): cancel by default
         return False
-    return rep in ("", "y", "yes", "o", "oui")
+    return rep in ("", "y", "yes")
 
 
 # ---------------------------------------------------------------------------

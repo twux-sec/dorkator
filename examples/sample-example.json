@@ -1,7 +1,7 @@
 {
   "target": "example.com",
-  "generated_at": "2026-04-22T13:17:30.681486",
-  "total": 45,
+  "generated_at": "2026-04-22T15:49:05.811684",
+  "total": 84,
   "dorks": [
     {
       "category": "credentials",
@@ -50,6 +50,28 @@
     {
       "category": "credentials",
       "category_name": "Credentials & Secrets",
+      "name": "GitHub PAT / fine-grained tokens",
+      "query": "site:example.com (intext:\"ghp_\" OR intext:\"github_pat_\" OR intext:\"ghs_\" OR intext:\"gho_\")",
+      "severity": "critical",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22ghp_%22+OR+intext%3A%22github_pat_%22+OR+intext%3A%22ghs_%22+OR+intext%3A%22gho_%22%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22ghp_%22+OR+intext%3A%22github_pat_%22+OR+intext%3A%22ghs_%22+OR+intext%3A%22gho_%22%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22ghp_%22+OR+intext%3A%22github_pat_%22+OR+intext%3A%22ghs_%22+OR+intext%3A%22gho_%22%29"
+    },
+    {
+      "category": "credentials",
+      "category_name": "Credentials & Secrets",
+      "name": "Google OAuth client secrets",
+      "query": "site:example.com (intext:\"GOCSPX-\" OR intext:\"client_secret\")",
+      "severity": "critical",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22GOCSPX-%22+OR+intext%3A%22client_secret%22%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22GOCSPX-%22+OR+intext%3A%22client_secret%22%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22GOCSPX-%22+OR+intext%3A%22client_secret%22%29"
+    },
+    {
+      "category": "credentials",
+      "category_name": "Credentials & Secrets",
       "name": "Private keys (RSA/SSH/PGP)",
       "query": "site:example.com (intext:\"BEGIN RSA PRIVATE KEY\" OR intext:\"BEGIN OPENSSH PRIVATE KEY\" OR intext:\"BEGIN PRIVATE KEY\" OR intext:\"BEGIN PGP PRIVATE\")",
       "severity": "critical",
@@ -57,6 +79,50 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22BEGIN+RSA+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+OPENSSH+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PGP+PRIVATE%22%29",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22BEGIN+RSA+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+OPENSSH+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PGP+PRIVATE%22%29",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22BEGIN+RSA+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+OPENSSH+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PGP+PRIVATE%22%29"
+    },
+    {
+      "category": "credentials",
+      "category_name": "Credentials & Secrets",
+      "name": "Slack tokens",
+      "query": "site:example.com (intext:\"xoxb-\" OR intext:\"xoxa-\" OR intext:\"xoxp-\" OR intext:\"xoxs-\")",
+      "severity": "critical",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22xoxb-%22+OR+intext%3A%22xoxa-%22+OR+intext%3A%22xoxp-%22+OR+intext%3A%22xoxs-%22%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22xoxb-%22+OR+intext%3A%22xoxa-%22+OR+intext%3A%22xoxp-%22+OR+intext%3A%22xoxs-%22%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22xoxb-%22+OR+intext%3A%22xoxa-%22+OR+intext%3A%22xoxp-%22+OR+intext%3A%22xoxs-%22%29"
+    },
+    {
+      "category": "credentials",
+      "category_name": "Credentials & Secrets",
+      "name": "Stripe live keys",
+      "query": "site:example.com intext:\"sk_live_\"",
+      "severity": "critical",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+intext%3A%22sk_live_%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+intext%3A%22sk_live_%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+intext%3A%22sk_live_%22"
+    },
+    {
+      "category": "documents",
+      "category_name": "Exposed Documents",
+      "name": "Email containers (PST/MBOX/MSG/EML)",
+      "query": "site:example.com (ext:pst OR ext:mbox OR ext:msg OR ext:eml)",
+      "severity": "critical",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28ext%3Apst+OR+ext%3Ambox+OR+ext%3Amsg+OR+ext%3Aeml%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Apst+OR+ext%3Ambox+OR+ext%3Amsg+OR+ext%3Aeml%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Apst+OR+ext%3Ambox+OR+ext%3Amsg+OR+ext%3Aeml%29"
+    },
+    {
+      "category": "documents",
+      "category_name": "Exposed Documents",
+      "name": "KeePass databases",
+      "query": "site:example.com ext:kdbx",
+      "severity": "critical",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+ext%3Akdbx",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+ext%3Akdbx",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+ext%3Akdbx"
     },
     {
       "category": "documents",
@@ -68,6 +134,17 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+filetype%3Asql",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Asql",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+filetype%3Asql"
+    },
+    {
+      "category": "documents",
+      "category_name": "Exposed Documents",
+      "name": "VPN / remote-access profiles",
+      "query": "site:example.com (ext:ovpn OR ext:rdp OR ext:pcf)",
+      "severity": "critical",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28ext%3Aovpn+OR+ext%3Ardp+OR+ext%3Apcf%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Aovpn+OR+ext%3Ardp+OR+ext%3Apcf%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Aovpn+OR+ext%3Ardp+OR+ext%3Apcf%29"
     },
     {
       "category": "external",
@@ -105,6 +182,17 @@
     {
       "category": "technical",
       "category_name": "Technical Exposure",
+      "name": "Open Elasticsearch / cluster endpoints",
+      "query": "site:example.com (inurl:_cluster OR inurl:_cat OR inurl:9200)",
+      "severity": "critical",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28inurl%3A_cluster+OR+inurl%3A_cat+OR+inurl%3A9200%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3A_cluster+OR+inurl%3A_cat+OR+inurl%3A9200%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3A_cluster+OR+inurl%3A_cat+OR+inurl%3A9200%29"
+    },
+    {
+      "category": "technical",
+      "category_name": "Technical Exposure",
       "name": "Version control leaks (.git/.svn/.env)",
       "query": "site:example.com (inurl:\".git\" OR inurl:\".svn\" OR inurl:\".env\")",
       "severity": "critical",
@@ -123,6 +211,94 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+ext%3Aphp+intitle%3Aphpinfo+%22PHP+Version%22",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+ext%3Aphp+intitle%3Aphpinfo+%22PHP+Version%22",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+ext%3Aphp+intitle%3Aphpinfo+%22PHP+Version%22"
+    },
+    {
+      "category": "cloud",
+      "category_name": "Cloud Storage Exposure",
+      "name": "Backblaze B2 buckets",
+      "query": "site:backblazeb2.com \"example.com\"",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Abackblazeb2.com+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Abackblazeb2.com+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Abackblazeb2.com+%22example.com%22"
+    },
+    {
+      "category": "cloud",
+      "category_name": "Cloud Storage Exposure",
+      "name": "DigitalOcean Spaces",
+      "query": "site:digitaloceanspaces.com \"example.com\"",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Adigitaloceanspaces.com+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Adigitaloceanspaces.com+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Adigitaloceanspaces.com+%22example.com%22"
+    },
+    {
+      "category": "cloud",
+      "category_name": "Cloud Storage Exposure",
+      "name": "Firebase databases / hosting",
+      "query": "(site:firebaseio.com OR site:firebaseapp.com OR site:web.app) \"example.com\"",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=%28site%3Afirebaseio.com+OR+site%3Afirebaseapp.com+OR+site%3Aweb.app%29+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=%28site%3Afirebaseio.com+OR+site%3Afirebaseapp.com+OR+site%3Aweb.app%29+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=%28site%3Afirebaseio.com+OR+site%3Afirebaseapp.com+OR+site%3Aweb.app%29+%22example.com%22"
+    },
+    {
+      "category": "cloud",
+      "category_name": "Cloud Storage Exposure",
+      "name": "Google Cloud Storage buckets",
+      "query": "site:storage.googleapis.com \"example.com\"",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Astorage.googleapis.com+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Astorage.googleapis.com+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Astorage.googleapis.com+%22example.com%22"
+    },
+    {
+      "category": "cloud",
+      "category_name": "Cloud Storage Exposure",
+      "name": "Supabase exposed projects",
+      "query": "site:supabase.co \"example.com\"",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Asupabase.co+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Asupabase.co+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Asupabase.co+%22example.com%22"
+    },
+    {
+      "category": "cloud",
+      "category_name": "Cloud Storage Exposure",
+      "name": "Wasabi storage",
+      "query": "site:wasabisys.com \"example.com\"",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Awasabisys.com+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Awasabisys.com+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Awasabisys.com+%22example.com%22"
+    },
+    {
+      "category": "credentials",
+      "category_name": "Credentials & Secrets",
+      "name": "Generic secret leakage patterns",
+      "query": "site:example.com (intext:\"private_token\" OR intext:\"refresh_token\" OR intext:\"auth_token\" OR intext:\"session_secret\")",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22private_token%22+OR+intext%3A%22refresh_token%22+OR+intext%3A%22auth_token%22+OR+intext%3A%22session_secret%22%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22private_token%22+OR+intext%3A%22refresh_token%22+OR+intext%3A%22auth_token%22+OR+intext%3A%22session_secret%22%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22private_token%22+OR+intext%3A%22refresh_token%22+OR+intext%3A%22auth_token%22+OR+intext%3A%22session_secret%22%29"
+    },
+    {
+      "category": "credentials",
+      "category_name": "Credentials & Secrets",
+      "name": "JWT tokens visible in pages",
+      "query": "site:example.com intext:\"eyJhbGciOi\"",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+intext%3A%22eyJhbGciOi%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+intext%3A%22eyJhbGciOi%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+intext%3A%22eyJhbGciOi%22"
     },
     {
       "category": "credentials",
@@ -145,6 +321,28 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28ext%3Abak+OR+ext%3Abackup+OR+ext%3Aold+OR+ext%3Asave+OR+ext%3Aswp%29",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Abak+OR+ext%3Abackup+OR+ext%3Aold+OR+ext%3Asave+OR+ext%3Aswp%29",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Abak+OR+ext%3Abackup+OR+ext%3Aold+OR+ext%3Asave+OR+ext%3Aswp%29"
+    },
+    {
+      "category": "documents",
+      "category_name": "Exposed Documents",
+      "name": "Compressed archives",
+      "query": "site:example.com (ext:zip OR ext:rar OR ext:7z OR ext:tar OR ext:gz OR ext:tgz)",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28ext%3Azip+OR+ext%3Arar+OR+ext%3A7z+OR+ext%3Atar+OR+ext%3Agz+OR+ext%3Atgz%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Azip+OR+ext%3Arar+OR+ext%3A7z+OR+ext%3Atar+OR+ext%3Agz+OR+ext%3Atgz%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Azip+OR+ext%3Arar+OR+ext%3A7z+OR+ext%3Atar+OR+ext%3Agz+OR+ext%3Atgz%29"
+    },
+    {
+      "category": "documents",
+      "category_name": "Exposed Documents",
+      "name": "Office macro-enabled files",
+      "query": "site:example.com (ext:xlsm OR ext:docm OR ext:pptm)",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28ext%3Axlsm+OR+ext%3Adocm+OR+ext%3Apptm%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Axlsm+OR+ext%3Adocm+OR+ext%3Apptm%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Axlsm+OR+ext%3Adocm+OR+ext%3Apptm%29"
     },
     {
       "category": "documents",
@@ -178,6 +376,28 @@
       "google_url": "https://www.google.com/search?q=site%3Ablob.core.windows.net+%22example.com%22",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Ablob.core.windows.net+%22example.com%22",
       "bing_url": "https://www.bing.com/search?q=site%3Ablob.core.windows.net+%22example.com%22"
+    },
+    {
+      "category": "external",
+      "category_name": "External Leaks",
+      "name": "BitBucket repositories",
+      "query": "site:bitbucket.org \"example.com\"",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Abitbucket.org+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Abitbucket.org+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Abitbucket.org+%22example.com%22"
+    },
+    {
+      "category": "external",
+      "category_name": "External Leaks",
+      "name": "GitHub gists (often leak snippets)",
+      "query": "site:gist.github.com \"example.com\"",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Agist.github.com+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Agist.github.com+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Agist.github.com+%22example.com%22"
     },
     {
       "category": "external",
@@ -237,6 +457,28 @@
     {
       "category": "technical",
       "category_name": "Technical Exposure",
+      "name": "Jenkins / CI dashboards",
+      "query": "site:example.com (inurl:jenkins OR inurl:jobs/build OR intitle:\"Dashboard [Jenkins]\")",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Ajenkins+OR+inurl%3Ajobs%2Fbuild+OR+intitle%3A%22Dashboard+%5BJenkins%5D%22%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Ajenkins+OR+inurl%3Ajobs%2Fbuild+OR+intitle%3A%22Dashboard+%5BJenkins%5D%22%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Ajenkins+OR+inurl%3Ajobs%2Fbuild+OR+intitle%3A%22Dashboard+%5BJenkins%5D%22%29"
+    },
+    {
+      "category": "technical",
+      "category_name": "Technical Exposure",
+      "name": "Monitoring stacks (Grafana/Kibana/Prometheus)",
+      "query": "site:example.com (inurl:grafana OR inurl:kibana OR inurl:prometheus OR inurl:9090 OR intitle:\"Grafana\")",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Agrafana+OR+inurl%3Akibana+OR+inurl%3Aprometheus+OR+inurl%3A9090+OR+intitle%3A%22Grafana%22%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Agrafana+OR+inurl%3Akibana+OR+inurl%3Aprometheus+OR+inurl%3A9090+OR+intitle%3A%22Grafana%22%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Agrafana+OR+inurl%3Akibana+OR+inurl%3Aprometheus+OR+inurl%3A9090+OR+intitle%3A%22Grafana%22%29"
+    },
+    {
+      "category": "technical",
+      "category_name": "Technical Exposure",
       "name": "Open directory listings",
       "query": "site:example.com intitle:\"index of\"",
       "severity": "high",
@@ -255,6 +497,17 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22SQL+syntax%22+OR+intext%3A%22fatal+error%22+OR+intext%3A%22stack+trace%22+OR+intext%3A%22warning%3A+include%22%29",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22SQL+syntax%22+OR+intext%3A%22fatal+error%22+OR+intext%3A%22stack+trace%22+OR+intext%3A%22warning%3A+include%22%29",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22SQL+syntax%22+OR+intext%3A%22fatal+error%22+OR+intext%3A%22stack+trace%22+OR+intext%3A%22warning%3A+include%22%29"
+    },
+    {
+      "category": "technical",
+      "category_name": "Technical Exposure",
+      "name": "Webcam / IoT panels",
+      "query": "site:example.com (inurl:axis-cgi OR intitle:\"camera\" OR intitle:\"webcam\" OR inurl:viewerframe)",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aaxis-cgi+OR+intitle%3A%22camera%22+OR+intitle%3A%22webcam%22+OR+inurl%3Aviewerframe%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aaxis-cgi+OR+intitle%3A%22camera%22+OR+intitle%3A%22webcam%22+OR+inurl%3Aviewerframe%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aaxis-cgi+OR+intitle%3A%22camera%22+OR+intitle%3A%22webcam%22+OR+inurl%3Aviewerframe%29"
     },
     {
       "category": "documents",
@@ -281,6 +534,17 @@
     {
       "category": "documents",
       "category_name": "Exposed Documents",
+      "name": "Visio diagrams (architecture leaks)",
+      "query": "site:example.com (ext:vsd OR ext:vsdx)",
+      "severity": "medium",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28ext%3Avsd+OR+ext%3Avsdx%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Avsd+OR+ext%3Avsdx%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Avsd+OR+ext%3Avsdx%29"
+    },
+    {
+      "category": "documents",
+      "category_name": "Exposed Documents",
       "name": "Word documents",
       "query": "site:example.com (filetype:doc OR filetype:docx)",
       "severity": "medium",
@@ -288,6 +552,17 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx%29",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx%29",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx%29"
+    },
+    {
+      "category": "external",
+      "category_name": "External Leaks",
+      "name": "Docker Hub images / descriptions",
+      "query": "site:hub.docker.com \"example.com\"",
+      "severity": "medium",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Ahub.docker.com+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Ahub.docker.com+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Ahub.docker.com+%22example.com%22"
     },
     {
       "category": "external",
@@ -310,6 +585,28 @@
       "google_url": "https://www.google.com/search?q=site%3Atrello.com+%22example.com%22",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Atrello.com+%22example.com%22",
       "bing_url": "https://www.bing.com/search?q=site%3Atrello.com+%22example.com%22"
+    },
+    {
+      "category": "external",
+      "category_name": "External Leaks",
+      "name": "PyPI packages / READMEs",
+      "query": "site:pypi.org \"example.com\"",
+      "severity": "medium",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Apypi.org+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Apypi.org+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Apypi.org+%22example.com%22"
+    },
+    {
+      "category": "external",
+      "category_name": "External Leaks",
+      "name": "npm packages / READMEs",
+      "query": "site:npmjs.com \"example.com\"",
+      "severity": "medium",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Anpmjs.com+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Anpmjs.com+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Anpmjs.com+%22example.com%22"
     },
     {
       "category": "identities",
@@ -347,6 +644,17 @@
     {
       "category": "subdomains",
       "category_name": "Subdomains & Assets",
+      "name": "Censys exposed assets",
+      "query": "site:censys.io \"example.com\"",
+      "severity": "medium",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Acensys.io+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Acensys.io+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Acensys.io+%22example.com%22"
+    },
+    {
+      "category": "subdomains",
+      "category_name": "Subdomains & Assets",
       "name": "Dev / staging / preprod",
       "query": "site:*.example.com (inurl:dev OR inurl:staging OR inurl:test OR inurl:preprod OR inurl:uat OR inurl:recette)",
       "severity": "medium",
@@ -365,6 +673,17 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Ainternal+OR+inurl%3Aintranet+OR+inurl%3Aprivate%29",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Ainternal+OR+inurl%3Aintranet+OR+inurl%3Aprivate%29",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Ainternal+OR+inurl%3Aintranet+OR+inurl%3Aprivate%29"
+    },
+    {
+      "category": "subdomains",
+      "category_name": "Subdomains & Assets",
+      "name": "Shodan exposed assets",
+      "query": "site:shodan.io \"example.com\"",
+      "severity": "medium",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Ashodan.io+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Ashodan.io+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Ashodan.io+%22example.com%22"
     },
     {
       "category": "technical",
@@ -391,6 +710,17 @@
     {
       "category": "technical",
       "category_name": "Technical Exposure",
+      "name": "Webmail interfaces (Roundcube/Zimbra/OWA)",
+      "query": "site:example.com (inurl:roundcube OR inurl:webmail OR inurl:owa OR inurl:zimbra)",
+      "severity": "medium",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aroundcube+OR+inurl%3Awebmail+OR+inurl%3Aowa+OR+inurl%3Azimbra%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aroundcube+OR+inurl%3Awebmail+OR+inurl%3Aowa+OR+inurl%3Azimbra%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aroundcube+OR+inurl%3Awebmail+OR+inurl%3Aowa+OR+inurl%3Azimbra%29"
+    },
+    {
+      "category": "technical",
+      "category_name": "Technical Exposure",
       "name": "WordPress wp-admin / wp-config",
       "query": "site:example.com (inurl:wp-admin OR inurl:wp-config OR inurl:wp-content/uploads)",
       "severity": "medium",
@@ -398,6 +728,28 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Awp-admin+OR+inurl%3Awp-config+OR+inurl%3Awp-content%2Fuploads%29",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Awp-admin+OR+inurl%3Awp-config+OR+inurl%3Awp-content%2Fuploads%29",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Awp-admin+OR+inurl%3Awp-config+OR+inurl%3Awp-content%2Fuploads%29"
+    },
+    {
+      "category": "documents",
+      "category_name": "Exposed Documents",
+      "name": "All Office files (broad enumeration)",
+      "query": "site:example.com (filetype:doc OR filetype:docx OR filetype:xls OR filetype:xlsx OR filetype:ppt OR filetype:pptx)",
+      "severity": "low",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx+OR+filetype%3Axls+OR+filetype%3Axlsx+OR+filetype%3Appt+OR+filetype%3Apptx%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx+OR+filetype%3Axls+OR+filetype%3Axlsx+OR+filetype%3Appt+OR+filetype%3Apptx%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx+OR+filetype%3Axls+OR+filetype%3Axlsx+OR+filetype%3Appt+OR+filetype%3Apptx%29"
+    },
+    {
+      "category": "documents",
+      "category_name": "Exposed Documents",
+      "name": "All PDFs (broad enumeration)",
+      "query": "site:example.com filetype:pdf",
+      "severity": "low",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+filetype%3Apdf",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Apdf",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+filetype%3Apdf"
     },
     {
       "category": "external",
@@ -424,6 +776,17 @@
     {
       "category": "identities",
       "category_name": "Identities & Contacts",
+      "name": "Gravatar profiles linked to target",
+      "query": "site:gravatar.com \"example.com\"",
+      "severity": "low",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Agravatar.com+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Agravatar.com+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Agravatar.com+%22example.com%22"
+    },
+    {
+      "category": "identities",
+      "category_name": "Identities & Contacts",
       "name": "Phone numbers (FR)",
       "query": "site:example.com (intext:\"+33\" OR intext:\"06.\" OR intext:\"07.\")",
       "severity": "low",
@@ -431,6 +794,17 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22%2B33%22+OR+intext%3A%2206.%22+OR+intext%3A%2207.%22%29",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22%2B33%22+OR+intext%3A%2206.%22+OR+intext%3A%2207.%22%29",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22%2B33%22+OR+intext%3A%2206.%22+OR+intext%3A%2207.%22%29"
+    },
+    {
+      "category": "identities",
+      "category_name": "Identities & Contacts",
+      "name": "Whois / DNS exposure",
+      "query": "(site:whois.com OR site:dnsdumpster.com OR site:viewdns.info) \"example.com\"",
+      "severity": "low",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=%28site%3Awhois.com+OR+site%3Adnsdumpster.com+OR+site%3Aviewdns.info%29+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=%28site%3Awhois.com+OR+site%3Adnsdumpster.com+OR+site%3Aviewdns.info%29+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=%28site%3Awhois.com+OR+site%3Adnsdumpster.com+OR+site%3Aviewdns.info%29+%22example.com%22"
     },
     {
       "category": "personnel",
@@ -477,6 +851,28 @@
       "bing_url": "https://www.bing.com/search?q=site%3A%2A.example.com+-site%3Awww.example.com"
     },
     {
+      "category": "subdomains",
+      "category_name": "Subdomains & Assets",
+      "name": "crt.sh certificate transparency",
+      "query": "site:crt.sh \"example.com\"",
+      "severity": "low",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Acrt.sh+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Acrt.sh+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Acrt.sh+%22example.com%22"
+    },
+    {
+      "category": "documents",
+      "category_name": "Exposed Documents",
+      "name": "All images (potential EXIF metadata)",
+      "query": "site:example.com (filetype:jpg OR filetype:jpeg OR filetype:png OR filetype:tiff)",
+      "severity": "info",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Ajpg+OR+filetype%3Ajpeg+OR+filetype%3Apng+OR+filetype%3Atiff%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Ajpg+OR+filetype%3Ajpeg+OR+filetype%3Apng+OR+filetype%3Atiff%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Ajpg+OR+filetype%3Ajpeg+OR+filetype%3Apng+OR+filetype%3Atiff%29"
+    },
+    {
       "category": "external",
       "category_name": "External Leaks",
       "name": "Archive.org snapshots",
@@ -486,6 +882,39 @@
       "google_url": "https://www.google.com/search?q=site%3Aweb.archive.org+%22example.com%22",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aweb.archive.org+%22example.com%22",
       "bing_url": "https://www.bing.com/search?q=site%3Aweb.archive.org+%22example.com%22"
+    },
+    {
+      "category": "identities",
+      "category_name": "Identities & Contacts",
+      "name": "Disqus comments mentioning target",
+      "query": "site:disqus.com \"example.com\"",
+      "severity": "info",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Adisqus.com+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Adisqus.com+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Adisqus.com+%22example.com%22"
+    },
+    {
+      "category": "personnel",
+      "category_name": "Personnel Intelligence",
+      "name": "Mastodon / Fediverse mentions",
+      "query": "(site:mastodon.social OR site:mastodon.online OR site:piaille.fr) \"example.com\"",
+      "severity": "info",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=%28site%3Amastodon.social+OR+site%3Amastodon.online+OR+site%3Apiaille.fr%29+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=%28site%3Amastodon.social+OR+site%3Amastodon.online+OR+site%3Apiaille.fr%29+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=%28site%3Amastodon.social+OR+site%3Amastodon.online+OR+site%3Apiaille.fr%29+%22example.com%22"
+    },
+    {
+      "category": "personnel",
+      "category_name": "Personnel Intelligence",
+      "name": "Reddit mentions",
+      "query": "site:reddit.com \"example.com\"",
+      "severity": "info",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Areddit.com+%22example.com%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Areddit.com+%22example.com%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Areddit.com+%22example.com%22"
     },
     {
       "category": "personnel",

@@ -1,7 +1,7 @@
 # Dorkator Report — `example.com`
 
-- **Generated:** 2026-04-22 13:17:30
-- **Total dorks:** 45
+- **Generated:** 2026-04-22 15:49:05
+- **Total dorks:** 84
 
 > Legal notice: only run against domains you own or are authorized to assess.
 
@@ -36,6 +36,20 @@ site:example.com ext:env
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+ext%3Aenv) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+ext%3Aenv) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+ext%3Aenv)
 
+### `[CRITICAL]` GitHub PAT / fine-grained tokens
+
+```
+site:example.com (intext:"ghp_" OR intext:"github_pat_" OR intext:"ghs_" OR intext:"gho_")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22ghp_%22+OR+intext%3A%22github_pat_%22+OR+intext%3A%22ghs_%22+OR+intext%3A%22gho_%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22ghp_%22+OR+intext%3A%22github_pat_%22+OR+intext%3A%22ghs_%22+OR+intext%3A%22gho_%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22ghp_%22+OR+intext%3A%22github_pat_%22+OR+intext%3A%22ghs_%22+OR+intext%3A%22gho_%22%29)
+
+### `[CRITICAL]` Google OAuth client secrets
+
+```
+site:example.com (intext:"GOCSPX-" OR intext:"client_secret")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22GOCSPX-%22+OR+intext%3A%22client_secret%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22GOCSPX-%22+OR+intext%3A%22client_secret%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22GOCSPX-%22+OR+intext%3A%22client_secret%22%29)
+
 ### `[CRITICAL]` Private keys (RSA/SSH/PGP)
 
 ```
@@ -43,8 +57,36 @@ site:example.com (intext:"BEGIN RSA PRIVATE KEY" OR intext:"BEGIN OPENSSH PRIVAT
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22BEGIN+RSA+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+OPENSSH+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PGP+PRIVATE%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22BEGIN+RSA+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+OPENSSH+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PGP+PRIVATE%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22BEGIN+RSA+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+OPENSSH+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PRIVATE+KEY%22+OR+intext%3A%22BEGIN+PGP+PRIVATE%22%29)
 
+### `[CRITICAL]` Slack tokens
+
+```
+site:example.com (intext:"xoxb-" OR intext:"xoxa-" OR intext:"xoxp-" OR intext:"xoxs-")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22xoxb-%22+OR+intext%3A%22xoxa-%22+OR+intext%3A%22xoxp-%22+OR+intext%3A%22xoxs-%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22xoxb-%22+OR+intext%3A%22xoxa-%22+OR+intext%3A%22xoxp-%22+OR+intext%3A%22xoxs-%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22xoxb-%22+OR+intext%3A%22xoxa-%22+OR+intext%3A%22xoxp-%22+OR+intext%3A%22xoxs-%22%29)
+
+### `[CRITICAL]` Stripe live keys
+
+```
+site:example.com intext:"sk_live_"
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+intext%3A%22sk_live_%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+intext%3A%22sk_live_%22) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+intext%3A%22sk_live_%22)
+
 
 ## Exposed Documents
+
+### `[CRITICAL]` Email containers (PST/MBOX/MSG/EML)
+
+```
+site:example.com (ext:pst OR ext:mbox OR ext:msg OR ext:eml)
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28ext%3Apst+OR+ext%3Ambox+OR+ext%3Amsg+OR+ext%3Aeml%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Apst+OR+ext%3Ambox+OR+ext%3Amsg+OR+ext%3Aeml%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Apst+OR+ext%3Ambox+OR+ext%3Amsg+OR+ext%3Aeml%29)
+
+### `[CRITICAL]` KeePass databases
+
+```
+site:example.com ext:kdbx
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+ext%3Akdbx) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+ext%3Akdbx) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+ext%3Akdbx)
 
 ### `[CRITICAL]` SQL dumps
 
@@ -52,6 +94,13 @@ site:example.com (intext:"BEGIN RSA PRIVATE KEY" OR intext:"BEGIN OPENSSH PRIVAT
 site:example.com filetype:sql
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+filetype%3Asql) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Asql) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+filetype%3Asql)
+
+### `[CRITICAL]` VPN / remote-access profiles
+
+```
+site:example.com (ext:ovpn OR ext:rdp OR ext:pcf)
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28ext%3Aovpn+OR+ext%3Ardp+OR+ext%3Apcf%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Aovpn+OR+ext%3Ardp+OR+ext%3Apcf%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Aovpn+OR+ext%3Ardp+OR+ext%3Apcf%29)
 
 
 ## External Leaks
@@ -80,6 +129,13 @@ site:example.com (inurl:phpmyadmin OR inurl:adminer OR inurl:pgadmin)
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aphpmyadmin+OR+inurl%3Aadminer+OR+inurl%3Apgadmin%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aphpmyadmin+OR+inurl%3Aadminer+OR+inurl%3Apgadmin%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aphpmyadmin+OR+inurl%3Aadminer+OR+inurl%3Apgadmin%29)
 
+### `[CRITICAL]` Open Elasticsearch / cluster endpoints
+
+```
+site:example.com (inurl:_cluster OR inurl:_cat OR inurl:9200)
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3A_cluster+OR+inurl%3A_cat+OR+inurl%3A9200%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3A_cluster+OR+inurl%3A_cat+OR+inurl%3A9200%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3A_cluster+OR+inurl%3A_cat+OR+inurl%3A9200%29)
+
 ### `[CRITICAL]` Version control leaks (.git/.svn/.env)
 
 ```
@@ -95,7 +151,66 @@ site:example.com ext:php intitle:phpinfo "PHP Version"
 [Google](https://www.google.com/search?q=site%3Aexample.com+ext%3Aphp+intitle%3Aphpinfo+%22PHP+Version%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+ext%3Aphp+intitle%3Aphpinfo+%22PHP+Version%22) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+ext%3Aphp+intitle%3Aphpinfo+%22PHP+Version%22)
 
 
+## Cloud Storage Exposure
+
+### `[HIGH]` Backblaze B2 buckets
+
+```
+site:backblazeb2.com "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Abackblazeb2.com+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Abackblazeb2.com+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Abackblazeb2.com+%22example.com%22)
+
+### `[HIGH]` DigitalOcean Spaces
+
+```
+site:digitaloceanspaces.com "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Adigitaloceanspaces.com+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Adigitaloceanspaces.com+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Adigitaloceanspaces.com+%22example.com%22)
+
+### `[HIGH]` Firebase databases / hosting
+
+```
+(site:firebaseio.com OR site:firebaseapp.com OR site:web.app) "example.com"
+```
+[Google](https://www.google.com/search?q=%28site%3Afirebaseio.com+OR+site%3Afirebaseapp.com+OR+site%3Aweb.app%29+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=%28site%3Afirebaseio.com+OR+site%3Afirebaseapp.com+OR+site%3Aweb.app%29+%22example.com%22) · [Bing](https://www.bing.com/search?q=%28site%3Afirebaseio.com+OR+site%3Afirebaseapp.com+OR+site%3Aweb.app%29+%22example.com%22)
+
+### `[HIGH]` Google Cloud Storage buckets
+
+```
+site:storage.googleapis.com "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Astorage.googleapis.com+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Astorage.googleapis.com+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Astorage.googleapis.com+%22example.com%22)
+
+### `[HIGH]` Supabase exposed projects
+
+```
+site:supabase.co "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Asupabase.co+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Asupabase.co+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Asupabase.co+%22example.com%22)
+
+### `[HIGH]` Wasabi storage
+
+```
+site:wasabisys.com "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Awasabisys.com+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Awasabisys.com+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Awasabisys.com+%22example.com%22)
+
+
 ## Credentials & Secrets
+
+### `[HIGH]` Generic secret leakage patterns
+
+```
+site:example.com (intext:"private_token" OR intext:"refresh_token" OR intext:"auth_token" OR intext:"session_secret")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22private_token%22+OR+intext%3A%22refresh_token%22+OR+intext%3A%22auth_token%22+OR+intext%3A%22session_secret%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22private_token%22+OR+intext%3A%22refresh_token%22+OR+intext%3A%22auth_token%22+OR+intext%3A%22session_secret%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22private_token%22+OR+intext%3A%22refresh_token%22+OR+intext%3A%22auth_token%22+OR+intext%3A%22session_secret%22%29)
+
+### `[HIGH]` JWT tokens visible in pages
+
+```
+site:example.com intext:"eyJhbGciOi"
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+intext%3A%22eyJhbGciOi%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+intext%3A%22eyJhbGciOi%22) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+intext%3A%22eyJhbGciOi%22)
 
 ### `[HIGH]` Passwords in text
 
@@ -113,6 +228,20 @@ site:example.com (intext:"password" OR intext:"passwd" OR intext:"motdepasse" OR
 site:example.com (ext:bak OR ext:backup OR ext:old OR ext:save OR ext:swp)
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28ext%3Abak+OR+ext%3Abackup+OR+ext%3Aold+OR+ext%3Asave+OR+ext%3Aswp%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Abak+OR+ext%3Abackup+OR+ext%3Aold+OR+ext%3Asave+OR+ext%3Aswp%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Abak+OR+ext%3Abackup+OR+ext%3Aold+OR+ext%3Asave+OR+ext%3Aswp%29)
+
+### `[HIGH]` Compressed archives
+
+```
+site:example.com (ext:zip OR ext:rar OR ext:7z OR ext:tar OR ext:gz OR ext:tgz)
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28ext%3Azip+OR+ext%3Arar+OR+ext%3A7z+OR+ext%3Atar+OR+ext%3Agz+OR+ext%3Atgz%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Azip+OR+ext%3Arar+OR+ext%3A7z+OR+ext%3Atar+OR+ext%3Agz+OR+ext%3Atgz%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Azip+OR+ext%3Arar+OR+ext%3A7z+OR+ext%3Atar+OR+ext%3Agz+OR+ext%3Atgz%29)
+
+### `[HIGH]` Office macro-enabled files
+
+```
+site:example.com (ext:xlsm OR ext:docm OR ext:pptm)
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28ext%3Axlsm+OR+ext%3Adocm+OR+ext%3Apptm%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Axlsm+OR+ext%3Adocm+OR+ext%3Apptm%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Axlsm+OR+ext%3Adocm+OR+ext%3Apptm%29)
 
 ### `[HIGH]` PDFs flagged confidential
 
@@ -137,6 +266,20 @@ site:example.com (filetype:xls OR filetype:xlsx OR filetype:csv)
 site:blob.core.windows.net "example.com"
 ```
 [Google](https://www.google.com/search?q=site%3Ablob.core.windows.net+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Ablob.core.windows.net+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Ablob.core.windows.net+%22example.com%22)
+
+### `[HIGH]` BitBucket repositories
+
+```
+site:bitbucket.org "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Abitbucket.org+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Abitbucket.org+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Abitbucket.org+%22example.com%22)
+
+### `[HIGH]` GitHub gists (often leak snippets)
+
+```
+site:gist.github.com "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Agist.github.com+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Agist.github.com+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Agist.github.com+%22example.com%22)
 
 ### `[HIGH]` GitLab mentions
 
@@ -176,6 +319,20 @@ site:example.com (inurl:server-status OR inurl:server-info)
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aserver-status+OR+inurl%3Aserver-info%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aserver-status+OR+inurl%3Aserver-info%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aserver-status+OR+inurl%3Aserver-info%29)
 
+### `[HIGH]` Jenkins / CI dashboards
+
+```
+site:example.com (inurl:jenkins OR inurl:jobs/build OR intitle:"Dashboard [Jenkins]")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Ajenkins+OR+inurl%3Ajobs%2Fbuild+OR+intitle%3A%22Dashboard+%5BJenkins%5D%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Ajenkins+OR+inurl%3Ajobs%2Fbuild+OR+intitle%3A%22Dashboard+%5BJenkins%5D%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Ajenkins+OR+inurl%3Ajobs%2Fbuild+OR+intitle%3A%22Dashboard+%5BJenkins%5D%22%29)
+
+### `[HIGH]` Monitoring stacks (Grafana/Kibana/Prometheus)
+
+```
+site:example.com (inurl:grafana OR inurl:kibana OR inurl:prometheus OR inurl:9090 OR intitle:"Grafana")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Agrafana+OR+inurl%3Akibana+OR+inurl%3Aprometheus+OR+inurl%3A9090+OR+intitle%3A%22Grafana%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Agrafana+OR+inurl%3Akibana+OR+inurl%3Aprometheus+OR+inurl%3A9090+OR+intitle%3A%22Grafana%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Agrafana+OR+inurl%3Akibana+OR+inurl%3Aprometheus+OR+inurl%3A9090+OR+intitle%3A%22Grafana%22%29)
+
 ### `[HIGH]` Open directory listings
 
 ```
@@ -189,6 +346,13 @@ site:example.com intitle:"index of"
 site:example.com (intext:"SQL syntax" OR intext:"fatal error" OR intext:"stack trace" OR intext:"warning: include")
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22SQL+syntax%22+OR+intext%3A%22fatal+error%22+OR+intext%3A%22stack+trace%22+OR+intext%3A%22warning%3A+include%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22SQL+syntax%22+OR+intext%3A%22fatal+error%22+OR+intext%3A%22stack+trace%22+OR+intext%3A%22warning%3A+include%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22SQL+syntax%22+OR+intext%3A%22fatal+error%22+OR+intext%3A%22stack+trace%22+OR+intext%3A%22warning%3A+include%22%29)
+
+### `[HIGH]` Webcam / IoT panels
+
+```
+site:example.com (inurl:axis-cgi OR intitle:"camera" OR intitle:"webcam" OR inurl:viewerframe)
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aaxis-cgi+OR+intitle%3A%22camera%22+OR+intitle%3A%22webcam%22+OR+inurl%3Aviewerframe%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aaxis-cgi+OR+intitle%3A%22camera%22+OR+intitle%3A%22webcam%22+OR+inurl%3Aviewerframe%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aaxis-cgi+OR+intitle%3A%22camera%22+OR+intitle%3A%22webcam%22+OR+inurl%3Aviewerframe%29)
 
 
 ## Exposed Documents
@@ -207,6 +371,13 @@ site:example.com (filetype:txt OR filetype:log)
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Atxt+OR+filetype%3Alog%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Atxt+OR+filetype%3Alog%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Atxt+OR+filetype%3Alog%29)
 
+### `[MEDIUM]` Visio diagrams (architecture leaks)
+
+```
+site:example.com (ext:vsd OR ext:vsdx)
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28ext%3Avsd+OR+ext%3Avsdx%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Avsd+OR+ext%3Avsdx%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Avsd+OR+ext%3Avsdx%29)
+
 ### `[MEDIUM]` Word documents
 
 ```
@@ -216,6 +387,13 @@ site:example.com (filetype:doc OR filetype:docx)
 
 
 ## External Leaks
+
+### `[MEDIUM]` Docker Hub images / descriptions
+
+```
+site:hub.docker.com "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Ahub.docker.com+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Ahub.docker.com+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Ahub.docker.com+%22example.com%22)
 
 ### `[MEDIUM]` Public Google Docs
 
@@ -230,6 +408,20 @@ site:docs.google.com "example.com"
 site:trello.com "example.com"
 ```
 [Google](https://www.google.com/search?q=site%3Atrello.com+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Atrello.com+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Atrello.com+%22example.com%22)
+
+### `[MEDIUM]` PyPI packages / READMEs
+
+```
+site:pypi.org "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Apypi.org+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Apypi.org+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Apypi.org+%22example.com%22)
+
+### `[MEDIUM]` npm packages / READMEs
+
+```
+site:npmjs.com "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Anpmjs.com+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Anpmjs.com+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Anpmjs.com+%22example.com%22)
 
 
 ## Identities & Contacts
@@ -258,6 +450,13 @@ site:example.com (inurl:annuaire OR inurl:directory OR inurl:employees)
 
 ## Subdomains & Assets
 
+### `[MEDIUM]` Censys exposed assets
+
+```
+site:censys.io "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Acensys.io+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Acensys.io+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Acensys.io+%22example.com%22)
+
 ### `[MEDIUM]` Dev / staging / preprod
 
 ```
@@ -271,6 +470,13 @@ site:*.example.com (inurl:dev OR inurl:staging OR inurl:test OR inurl:preprod OR
 site:example.com (inurl:internal OR inurl:intranet OR inurl:private)
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Ainternal+OR+inurl%3Aintranet+OR+inurl%3Aprivate%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Ainternal+OR+inurl%3Aintranet+OR+inurl%3Aprivate%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Ainternal+OR+inurl%3Aintranet+OR+inurl%3Aprivate%29)
+
+### `[MEDIUM]` Shodan exposed assets
+
+```
+site:shodan.io "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Ashodan.io+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Ashodan.io+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Ashodan.io+%22example.com%22)
 
 
 ## Technical Exposure
@@ -289,12 +495,36 @@ site:example.com (inurl:swagger OR inurl:api-docs OR inurl:redoc OR inurl:graphq
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aswagger+OR+inurl%3Aapi-docs+OR+inurl%3Aredoc+OR+inurl%3Agraphql%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aswagger+OR+inurl%3Aapi-docs+OR+inurl%3Aredoc+OR+inurl%3Agraphql%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aswagger+OR+inurl%3Aapi-docs+OR+inurl%3Aredoc+OR+inurl%3Agraphql%29)
 
+### `[MEDIUM]` Webmail interfaces (Roundcube/Zimbra/OWA)
+
+```
+site:example.com (inurl:roundcube OR inurl:webmail OR inurl:owa OR inurl:zimbra)
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aroundcube+OR+inurl%3Awebmail+OR+inurl%3Aowa+OR+inurl%3Azimbra%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aroundcube+OR+inurl%3Awebmail+OR+inurl%3Aowa+OR+inurl%3Azimbra%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aroundcube+OR+inurl%3Awebmail+OR+inurl%3Aowa+OR+inurl%3Azimbra%29)
+
 ### `[MEDIUM]` WordPress wp-admin / wp-config
 
 ```
 site:example.com (inurl:wp-admin OR inurl:wp-config OR inurl:wp-content/uploads)
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Awp-admin+OR+inurl%3Awp-config+OR+inurl%3Awp-content%2Fuploads%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Awp-admin+OR+inurl%3Awp-config+OR+inurl%3Awp-content%2Fuploads%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Awp-admin+OR+inurl%3Awp-config+OR+inurl%3Awp-content%2Fuploads%29)
+
+
+## Exposed Documents
+
+### `[LOW]` All Office files (broad enumeration)
+
+```
+site:example.com (filetype:doc OR filetype:docx OR filetype:xls OR filetype:xlsx OR filetype:ppt OR filetype:pptx)
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx+OR+filetype%3Axls+OR+filetype%3Axlsx+OR+filetype%3Appt+OR+filetype%3Apptx%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx+OR+filetype%3Axls+OR+filetype%3Axlsx+OR+filetype%3Appt+OR+filetype%3Apptx%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Adoc+OR+filetype%3Adocx+OR+filetype%3Axls+OR+filetype%3Axlsx+OR+filetype%3Appt+OR+filetype%3Apptx%29)
+
+### `[LOW]` All PDFs (broad enumeration)
+
+```
+site:example.com filetype:pdf
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+filetype%3Apdf) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Apdf) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+filetype%3Apdf)
 
 
 ## External Leaks
@@ -316,12 +546,26 @@ site:example.com (inurl:contact OR inurl:team OR inurl:about OR inurl:staff OR i
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Acontact+OR+inurl%3Ateam+OR+inurl%3Aabout+OR+inurl%3Astaff+OR+inurl%3Aequipe%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Acontact+OR+inurl%3Ateam+OR+inurl%3Aabout+OR+inurl%3Astaff+OR+inurl%3Aequipe%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Acontact+OR+inurl%3Ateam+OR+inurl%3Aabout+OR+inurl%3Astaff+OR+inurl%3Aequipe%29)
 
+### `[LOW]` Gravatar profiles linked to target
+
+```
+site:gravatar.com "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Agravatar.com+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Agravatar.com+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Agravatar.com+%22example.com%22)
+
 ### `[LOW]` Phone numbers (FR)
 
 ```
 site:example.com (intext:"+33" OR intext:"06." OR intext:"07.")
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28intext%3A%22%2B33%22+OR+intext%3A%2206.%22+OR+intext%3A%2207.%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28intext%3A%22%2B33%22+OR+intext%3A%2206.%22+OR+intext%3A%2207.%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28intext%3A%22%2B33%22+OR+intext%3A%2206.%22+OR+intext%3A%2207.%22%29)
+
+### `[LOW]` Whois / DNS exposure
+
+```
+(site:whois.com OR site:dnsdumpster.com OR site:viewdns.info) "example.com"
+```
+[Google](https://www.google.com/search?q=%28site%3Awhois.com+OR+site%3Adnsdumpster.com+OR+site%3Aviewdns.info%29+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=%28site%3Awhois.com+OR+site%3Adnsdumpster.com+OR+site%3Aviewdns.info%29+%22example.com%22) · [Bing](https://www.bing.com/search?q=%28site%3Awhois.com+OR+site%3Adnsdumpster.com+OR+site%3Aviewdns.info%29+%22example.com%22)
 
 
 ## Personnel Intelligence
@@ -357,6 +601,23 @@ site:*.example.com -site:www.example.com
 ```
 [Google](https://www.google.com/search?q=site%3A%2A.example.com+-site%3Awww.example.com) · [DuckDuckGo](https://duckduckgo.com/?q=site%3A%2A.example.com+-site%3Awww.example.com) · [Bing](https://www.bing.com/search?q=site%3A%2A.example.com+-site%3Awww.example.com)
 
+### `[LOW]` crt.sh certificate transparency
+
+```
+site:crt.sh "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Acrt.sh+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Acrt.sh+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Acrt.sh+%22example.com%22)
+
+
+## Exposed Documents
+
+### `[INFO]` All images (potential EXIF metadata)
+
+```
+site:example.com (filetype:jpg OR filetype:jpeg OR filetype:png OR filetype:tiff)
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28filetype%3Ajpg+OR+filetype%3Ajpeg+OR+filetype%3Apng+OR+filetype%3Atiff%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28filetype%3Ajpg+OR+filetype%3Ajpeg+OR+filetype%3Apng+OR+filetype%3Atiff%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28filetype%3Ajpg+OR+filetype%3Ajpeg+OR+filetype%3Apng+OR+filetype%3Atiff%29)
+
 
 ## External Leaks
 
@@ -368,7 +629,31 @@ site:web.archive.org "example.com"
 [Google](https://www.google.com/search?q=site%3Aweb.archive.org+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aweb.archive.org+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Aweb.archive.org+%22example.com%22)
 
 
+## Identities & Contacts
+
+### `[INFO]` Disqus comments mentioning target
+
+```
+site:disqus.com "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Adisqus.com+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Adisqus.com+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Adisqus.com+%22example.com%22)
+
+
 ## Personnel Intelligence
+
+### `[INFO]` Mastodon / Fediverse mentions
+
+```
+(site:mastodon.social OR site:mastodon.online OR site:piaille.fr) "example.com"
+```
+[Google](https://www.google.com/search?q=%28site%3Amastodon.social+OR+site%3Amastodon.online+OR+site%3Apiaille.fr%29+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=%28site%3Amastodon.social+OR+site%3Amastodon.online+OR+site%3Apiaille.fr%29+%22example.com%22) · [Bing](https://www.bing.com/search?q=%28site%3Amastodon.social+OR+site%3Amastodon.online+OR+site%3Apiaille.fr%29+%22example.com%22)
+
+### `[INFO]` Reddit mentions
+
+```
+site:reddit.com "example.com"
+```
+[Google](https://www.google.com/search?q=site%3Areddit.com+%22example.com%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Areddit.com+%22example.com%22) · [Bing](https://www.bing.com/search?q=site%3Areddit.com+%22example.com%22)
 
 ### `[INFO]` Twitter / X mentions
 
