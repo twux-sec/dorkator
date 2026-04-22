@@ -3,163 +3,408 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dorkator — Interactive Dork Library</title>
-<meta name="description" content="OSINT dork library — set your target and get clickable Google/DuckDuckGo/Bing links.">
+<title>Dorkator — Interactive OSINT Dork Library</title>
+<meta name="description" content="OSINT dork library — set your target and get clickable Google / DuckDuckGo / Bing links for 98 curated dorks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d1117;
-    --bg-elev: #161b22;
-    --border: #30363d;
-    --text: #e6edf3;
-    --text-dim: #8b949e;
-    --accent: #58a6ff;
-    --critical: #f85149;
-    --high: #ff8c42;
-    --medium: #e3b341;
-    --low: #3fb950;
-    --info: #8b949e;
+    /* Surfaces */
+    --bg:        #0a0a0f;
+    --bg-soft:   #11111a;
+    --bg-card:   #15151f;
+    --bg-elev:   #1c1c28;
+    --border:    #25253a;
+    --border-strong: #34344e;
+
+    /* Text */
+    --text:      #f1f1f6;
+    --text-soft: #a8a8b8;
+    --text-dim:  #6e6e85;
+
+    /* Brand */
+    --accent:        #a78bfa;       /* violet */
+    --accent-strong: #c4b5fd;
+    --accent-glow:   rgba(167,139,250,0.35);
+
+    /* Severity */
+    --critical: #ff5b6f;
+    --high:     #ff9b46;
+    --medium:   #f3c537;
+    --low:      #46d493;
+    --info:     #6e6e85;
+
+    --radius: 12px;
+    --radius-sm: 8px;
   }
+
   * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
   body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 14px; line-height: 1.5;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 800px 400px at top, rgba(167,139,250,0.10), transparent 60%),
+      radial-gradient(ellipse 600px 400px at bottom right, rgba(70,212,147,0.05), transparent 70%);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
   }
-  .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
-  header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
-  h1 { margin: 0 0 0.4rem; font-size: 1.6rem; font-weight: 600; }
-  h1 .brand { color: var(--accent); font-family: "SF Mono", Monaco, "Courier New", monospace; }
-  .meta { color: var(--text-dim); font-size: 0.875rem; }
 
-  /* Target input — bigger and front and center */
-  .target-row {
-    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* ---- Hero ---- */
+  .hero {
+    padding: 4rem 0 2.5rem;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.35rem 0.8rem;
+    background: rgba(167,139,250,0.08);
+    border: 1px solid rgba(167,139,250,0.25);
+    border-radius: 999px;
+    color: var(--accent-strong);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    margin-bottom: 1.25rem;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 700;
+    margin: 0 0 0.6rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #fff 0%, #b9b9cc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero p.tagline {
+    color: var(--text-soft);
+    font-size: 1.05rem;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+  }
+  .hero-stats {
+    display: inline-flex; gap: 1.4rem; flex-wrap: wrap; justify-content: center;
+    color: var(--text-dim);
+    font-size: 0.82rem;
+  }
+  .hero-stats .stat strong { color: var(--text); font-weight: 600; }
+  .hero-stats .sep { color: var(--border-strong); }
+
+  /* ---- Legal banner ---- */
+  .legal {
+    background: rgba(243,197,55,0.06);
+    border: 1px solid rgba(243,197,55,0.2);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    color: var(--text-soft);
+    margin-bottom: 1.5rem;
+  }
+  .legal strong { color: var(--medium); font-weight: 600; }
+
+  /* ---- Target input (the star of the show) ---- */
+  .target-card {
+    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-elev) 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 1.25rem;
     margin-bottom: 1rem;
-    padding: 1rem; background: var(--bg-elev);
-    border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
   }
-  .target-row label { font-weight: 600; white-space: nowrap; }
+  .target-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    margin-bottom: 0.55rem;
+  }
+  .target-input-wrap {
+    position: relative;
+  }
+  .target-input-wrap::before {
+    content: '>'; position: absolute; left: 0.95rem; top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent); font-family: 'JetBrains Mono', monospace;
+    font-weight: 600; pointer-events: none;
+  }
   #target {
-    flex: 1; min-width: 240px;
-    background: var(--bg); color: var(--text); border: 1px solid var(--border);
-    padding: 0.65rem 0.85rem; border-radius: 6px;
-    font-family: "SF Mono", Monaco, "Courier New", monospace; font-size: 0.95rem;
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.85rem 1rem 0.85rem 2.1rem;
+    border-radius: var(--radius-sm);
+    font-family: 'JetBrains Mono', Monaco, "Courier New", monospace;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
-  #target:focus { outline: none; border-color: var(--accent); }
-  .target-hint { color: var(--text-dim); font-size: 0.78rem; }
+  #target:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .target-hint {
+    margin-top: 0.6rem;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
 
-  .controls {
-    display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;
-    padding: 0.85rem; background: var(--bg-elev);
-    border: 1px solid var(--border); border-radius: 8px;
+  /* ---- Filters bar ---- */
+  .filters {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    position: sticky; top: 0.75rem; z-index: 10;
+    backdrop-filter: blur(10px);
+    background: rgba(21,21,31,0.92);
   }
-  input[type="text"]#search {
-    background: var(--bg); color: var(--text); border: 1px solid var(--border);
-    padding: 0.5rem 0.75rem; border-radius: 6px;
-    font-family: inherit; font-size: 0.875rem;
-    flex: 1; min-width: 220px;
+  #search {
+    flex: 1; min-width: 200px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.88rem;
+    transition: border-color 0.15s;
   }
-  input[type="text"]#search:focus { outline: none; border-color: var(--accent); }
-  .sev-pills { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+  #search:focus { outline: none; border-color: var(--accent); }
+  .sev-pills { display: flex; gap: 0.35rem; flex-wrap: wrap; }
   .sev-pill {
-    padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.72rem;
-    cursor: pointer; border: 1px solid var(--border); user-select: none;
-    background: var(--bg); text-transform: uppercase;
-    font-weight: 600; letter-spacing: 0.5px; transition: all 0.15s;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-soft);
+    user-select: none;
+    transition: all 0.15s;
   }
-  .sev-pill:hover { border-color: var(--accent); }
-  .sev-pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .sev-pill:hover { border-color: var(--accent); color: var(--text); }
+  .sev-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  /* ---- Categories ---- */
   .category {
-    background: var(--bg-elev); border: 1px solid var(--border);
-    border-radius: 8px; margin-bottom: 0.75rem; overflow: hidden;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 0.85rem;
+    overflow: hidden;
+    transition: border-color 0.15s;
   }
+  .category:hover { border-color: var(--border-strong); }
   .category-header {
-    padding: 0.85rem 1.1rem; cursor: pointer; display: flex;
-    justify-content: space-between; align-items: center; user-select: none;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background 0.15s;
   }
-  .category-header:hover { background: rgba(255,255,255,0.02); }
-  .category-title { font-weight: 600; font-size: 0.95rem; }
-  .category-count { color: var(--text-dim); font-size: 0.8rem; }
-  .chevron { transition: transform 0.2s; display: inline-block; color: var(--text-dim); }
+  .category-header:hover { background: rgba(255,255,255,0.015); }
+  .category-title {
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .category-title .key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    background: rgba(167,139,250,0.1);
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    text-transform: lowercase;
+  }
+  .category-title .name {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .category-count {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .chevron {
+    color: var(--text-dim);
+    transition: transform 0.2s;
+    display: inline-block;
+    font-size: 0.85rem;
+    margin-left: 0.75rem;
+  }
   .category.collapsed .chevron { transform: rotate(-90deg); }
-  .category-body { padding: 0 1.1rem 0.5rem; display: block; }
+  .category-body {
+    padding: 0 1.25rem 0.5rem;
+    display: block;
+  }
   .category.collapsed .category-body { display: none; }
-  .dork { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+
+  /* ---- Dork ---- */
+  .dork {
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+  }
   .dork-head {
-    display: flex; align-items: center; gap: 0.75rem;
-    margin-bottom: 0.4rem; flex-wrap: wrap;
+    display: flex; align-items: center; gap: 0.7rem;
+    margin-bottom: 0.55rem; flex-wrap: wrap;
   }
   .sev {
-    font-size: 0.68rem; font-weight: 700; padding: 2px 8px;
-    border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+    font-size: 0.65rem; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.6px;
     flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
   }
-  .sev.critical { background: rgba(248,81,73,0.15); color: var(--critical); }
-  .sev.high { background: rgba(255,140,66,0.15); color: var(--high); }
-  .sev.medium { background: rgba(227,179,65,0.15); color: var(--medium); }
-  .sev.low { background: rgba(63,185,80,0.15); color: var(--low); }
-  .sev.info { background: rgba(139,148,158,0.15); color: var(--info); }
-  .dork-name { font-weight: 500; flex: 1; min-width: 200px; }
+  .sev.critical { background: rgba(255,91,111,0.13); color: var(--critical); border: 1px solid rgba(255,91,111,0.25); }
+  .sev.high     { background: rgba(255,155,70,0.13); color: var(--high);     border: 1px solid rgba(255,155,70,0.25); }
+  .sev.medium   { background: rgba(243,197,55,0.13); color: var(--medium);   border: 1px solid rgba(243,197,55,0.25); }
+  .sev.low      { background: rgba(70,212,147,0.13); color: var(--low);      border: 1px solid rgba(70,212,147,0.25); }
+  .sev.info     { background: rgba(110,110,133,0.13); color: var(--info);    border: 1px solid rgba(110,110,133,0.25); }
+  .dork-name {
+    font-weight: 500;
+    flex: 1; min-width: 200px;
+    color: var(--text);
+  }
   .dork-query {
-    font-family: "SF Mono", Monaco, "Courier New", monospace; font-size: 0.78rem;
-    background: var(--bg); padding: 0.55rem 0.75rem; border-radius: 4px;
-    border: 1px solid var(--border); color: var(--text-dim);
-    word-break: break-all; margin: 0.4rem 0;
+    font-family: 'JetBrains Mono', Monaco, "Courier New", monospace;
+    font-size: 0.78rem;
+    background: var(--bg);
+    padding: 0.7rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+    word-break: break-all;
+    margin: 0.5rem 0 0.65rem;
+    transition: border-color 0.15s;
   }
-  .dork-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .dork-query:hover { border-color: var(--border-strong); }
+  .dork-links { display: flex; gap: 0.45rem; flex-wrap: wrap; }
   .dork-links a {
-    padding: 0.28rem 0.7rem; border-radius: 4px; text-decoration: none;
-    font-size: 0.78rem; background: var(--bg);
-    border: 1px solid var(--border); color: var(--accent); transition: all 0.15s;
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    color: var(--accent-strong);
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 0.35rem;
   }
-  .dork-links a:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .dork-links a:hover {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
   .dork-links a.disabled {
-    pointer-events: none; opacity: 0.4; color: var(--text-dim);
+    pointer-events: none; opacity: 0.4;
+    color: var(--text-dim);
   }
-  .warn {
-    background: rgba(227,179,65,0.08); border-left: 3px solid var(--medium);
-    padding: 0.7rem 1rem; margin-bottom: 1.25rem;
-    font-size: 0.82rem; border-radius: 0 6px 6px 0;
+  .dork-links svg {
+    width: 12px; height: 12px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2;
   }
-  .warn strong { color: var(--medium); }
+
+  /* ---- Misc ---- */
   .hidden { display: none !important; }
   .no-results {
-    text-align: center; padding: 2rem; color: var(--text-dim);
-    background: var(--bg-elev); border: 1px solid var(--border);
-    border-radius: 8px; display: none;
+    text-align: center; padding: 3rem;
+    color: var(--text-dim);
+    background: var(--bg-card);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    display: none;
   }
   .no-results.show { display: block; }
   footer {
-    margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border);
-    color: var(--text-dim); font-size: 0.75rem; text-align: center;
+    margin: 4rem 0 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    text-align: center;
   }
-  footer a { color: var(--accent); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
+  footer a {
+    color: var(--accent-strong);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  footer a:hover { color: var(--accent); text-decoration: underline; }
+  footer .muted { color: var(--text-dim); }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  @media (max-width: 600px) {
+    .hero { padding: 2rem 0 1.5rem; }
+    .filters { position: static; }
+    .target-card, .filters { padding: 1rem; }
+    .dork-links { gap: 0.3rem; }
+    .dork-links a { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
+  }
 </style>
 </head>
 <body>
+
 <div class="container">
-  <header>
-    <h1><span class="brand">dorkator</span> — interactive dork library</h1>
-    <div class="meta">
-      93 dorks · 8 categories · last build 2026-04-22 16:45:34
+
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="dot"></span> v0.3 · interactive build
     </div>
-  </header>
+    <h1>Dorkator</h1>
+    <p class="tagline">An interactive OSINT dork library. Set your target, copy a query, or open it directly in Google / DuckDuckGo / Bing.</p>
+    <div class="hero-stats">
+      <span class="stat"><strong>98</strong> dorks</span>
+      <span class="sep">·</span>
+      <span class="stat"><strong>8</strong> categories</span>
+      <span class="sep">·</span>
+      <span class="stat">last build <strong>2026-04-22 17:01:51</strong></span>
+    </div>
+  </section>
 
-  <div class="warn">
-    <strong>Legal notice:</strong> These dorks query public search indexes only.
-    Run them against domains you own or are explicitly authorized to assess.
+  <div class="legal">
+    <strong>Legal:</strong> these queries hit public search indexes. Only run them against assets you own or are explicitly authorized to test.
   </div>
 
-  
-  <div class="target-row">
-    <label for="target">Target:</label>
-    <input type="text" id="target" placeholder="example.com" autocomplete="off" autofocus>
-    <span class="target-hint">Type a domain — links update live.</span>
+  <div class="target-card">
+    <div class="target-label">Target</div>
+    <div class="target-input-wrap">
+      <input type="text" id="target" placeholder="example.com" autocomplete="off" autofocus spellcheck="false">
+    </div>
+    <div class="target-hint">Type a domain — every query and link below updates live. Saved locally for next visit.</div>
   </div>
 
-  <div class="controls">
-    <input type="text" id="search" placeholder="Filter by name or query…" autocomplete="off">
+  <div class="filters">
+    <input type="text" id="search" placeholder="Filter dorks by name or query…" autocomplete="off">
     <div class="sev-pills" id="sev-filter">
       <span class="sev-pill active" data-sev="all">All</span>
       <span class="sev-pill" data-sev="critical">Critical</span>
@@ -174,14 +419,16 @@
   
   <div class="category" data-category="identities">
     <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
-      <div>
-        <span class="category-title">Identities & Contacts</span>
-        <span class="category-count"> · 8 dorks</span>
+      <div class="category-title">
+        <span class="key">identities</span>
+        <span class="name">Identities & Contacts</span>
       </div>
-      <span class="chevron">▾</span>
+      <div>
+        <span class="category-count">8 dorks</span>
+        <span class="chevron">▾</span>
+      </div>
     </div>
     <div class="category-body">
-      
       
       <div class="dork"
            data-sev="medium"
@@ -193,12 +440,20 @@
         </div>
         <div class="dork-query">site:{target} intext:"@{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -210,12 +465,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:pdf OR filetype:docx OR filetype:xlsx) intext:"@{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="low"
@@ -227,12 +490,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:contact OR inurl:team OR inurl:about OR inurl:staff OR inurl:equipe)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="low"
@@ -244,12 +515,20 @@
         </div>
         <div class="dork-query">site:{target} (intext:"+33" OR intext:"06." OR intext:"07.")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -261,12 +540,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:annuaire OR inurl:directory OR inurl:employees)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="low"
@@ -278,12 +565,20 @@
         </div>
         <div class="dork-query">(site:whois.com OR site:dnsdumpster.com OR site:viewdns.info) "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="low"
@@ -295,12 +590,20 @@
         </div>
         <div class="dork-query">site:gravatar.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="info"
@@ -312,9 +615,18 @@
         </div>
         <div class="dork-query">site:disqus.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
       
@@ -323,14 +635,16 @@
   
   <div class="category" data-category="documents">
     <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
-      <div>
-        <span class="category-title">Exposed Documents</span>
-        <span class="category-count"> · 16 dorks</span>
+      <div class="category-title">
+        <span class="key">documents</span>
+        <span class="name">Exposed Documents</span>
       </div>
-      <span class="chevron">▾</span>
+      <div>
+        <span class="category-count">18 dorks</span>
+        <span class="chevron">▾</span>
+      </div>
     </div>
     <div class="category-body">
-      
       
       <div class="dork"
            data-sev="high"
@@ -342,12 +656,20 @@
         </div>
         <div class="dork-query">site:{target} filetype:pdf (intext:confidential OR intext:confidentiel OR intext:internal OR intext:"do not distribute" OR intext:"usage interne")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -359,12 +681,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:xls OR filetype:xlsx OR filetype:csv)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -376,12 +706,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:doc OR filetype:docx)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -393,12 +731,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:ppt OR filetype:pptx)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -410,12 +756,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:txt OR filetype:log)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -427,12 +781,20 @@
         </div>
         <div class="dork-query">site:{target} filetype:sql</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -444,12 +806,20 @@
         </div>
         <div class="dork-query">site:{target} (ext:bak OR ext:backup OR ext:old OR ext:save OR ext:swp)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -461,12 +831,20 @@
         </div>
         <div class="dork-query">site:{target} (ext:zip OR ext:rar OR ext:7z OR ext:tar OR ext:gz OR ext:tgz)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -478,12 +856,20 @@
         </div>
         <div class="dork-query">site:{target} (ext:xlsm OR ext:docm OR ext:pptm)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -495,12 +881,20 @@
         </div>
         <div class="dork-query">site:{target} (ext:vsd OR ext:vsdx)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -512,12 +906,20 @@
         </div>
         <div class="dork-query">site:{target} ext:kdbx</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -529,12 +931,20 @@
         </div>
         <div class="dork-query">site:{target} (ext:pst OR ext:mbox OR ext:msg OR ext:eml)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -546,12 +956,20 @@
         </div>
         <div class="dork-query">site:{target} (ext:ovpn OR ext:rdp OR ext:pcf)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="low"
@@ -563,12 +981,20 @@
         </div>
         <div class="dork-query">site:{target} filetype:pdf</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="low"
@@ -580,12 +1006,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:doc OR filetype:docx OR filetype:xls OR filetype:xlsx OR filetype:ppt OR filetype:pptx)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="info"
@@ -597,9 +1031,68 @@
         </div>
         <div class="dork-query">site:{target} (filetype:jpg OR filetype:jpeg OR filetype:png OR filetype:tiff)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+        </div>
+      </div>
+      
+      <div class="dork"
+           data-sev="critical"
+           data-raw-query="site:{target} filetype:sql ("INSERT INTO" "password" OR "INSERT INTO" "user" OR "CREATE USER")"
+           data-name="sql dumps containing credentials">
+        <div class="dork-head">
+          <span class="sev critical">critical</span>
+          <span class="dork-name">SQL dumps containing credentials</span>
+        </div>
+        <div class="dork-query">site:{target} filetype:sql ("INSERT INTO" "password" OR "INSERT INTO" "user" OR "CREATE USER")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+        </div>
+      </div>
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} filetype:log (intext:"root" OR intext:"sudo" OR intext:"admin login")"
+           data-name="log files with admin/root activity">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">Log files with admin/root activity</span>
+        </div>
+        <div class="dork-query">site:{target} filetype:log (intext:"root" OR intext:"sudo" OR intext:"admin login")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
       
@@ -608,14 +1101,16 @@
   
   <div class="category" data-category="technical">
     <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
-      <div>
-        <span class="category-title">Technical Exposure</span>
-        <span class="category-count"> · 25 dorks</span>
+      <div class="category-title">
+        <span class="key">technical</span>
+        <span class="name">Technical Exposure</span>
       </div>
-      <span class="chevron">▾</span>
+      <div>
+        <span class="category-count">28 dorks</span>
+        <span class="chevron">▾</span>
+      </div>
     </div>
     <div class="category-body">
-      
       
       <div class="dork"
            data-sev="high"
@@ -627,12 +1122,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:admin OR inurl:administrator OR inurl:backend OR inurl:dashboard)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -644,12 +1147,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:login OR inurl:signin OR inurl:auth OR intitle:"login")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -661,12 +1172,20 @@
         </div>
         <div class="dork-query">site:{target} intitle:"index of"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -678,12 +1197,20 @@
         </div>
         <div class="dork-query">site:{target} ext:php intitle:phpinfo "PHP Version"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -695,12 +1222,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:server-status OR inurl:server-info)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -712,12 +1247,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:".git" OR inurl:".svn" OR inurl:".env")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -729,12 +1272,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:swagger OR inurl:api-docs OR inurl:redoc OR inurl:graphql)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -746,12 +1297,20 @@
         </div>
         <div class="dork-query">site:{target} (intext:"SQL syntax" OR intext:"fatal error" OR intext:"stack trace" OR intext:"warning: include")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -763,12 +1322,20 @@
         </div>
         <div class="dork-query">site:{target} (ext:htaccess OR ext:conf OR ext:config OR ext:ini OR ext:yaml OR ext:yml)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -780,12 +1347,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:phpmyadmin OR inurl:adminer OR inurl:pgadmin)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -797,12 +1372,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:wp-admin OR inurl:wp-config OR inurl:wp-content/uploads)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -814,12 +1397,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:jenkins OR inurl:jobs/build OR intitle:"Dashboard [Jenkins]")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -831,12 +1422,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:grafana OR inurl:kibana OR inurl:prometheus OR inurl:9090 OR intitle:"Grafana")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -848,12 +1447,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:axis-cgi OR intitle:"camera" OR intitle:"webcam" OR inurl:viewerframe)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -865,12 +1472,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:roundcube OR inurl:webmail OR inurl:owa OR inurl:zimbra)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -882,12 +1497,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:_cluster OR inurl:_cat OR inurl:9200)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -899,12 +1522,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx OR filetype:docx) (intext:"date of birth" OR intext:"date de naissance" OR intext:"DOB" OR intext:"ne le" OR intext:"née le")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -916,12 +1547,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx) (intext:"passport" OR intext:"passeport" OR intext:"carte d'identite" OR intext:"national ID" OR intext:"CNI")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -933,12 +1572,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx) (intext:"SSN" OR intext:"social security" OR intext:"numero de securite sociale" OR intext:"NIR")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -950,12 +1597,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx) (intext:"IBAN" OR intext:"BIC" OR intext:"RIB" OR intext:"SWIFT")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -967,12 +1622,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx) (intext:"facture" OR intext:"invoice" OR intext:"n° client" OR intext:"customer ID" OR intext:"order #")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -984,12 +1647,20 @@
         </div>
         <div class="dork-query">site:{target} (filetype:pdf OR filetype:xlsx) (intext:"diagnostic" OR intext:"patient" OR intext:"prescription" OR intext:"ordonnance")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1001,12 +1672,20 @@
         </div>
         <div class="dork-query">site:{target} inurl:download (inurl:"id=" OR inurl:"file=" OR inurl:"doc=")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1018,12 +1697,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:"/files/" OR inurl:"/documents/" OR inurl:"/uploads/" OR inurl:"/getfile/") filetype:pdf</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1035,9 +1722,93 @@
         </div>
         <div class="dork-query">site:{target} (inurl:"customer_id=" OR inurl:"invoice_id=" OR inurl:"order_id=" OR inurl:"user_id=" OR inurl:"client_id=")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+        </div>
+      </div>
+      
+      <div class="dork"
+           data-sev="high"
+           data-raw-query="site:{target} (inurl:ftp OR inurl:"/ftp/" OR inurl:":21")"
+           data-name="ftp servers / endpoints exposed">
+        <div class="dork-head">
+          <span class="sev high">high</span>
+          <span class="dork-name">FTP servers / endpoints exposed</span>
+        </div>
+        <div class="dork-query">site:{target} (inurl:ftp OR inurl:"/ftp/" OR inurl:":21")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+        </div>
+      </div>
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} (intitle:"Apache2 Ubuntu Default Page" OR intitle:"Welcome to nginx" OR intitle:"IIS Windows Server" OR intitle:"Test Page for the Apache HTTP Server")"
+           data-name="default webserver welcome pages (fresh/abandoned installs)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">Default webserver welcome pages (fresh/abandoned installs)</span>
+        </div>
+        <div class="dork-query">site:{target} (intitle:"Apache2 Ubuntu Default Page" OR intitle:"Welcome to nginx" OR intitle:"IIS Windows Server" OR intitle:"Test Page for the Apache HTTP Server")</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+        </div>
+      </div>
+      
+      <div class="dork"
+           data-sev="medium"
+           data-raw-query="site:{target} inurl:".php?id=""
+           data-name="php idor pattern (?id=)">
+        <div class="dork-head">
+          <span class="sev medium">medium</span>
+          <span class="dork-name">PHP IDOR pattern (?id=)</span>
+        </div>
+        <div class="dork-query">site:{target} inurl:".php?id="</div>
+        <div class="dork-links">
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
       
@@ -1046,14 +1817,16 @@
   
   <div class="category" data-category="credentials">
     <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
-      <div>
-        <span class="category-title">Credentials & Secrets</span>
-        <span class="category-count"> · 12 dorks</span>
+      <div class="category-title">
+        <span class="key">credentials</span>
+        <span class="name">Credentials & Secrets</span>
       </div>
-      <span class="chevron">▾</span>
+      <div>
+        <span class="category-count">12 dorks</span>
+        <span class="chevron">▾</span>
+      </div>
     </div>
     <div class="category-body">
-      
       
       <div class="dork"
            data-sev="critical"
@@ -1065,12 +1838,20 @@
         </div>
         <div class="dork-query">site:{target} ext:env</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1082,12 +1863,20 @@
         </div>
         <div class="dork-query">site:{target} (intext:"password" OR intext:"passwd" OR intext:"motdepasse" OR intext:"mot de passe")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -1099,12 +1888,20 @@
         </div>
         <div class="dork-query">site:{target} (intext:"api_key" OR intext:"api_token" OR intext:"access_token" OR intext:"bearer ")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -1116,12 +1913,20 @@
         </div>
         <div class="dork-query">site:{target} (intext:"AKIA" OR intext:"aws_secret" OR intext:"aws_access_key")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -1133,12 +1938,20 @@
         </div>
         <div class="dork-query">site:{target} (intext:"BEGIN RSA PRIVATE KEY" OR intext:"BEGIN OPENSSH PRIVATE KEY" OR intext:"BEGIN PRIVATE KEY" OR intext:"BEGIN PGP PRIVATE")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -1150,12 +1963,20 @@
         </div>
         <div class="dork-query">site:{target} (intext:"jdbc:" OR intext:"mongodb://" OR intext:"postgres://" OR intext:"mysql://")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -1167,12 +1988,20 @@
         </div>
         <div class="dork-query">site:{target} (intext:"xoxb-" OR intext:"xoxa-" OR intext:"xoxp-" OR intext:"xoxs-")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -1184,12 +2013,20 @@
         </div>
         <div class="dork-query">site:{target} intext:"sk_live_"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -1201,12 +2038,20 @@
         </div>
         <div class="dork-query">site:{target} (intext:"ghp_" OR intext:"github_pat_" OR intext:"ghs_" OR intext:"gho_")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1218,12 +2063,20 @@
         </div>
         <div class="dork-query">site:{target} intext:"eyJhbGciOi"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -1235,12 +2088,20 @@
         </div>
         <div class="dork-query">site:{target} (intext:"GOCSPX-" OR intext:"client_secret")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1252,9 +2113,18 @@
         </div>
         <div class="dork-query">site:{target} (intext:"private_token" OR intext:"refresh_token" OR intext:"auth_token" OR intext:"session_secret")</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
       
@@ -1263,14 +2133,16 @@
   
   <div class="category" data-category="subdomains">
     <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
-      <div>
-        <span class="category-title">Subdomains & Assets</span>
-        <span class="category-count"> · 6 dorks</span>
+      <div class="category-title">
+        <span class="key">subdomains</span>
+        <span class="name">Subdomains & Assets</span>
       </div>
-      <span class="chevron">▾</span>
+      <div>
+        <span class="category-count">6 dorks</span>
+        <span class="chevron">▾</span>
+      </div>
     </div>
     <div class="category-body">
-      
       
       <div class="dork"
            data-sev="low"
@@ -1282,12 +2154,20 @@
         </div>
         <div class="dork-query">site:*.{target} -site:www.{target}</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -1299,12 +2179,20 @@
         </div>
         <div class="dork-query">site:*.{target} (inurl:dev OR inurl:staging OR inurl:test OR inurl:preprod OR inurl:uat OR inurl:recette)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -1316,12 +2204,20 @@
         </div>
         <div class="dork-query">site:{target} (inurl:internal OR inurl:intranet OR inurl:private)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="low"
@@ -1333,12 +2229,20 @@
         </div>
         <div class="dork-query">site:crt.sh "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -1350,12 +2254,20 @@
         </div>
         <div class="dork-query">site:censys.io "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -1367,9 +2279,18 @@
         </div>
         <div class="dork-query">site:shodan.io "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
       
@@ -1378,14 +2299,16 @@
   
   <div class="category" data-category="cloud">
     <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
-      <div>
-        <span class="category-title">Cloud Storage Exposure</span>
-        <span class="category-count"> · 6 dorks</span>
+      <div class="category-title">
+        <span class="key">cloud</span>
+        <span class="name">Cloud Storage Exposure</span>
       </div>
-      <span class="chevron">▾</span>
+      <div>
+        <span class="category-count">6 dorks</span>
+        <span class="chevron">▾</span>
+      </div>
     </div>
     <div class="category-body">
-      
       
       <div class="dork"
            data-sev="high"
@@ -1397,12 +2320,20 @@
         </div>
         <div class="dork-query">site:storage.googleapis.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1414,12 +2345,20 @@
         </div>
         <div class="dork-query">site:digitaloceanspaces.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1431,12 +2370,20 @@
         </div>
         <div class="dork-query">site:backblazeb2.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1448,12 +2395,20 @@
         </div>
         <div class="dork-query">site:wasabisys.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1465,12 +2420,20 @@
         </div>
         <div class="dork-query">(site:firebaseio.com OR site:firebaseapp.com OR site:web.app) "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1482,9 +2445,18 @@
         </div>
         <div class="dork-query">site:supabase.co "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
       
@@ -1493,14 +2465,16 @@
   
   <div class="category" data-category="external">
     <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
-      <div>
-        <span class="category-title">External Leaks</span>
-        <span class="category-count"> · 14 dorks</span>
+      <div class="category-title">
+        <span class="key">external</span>
+        <span class="name">External Leaks</span>
       </div>
-      <span class="chevron">▾</span>
+      <div>
+        <span class="category-count">14 dorks</span>
+        <span class="chevron">▾</span>
+      </div>
     </div>
     <div class="category-body">
-      
       
       <div class="dork"
            data-sev="high"
@@ -1512,12 +2486,20 @@
         </div>
         <div class="dork-query">site:pastebin.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="critical"
@@ -1529,12 +2511,20 @@
         </div>
         <div class="dork-query">site:github.com "{target}" (password OR api_key OR token OR secret)</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1546,12 +2536,20 @@
         </div>
         <div class="dork-query">site:gitlab.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="low"
@@ -1563,12 +2561,20 @@
         </div>
         <div class="dork-query">site:stackoverflow.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -1580,12 +2586,20 @@
         </div>
         <div class="dork-query">site:trello.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1597,12 +2611,20 @@
         </div>
         <div class="dork-query">site:s3.amazonaws.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1614,12 +2636,20 @@
         </div>
         <div class="dork-query">site:blob.core.windows.net "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -1631,12 +2661,20 @@
         </div>
         <div class="dork-query">site:docs.google.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="info"
@@ -1648,12 +2686,20 @@
         </div>
         <div class="dork-query">site:web.archive.org "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1665,12 +2711,20 @@
         </div>
         <div class="dork-query">site:bitbucket.org "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="high"
@@ -1682,12 +2736,20 @@
         </div>
         <div class="dork-query">site:gist.github.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -1699,12 +2761,20 @@
         </div>
         <div class="dork-query">site:npmjs.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -1716,12 +2786,20 @@
         </div>
         <div class="dork-query">site:pypi.org "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="medium"
@@ -1733,9 +2811,18 @@
         </div>
         <div class="dork-query">site:hub.docker.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
       
@@ -1744,14 +2831,16 @@
   
   <div class="category" data-category="personnel">
     <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
-      <div>
-        <span class="category-title">Personnel Intelligence</span>
-        <span class="category-count"> · 6 dorks</span>
+      <div class="category-title">
+        <span class="key">personnel</span>
+        <span class="name">Personnel Intelligence</span>
       </div>
-      <span class="chevron">▾</span>
+      <div>
+        <span class="category-count">6 dorks</span>
+        <span class="chevron">▾</span>
+      </div>
     </div>
     <div class="category-body">
-      
       
       <div class="dork"
            data-sev="low"
@@ -1763,12 +2852,20 @@
         </div>
         <div class="dork-query">site:linkedin.com/in "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="low"
@@ -1780,12 +2877,20 @@
         </div>
         <div class="dork-query">("CV" OR "resume" OR "curriculum vitae") "{target}" filetype:pdf</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="info"
@@ -1797,12 +2902,20 @@
         </div>
         <div class="dork-query">(site:twitter.com OR site:x.com) "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="low"
@@ -1814,12 +2927,20 @@
         </div>
         <div class="dork-query">site:viadeo.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="info"
@@ -1831,12 +2952,20 @@
         </div>
         <div class="dork-query">(site:mastodon.social OR site:mastodon.online OR site:piaille.fr) "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
-      
       
       <div class="dork"
            data-sev="info"
@@ -1848,9 +2977,18 @@
         </div>
         <div class="dork-query">site:reddit.com "{target}"</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
       
@@ -1862,8 +3000,10 @@
   <div class="no-results" id="no-results">No dorks match your filters.</div>
 
   <footer>
-    Dorkator · <a href="https://github.com/twux-sec/dorkator">github.com/twux-sec/dorkator</a> · For authorized testing and personal OSINT only
+    <a href="https://github.com/twux-sec/dorkator">github.com/twux-sec/dorkator</a>
+    <span class="muted"> · MIT · Built by twux-sec in pair-coding with Claude · Use responsibly</span>
   </footer>
+
 </div>
 
 <script>
@@ -1872,20 +3012,19 @@
   // ---------------------------------------------------------------------
   const targetInput = document.getElementById('target');
   const searchInput = document.getElementById('search');
-  const sevPills = document.querySelectorAll('.sev-pill');
-  const noResults = document.getElementById('no-results');
-  const dorks = document.querySelectorAll('.dork');
+  const sevPills    = document.querySelectorAll('.sev-pill');
+  const noResults   = document.getElementById('no-results');
+  const dorks       = document.querySelectorAll('.dork');
 
   let activeSev = 'all';
 
-  // Search-engine URL builders (same shape as Python core.Dork properties).
+  // Search-engine URL builders (match Python core.Dork properties)
   const ENGINES = {
-    google:  q => 'https://www.google.com/search?q=' + encodeURIComponent(q),
-    ddg:     q => 'https://duckduckgo.com/?q='     + encodeURIComponent(q),
-    bing:    q => 'https://www.bing.com/search?q=' + encodeURIComponent(q),
+    google: q => 'https://www.google.com/search?q=' + encodeURIComponent(q),
+    ddg:    q => 'https://duckduckgo.com/?q='     + encodeURIComponent(q),
+    bing:   q => 'https://www.bing.com/search?q=' + encodeURIComponent(q),
   };
 
-  // Persist the target across reloads so the user doesn't retype it.
   const STORAGE_KEY = 'dorkator.target';
 
   // ---------------------------------------------------------------------
@@ -1893,20 +3032,15 @@
   // ---------------------------------------------------------------------
   function applyTarget(raw) {
     const t = raw.trim();
-    // If empty, render the placeholder visually but disable the links so the
-    // user can't open a meaningless search.
     const display = t || '{target}';
     const linksLive = Boolean(t);
 
     dorks.forEach(d => {
       const rawQuery = d.dataset.rawQuery;
-      // Cheap global replace — `replaceAll` is fine on modern browsers.
       const rendered = rawQuery.replaceAll('{target}', display);
 
-      // Update the visible query text
       d.querySelector('.dork-query').textContent = rendered;
 
-      // Refresh the search-engine links
       const linkG = d.querySelector('.link-google');
       const linkD = d.querySelector('.link-ddg');
       const linkB = d.querySelector('.link-bing');
@@ -1925,15 +3059,12 @@
         linkB.classList.add('disabled');
       }
 
-      // Refresh the lowercased text used by the search filter
       d.dataset.text = (d.dataset.name + ' ' + rendered).toLowerCase();
     });
 
-    // Persist for next visit
     if (t) localStorage.setItem(STORAGE_KEY, t);
     else   localStorage.removeItem(STORAGE_KEY);
 
-    // Re-apply the search/severity filters since the text content changed
     applyFilters();
   }
 
@@ -1947,7 +3078,7 @@
     document.querySelectorAll('.category').forEach(cat => {
       let visible = 0;
       cat.querySelectorAll('.dork').forEach(d => {
-        const matchesSev = activeSev === 'all' || d.dataset.sev === activeSev;
+        const matchesSev  = activeSev === 'all' || d.dataset.sev === activeSev;
         const matchesText = !q || (d.dataset.text || '').includes(q);
         const show = matchesSev && matchesText;
         d.classList.toggle('hidden', !show);
@@ -1988,5 +3119,6 @@
   if (restored) targetInput.value = restored;
   applyTarget(targetInput.value);
 </script>
+
 </body>
 </html>

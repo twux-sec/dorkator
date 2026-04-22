@@ -3,163 +3,408 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dorkator — Interactive Dork Library</title>
-<meta name="description" content="OSINT dork library — set your target and get clickable Google/DuckDuckGo/Bing links.">
+<title>Dorkator — Interactive OSINT Dork Library</title>
+<meta name="description" content="OSINT dork library — set your target and get clickable Google / DuckDuckGo / Bing links for {{ total }} curated dorks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d1117;
-    --bg-elev: #161b22;
-    --border: #30363d;
-    --text: #e6edf3;
-    --text-dim: #8b949e;
-    --accent: #58a6ff;
-    --critical: #f85149;
-    --high: #ff8c42;
-    --medium: #e3b341;
-    --low: #3fb950;
-    --info: #8b949e;
+    /* Surfaces */
+    --bg:        #0a0a0f;
+    --bg-soft:   #11111a;
+    --bg-card:   #15151f;
+    --bg-elev:   #1c1c28;
+    --border:    #25253a;
+    --border-strong: #34344e;
+
+    /* Text */
+    --text:      #f1f1f6;
+    --text-soft: #a8a8b8;
+    --text-dim:  #6e6e85;
+
+    /* Brand */
+    --accent:        #a78bfa;       /* violet */
+    --accent-strong: #c4b5fd;
+    --accent-glow:   rgba(167,139,250,0.35);
+
+    /* Severity */
+    --critical: #ff5b6f;
+    --high:     #ff9b46;
+    --medium:   #f3c537;
+    --low:      #46d493;
+    --info:     #6e6e85;
+
+    --radius: 12px;
+    --radius-sm: 8px;
   }
+
   * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
   body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 14px; line-height: 1.5;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 800px 400px at top, rgba(167,139,250,0.10), transparent 60%),
+      radial-gradient(ellipse 600px 400px at bottom right, rgba(70,212,147,0.05), transparent 70%);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
   }
-  .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
-  header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
-  h1 { margin: 0 0 0.4rem; font-size: 1.6rem; font-weight: 600; }
-  h1 .brand { color: var(--accent); font-family: "SF Mono", Monaco, "Courier New", monospace; }
-  .meta { color: var(--text-dim); font-size: 0.875rem; }
 
-  /* Target input — bigger and front and center */
-  .target-row {
-    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* ---- Hero ---- */
+  .hero {
+    padding: 4rem 0 2.5rem;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.35rem 0.8rem;
+    background: rgba(167,139,250,0.08);
+    border: 1px solid rgba(167,139,250,0.25);
+    border-radius: 999px;
+    color: var(--accent-strong);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    margin-bottom: 1.25rem;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 700;
+    margin: 0 0 0.6rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #fff 0%, #b9b9cc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero p.tagline {
+    color: var(--text-soft);
+    font-size: 1.05rem;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+  }
+  .hero-stats {
+    display: inline-flex; gap: 1.4rem; flex-wrap: wrap; justify-content: center;
+    color: var(--text-dim);
+    font-size: 0.82rem;
+  }
+  .hero-stats .stat strong { color: var(--text); font-weight: 600; }
+  .hero-stats .sep { color: var(--border-strong); }
+
+  /* ---- Legal banner ---- */
+  .legal {
+    background: rgba(243,197,55,0.06);
+    border: 1px solid rgba(243,197,55,0.2);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    color: var(--text-soft);
+    margin-bottom: 1.5rem;
+  }
+  .legal strong { color: var(--medium); font-weight: 600; }
+
+  /* ---- Target input (the star of the show) ---- */
+  .target-card {
+    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-elev) 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 1.25rem;
     margin-bottom: 1rem;
-    padding: 1rem; background: var(--bg-elev);
-    border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
   }
-  .target-row label { font-weight: 600; white-space: nowrap; }
+  .target-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    margin-bottom: 0.55rem;
+  }
+  .target-input-wrap {
+    position: relative;
+  }
+  .target-input-wrap::before {
+    content: '>'; position: absolute; left: 0.95rem; top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent); font-family: 'JetBrains Mono', monospace;
+    font-weight: 600; pointer-events: none;
+  }
   #target {
-    flex: 1; min-width: 240px;
-    background: var(--bg); color: var(--text); border: 1px solid var(--border);
-    padding: 0.65rem 0.85rem; border-radius: 6px;
-    font-family: "SF Mono", Monaco, "Courier New", monospace; font-size: 0.95rem;
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.85rem 1rem 0.85rem 2.1rem;
+    border-radius: var(--radius-sm);
+    font-family: 'JetBrains Mono', Monaco, "Courier New", monospace;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
-  #target:focus { outline: none; border-color: var(--accent); }
-  .target-hint { color: var(--text-dim); font-size: 0.78rem; }
+  #target:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .target-hint {
+    margin-top: 0.6rem;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
 
-  .controls {
-    display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;
-    padding: 0.85rem; background: var(--bg-elev);
-    border: 1px solid var(--border); border-radius: 8px;
+  /* ---- Filters bar ---- */
+  .filters {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    position: sticky; top: 0.75rem; z-index: 10;
+    backdrop-filter: blur(10px);
+    background: rgba(21,21,31,0.92);
   }
-  input[type="text"]#search {
-    background: var(--bg); color: var(--text); border: 1px solid var(--border);
-    padding: 0.5rem 0.75rem; border-radius: 6px;
-    font-family: inherit; font-size: 0.875rem;
-    flex: 1; min-width: 220px;
+  #search {
+    flex: 1; min-width: 200px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.88rem;
+    transition: border-color 0.15s;
   }
-  input[type="text"]#search:focus { outline: none; border-color: var(--accent); }
-  .sev-pills { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+  #search:focus { outline: none; border-color: var(--accent); }
+  .sev-pills { display: flex; gap: 0.35rem; flex-wrap: wrap; }
   .sev-pill {
-    padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.72rem;
-    cursor: pointer; border: 1px solid var(--border); user-select: none;
-    background: var(--bg); text-transform: uppercase;
-    font-weight: 600; letter-spacing: 0.5px; transition: all 0.15s;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-soft);
+    user-select: none;
+    transition: all 0.15s;
   }
-  .sev-pill:hover { border-color: var(--accent); }
-  .sev-pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .sev-pill:hover { border-color: var(--accent); color: var(--text); }
+  .sev-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  /* ---- Categories ---- */
   .category {
-    background: var(--bg-elev); border: 1px solid var(--border);
-    border-radius: 8px; margin-bottom: 0.75rem; overflow: hidden;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 0.85rem;
+    overflow: hidden;
+    transition: border-color 0.15s;
   }
+  .category:hover { border-color: var(--border-strong); }
   .category-header {
-    padding: 0.85rem 1.1rem; cursor: pointer; display: flex;
-    justify-content: space-between; align-items: center; user-select: none;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background 0.15s;
   }
-  .category-header:hover { background: rgba(255,255,255,0.02); }
-  .category-title { font-weight: 600; font-size: 0.95rem; }
-  .category-count { color: var(--text-dim); font-size: 0.8rem; }
-  .chevron { transition: transform 0.2s; display: inline-block; color: var(--text-dim); }
+  .category-header:hover { background: rgba(255,255,255,0.015); }
+  .category-title {
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .category-title .key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    background: rgba(167,139,250,0.1);
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    text-transform: lowercase;
+  }
+  .category-title .name {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .category-count {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .chevron {
+    color: var(--text-dim);
+    transition: transform 0.2s;
+    display: inline-block;
+    font-size: 0.85rem;
+    margin-left: 0.75rem;
+  }
   .category.collapsed .chevron { transform: rotate(-90deg); }
-  .category-body { padding: 0 1.1rem 0.5rem; display: block; }
+  .category-body {
+    padding: 0 1.25rem 0.5rem;
+    display: block;
+  }
   .category.collapsed .category-body { display: none; }
-  .dork { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+
+  /* ---- Dork ---- */
+  .dork {
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+  }
   .dork-head {
-    display: flex; align-items: center; gap: 0.75rem;
-    margin-bottom: 0.4rem; flex-wrap: wrap;
+    display: flex; align-items: center; gap: 0.7rem;
+    margin-bottom: 0.55rem; flex-wrap: wrap;
   }
   .sev {
-    font-size: 0.68rem; font-weight: 700; padding: 2px 8px;
-    border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+    font-size: 0.65rem; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.6px;
     flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
   }
-  .sev.critical { background: rgba(248,81,73,0.15); color: var(--critical); }
-  .sev.high { background: rgba(255,140,66,0.15); color: var(--high); }
-  .sev.medium { background: rgba(227,179,65,0.15); color: var(--medium); }
-  .sev.low { background: rgba(63,185,80,0.15); color: var(--low); }
-  .sev.info { background: rgba(139,148,158,0.15); color: var(--info); }
-  .dork-name { font-weight: 500; flex: 1; min-width: 200px; }
+  .sev.critical { background: rgba(255,91,111,0.13); color: var(--critical); border: 1px solid rgba(255,91,111,0.25); }
+  .sev.high     { background: rgba(255,155,70,0.13); color: var(--high);     border: 1px solid rgba(255,155,70,0.25); }
+  .sev.medium   { background: rgba(243,197,55,0.13); color: var(--medium);   border: 1px solid rgba(243,197,55,0.25); }
+  .sev.low      { background: rgba(70,212,147,0.13); color: var(--low);      border: 1px solid rgba(70,212,147,0.25); }
+  .sev.info     { background: rgba(110,110,133,0.13); color: var(--info);    border: 1px solid rgba(110,110,133,0.25); }
+  .dork-name {
+    font-weight: 500;
+    flex: 1; min-width: 200px;
+    color: var(--text);
+  }
   .dork-query {
-    font-family: "SF Mono", Monaco, "Courier New", monospace; font-size: 0.78rem;
-    background: var(--bg); padding: 0.55rem 0.75rem; border-radius: 4px;
-    border: 1px solid var(--border); color: var(--text-dim);
-    word-break: break-all; margin: 0.4rem 0;
+    font-family: 'JetBrains Mono', Monaco, "Courier New", monospace;
+    font-size: 0.78rem;
+    background: var(--bg);
+    padding: 0.7rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+    word-break: break-all;
+    margin: 0.5rem 0 0.65rem;
+    transition: border-color 0.15s;
   }
-  .dork-links { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .dork-query:hover { border-color: var(--border-strong); }
+  .dork-links { display: flex; gap: 0.45rem; flex-wrap: wrap; }
   .dork-links a {
-    padding: 0.28rem 0.7rem; border-radius: 4px; text-decoration: none;
-    font-size: 0.78rem; background: var(--bg);
-    border: 1px solid var(--border); color: var(--accent); transition: all 0.15s;
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    color: var(--accent-strong);
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 0.35rem;
   }
-  .dork-links a:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .dork-links a:hover {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
   .dork-links a.disabled {
-    pointer-events: none; opacity: 0.4; color: var(--text-dim);
+    pointer-events: none; opacity: 0.4;
+    color: var(--text-dim);
   }
-  .warn {
-    background: rgba(227,179,65,0.08); border-left: 3px solid var(--medium);
-    padding: 0.7rem 1rem; margin-bottom: 1.25rem;
-    font-size: 0.82rem; border-radius: 0 6px 6px 0;
+  .dork-links svg {
+    width: 12px; height: 12px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2;
   }
-  .warn strong { color: var(--medium); }
+
+  /* ---- Misc ---- */
   .hidden { display: none !important; }
   .no-results {
-    text-align: center; padding: 2rem; color: var(--text-dim);
-    background: var(--bg-elev); border: 1px solid var(--border);
-    border-radius: 8px; display: none;
+    text-align: center; padding: 3rem;
+    color: var(--text-dim);
+    background: var(--bg-card);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    display: none;
   }
   .no-results.show { display: block; }
   footer {
-    margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border);
-    color: var(--text-dim); font-size: 0.75rem; text-align: center;
+    margin: 4rem 0 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    text-align: center;
   }
-  footer a { color: var(--accent); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
+  footer a {
+    color: var(--accent-strong);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  footer a:hover { color: var(--accent); text-decoration: underline; }
+  footer .muted { color: var(--text-dim); }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  @media (max-width: 600px) {
+    .hero { padding: 2rem 0 1.5rem; }
+    .filters { position: static; }
+    .target-card, .filters { padding: 1rem; }
+    .dork-links { gap: 0.3rem; }
+    .dork-links a { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
+  }
 </style>
 </head>
 <body>
+
 <div class="container">
-  <header>
-    <h1><span class="brand">dorkator</span> — interactive dork library</h1>
-    <div class="meta">
-      {{ total }} dorks · {{ categories|length }} categories · last build {{ generated_at }}
+
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="dot"></span> v0.3 · interactive build
     </div>
-  </header>
+    <h1>Dorkator</h1>
+    <p class="tagline">An interactive OSINT dork library. Set your target, copy a query, or open it directly in Google / DuckDuckGo / Bing.</p>
+    <div class="hero-stats">
+      <span class="stat"><strong>{{ total }}</strong> dorks</span>
+      <span class="sep">·</span>
+      <span class="stat"><strong>{{ categories|length }}</strong> categories</span>
+      <span class="sep">·</span>
+      <span class="stat">last build <strong>{{ generated_at }}</strong></span>
+    </div>
+  </section>
 
-  <div class="warn">
-    <strong>Legal notice:</strong> These dorks query public search indexes only.
-    Run them against domains you own or are explicitly authorized to assess.
+  <div class="legal">
+    <strong>Legal:</strong> these queries hit public search indexes. Only run them against assets you own or are explicitly authorized to test.
   </div>
 
-  {# Target input — JS rewrites every query + link below as the user types. #}
-  <div class="target-row">
-    <label for="target">Target:</label>
-    <input type="text" id="target" placeholder="example.com" autocomplete="off" autofocus>
-    <span class="target-hint">Type a domain — links update live.</span>
+  <div class="target-card">
+    <div class="target-label">Target</div>
+    <div class="target-input-wrap">
+      <input type="text" id="target" placeholder="example.com" autocomplete="off" autofocus spellcheck="false">
+    </div>
+    <div class="target-hint">Type a domain — every query and link below updates live. Saved locally for next visit.</div>
   </div>
 
-  <div class="controls">
-    <input type="text" id="search" placeholder="Filter by name or query…" autocomplete="off">
+  <div class="filters">
+    <input type="text" id="search" placeholder="Filter dorks by name or query…" autocomplete="off">
     <div class="sev-pills" id="sev-filter">
       <span class="sev-pill active" data-sev="all">All</span>
       <span class="sev-pill" data-sev="critical">Critical</span>
@@ -174,16 +419,17 @@
   {% for cat in categories %}
   <div class="category" data-category="{{ cat.key }}">
     <div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
-      <div>
-        <span class="category-title">{{ cat.name }}</span>
-        <span class="category-count"> · {{ cat.dorks|length }} dorks</span>
+      <div class="category-title">
+        <span class="key">{{ cat.key }}</span>
+        <span class="name">{{ cat.name }}</span>
       </div>
-      <span class="chevron">▾</span>
+      <div>
+        <span class="category-count">{{ cat.dorks|length }} dorks</span>
+        <span class="chevron">▾</span>
+      </div>
     </div>
     <div class="category-body">
       {% for d in cat.dorks %}
-      {# data-raw-query keeps the {target} placeholder verbatim — the JS below
-         substitutes it on every keystroke and rebuilds the search URLs. #}
       <div class="dork"
            data-sev="{{ d.severity }}"
            data-raw-query="{{ d.query }}"
@@ -194,9 +440,18 @@
         </div>
         <div class="dork-query">{{ d.query }}</div>
         <div class="dork-links">
-          <a class="link-google" href="#" target="_blank" rel="noopener">Google ↗</a>
-          <a class="link-ddg" href="#" target="_blank" rel="noopener">DuckDuckGo ↗</a>
-          <a class="link-bing" href="#" target="_blank" rel="noopener">Bing ↗</a>
+          <a class="link-google" href="#" target="_blank" rel="noopener">
+            Google
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-ddg" href="#" target="_blank" rel="noopener">
+            DuckDuckGo
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
+          <a class="link-bing" href="#" target="_blank" rel="noopener">
+            Bing
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+          </a>
         </div>
       </div>
       {% endfor %}
@@ -208,8 +463,10 @@
   <div class="no-results" id="no-results">No dorks match your filters.</div>
 
   <footer>
-    Dorkator · <a href="https://github.com/twux-sec/dorkator">github.com/twux-sec/dorkator</a> · For authorized testing and personal OSINT only
+    <a href="https://github.com/twux-sec/dorkator">github.com/twux-sec/dorkator</a>
+    <span class="muted"> · MIT · Built by twux-sec in pair-coding with Claude · Use responsibly</span>
   </footer>
+
 </div>
 
 <script>
@@ -218,20 +475,19 @@
   // ---------------------------------------------------------------------
   const targetInput = document.getElementById('target');
   const searchInput = document.getElementById('search');
-  const sevPills = document.querySelectorAll('.sev-pill');
-  const noResults = document.getElementById('no-results');
-  const dorks = document.querySelectorAll('.dork');
+  const sevPills    = document.querySelectorAll('.sev-pill');
+  const noResults   = document.getElementById('no-results');
+  const dorks       = document.querySelectorAll('.dork');
 
   let activeSev = 'all';
 
-  // Search-engine URL builders (same shape as Python core.Dork properties).
+  // Search-engine URL builders (match Python core.Dork properties)
   const ENGINES = {
-    google:  q => 'https://www.google.com/search?q=' + encodeURIComponent(q),
-    ddg:     q => 'https://duckduckgo.com/?q='     + encodeURIComponent(q),
-    bing:    q => 'https://www.bing.com/search?q=' + encodeURIComponent(q),
+    google: q => 'https://www.google.com/search?q=' + encodeURIComponent(q),
+    ddg:    q => 'https://duckduckgo.com/?q='     + encodeURIComponent(q),
+    bing:   q => 'https://www.bing.com/search?q=' + encodeURIComponent(q),
   };
 
-  // Persist the target across reloads so the user doesn't retype it.
   const STORAGE_KEY = 'dorkator.target';
 
   // ---------------------------------------------------------------------
@@ -239,20 +495,15 @@
   // ---------------------------------------------------------------------
   function applyTarget(raw) {
     const t = raw.trim();
-    // If empty, render the placeholder visually but disable the links so the
-    // user can't open a meaningless search.
     const display = t || '{target}';
     const linksLive = Boolean(t);
 
     dorks.forEach(d => {
       const rawQuery = d.dataset.rawQuery;
-      // Cheap global replace — `replaceAll` is fine on modern browsers.
       const rendered = rawQuery.replaceAll('{target}', display);
 
-      // Update the visible query text
       d.querySelector('.dork-query').textContent = rendered;
 
-      // Refresh the search-engine links
       const linkG = d.querySelector('.link-google');
       const linkD = d.querySelector('.link-ddg');
       const linkB = d.querySelector('.link-bing');
@@ -271,15 +522,12 @@
         linkB.classList.add('disabled');
       }
 
-      // Refresh the lowercased text used by the search filter
       d.dataset.text = (d.dataset.name + ' ' + rendered).toLowerCase();
     });
 
-    // Persist for next visit
     if (t) localStorage.setItem(STORAGE_KEY, t);
     else   localStorage.removeItem(STORAGE_KEY);
 
-    // Re-apply the search/severity filters since the text content changed
     applyFilters();
   }
 
@@ -293,7 +541,7 @@
     document.querySelectorAll('.category').forEach(cat => {
       let visible = 0;
       cat.querySelectorAll('.dork').forEach(d => {
-        const matchesSev = activeSev === 'all' || d.dataset.sev === activeSev;
+        const matchesSev  = activeSev === 'all' || d.dataset.sev === activeSev;
         const matchesText = !q || (d.dataset.text || '').includes(q);
         const show = matchesSev && matchesText;
         d.classList.toggle('hidden', !show);
@@ -334,5 +582,6 @@
   if (restored) targetInput.value = restored;
   applyTarget(targetInput.value);
 </script>
+
 </body>
 </html>

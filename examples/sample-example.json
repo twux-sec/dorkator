@@ -1,7 +1,7 @@
 {
   "target": "example.com",
-  "generated_at": "2026-04-22T16:26:56.942111",
-  "total": 93,
+  "generated_at": "2026-04-22T17:01:51.581229",
+  "total": 98,
   "dorks": [
     {
       "category": "credentials",
@@ -134,6 +134,17 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+filetype%3Asql",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Asql",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+filetype%3Asql"
+    },
+    {
+      "category": "documents",
+      "category_name": "Exposed Documents",
+      "name": "SQL dumps containing credentials",
+      "query": "site:example.com filetype:sql (\"INSERT INTO\" \"password\" OR \"INSERT INTO\" \"user\" OR \"CREATE USER\")",
+      "severity": "critical",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+filetype%3Asql+%28%22INSERT+INTO%22+%22password%22+OR+%22INSERT+INTO%22+%22user%22+OR+%22CREATE+USER%22%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Asql+%28%22INSERT+INTO%22+%22password%22+OR+%22INSERT+INTO%22+%22user%22+OR+%22CREATE+USER%22%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+filetype%3Asql+%28%22INSERT+INTO%22+%22password%22+OR+%22INSERT+INTO%22+%22user%22+OR+%22CREATE+USER%22%29"
     },
     {
       "category": "documents",
@@ -391,6 +402,17 @@
     {
       "category": "documents",
       "category_name": "Exposed Documents",
+      "name": "Log files with admin/root activity",
+      "query": "site:example.com filetype:log (intext:\"root\" OR intext:\"sudo\" OR intext:\"admin login\")",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+filetype%3Alog+%28intext%3A%22root%22+OR+intext%3A%22sudo%22+OR+intext%3A%22admin+login%22%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Alog+%28intext%3A%22root%22+OR+intext%3A%22sudo%22+OR+intext%3A%22admin+login%22%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+filetype%3Alog+%28intext%3A%22root%22+OR+intext%3A%22sudo%22+OR+intext%3A%22admin+login%22%29"
+    },
+    {
+      "category": "documents",
+      "category_name": "Exposed Documents",
       "name": "Office macro-enabled files",
       "query": "site:example.com (ext:xlsm OR ext:docm OR ext:pptm)",
       "severity": "high",
@@ -530,6 +552,17 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28inurl%3A%22%2Ffiles%2F%22+OR+inurl%3A%22%2Fdocuments%2F%22+OR+inurl%3A%22%2Fuploads%2F%22+OR+inurl%3A%22%2Fgetfile%2F%22%29+filetype%3Apdf",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3A%22%2Ffiles%2F%22+OR+inurl%3A%22%2Fdocuments%2F%22+OR+inurl%3A%22%2Fuploads%2F%22+OR+inurl%3A%22%2Fgetfile%2F%22%29+filetype%3Apdf",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3A%22%2Ffiles%2F%22+OR+inurl%3A%22%2Fdocuments%2F%22+OR+inurl%3A%22%2Fuploads%2F%22+OR+inurl%3A%22%2Fgetfile%2F%22%29+filetype%3Apdf"
+    },
+    {
+      "category": "technical",
+      "category_name": "Technical Exposure",
+      "name": "FTP servers / endpoints exposed",
+      "query": "site:example.com (inurl:ftp OR inurl:\"/ftp/\" OR inurl:\":21\")",
+      "severity": "high",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aftp+OR+inurl%3A%22%2Fftp%2F%22+OR+inurl%3A%22%3A21%22%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aftp+OR+inurl%3A%22%2Fftp%2F%22+OR+inurl%3A%22%3A21%22%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aftp+OR+inurl%3A%22%2Fftp%2F%22+OR+inurl%3A%22%3A21%22%29"
     },
     {
       "category": "technical",
@@ -787,6 +820,17 @@
     {
       "category": "technical",
       "category_name": "Technical Exposure",
+      "name": "Default webserver welcome pages (fresh/abandoned installs)",
+      "query": "site:example.com (intitle:\"Apache2 Ubuntu Default Page\" OR intitle:\"Welcome to nginx\" OR intitle:\"IIS Windows Server\" OR intitle:\"Test Page for the Apache HTTP Server\")",
+      "severity": "medium",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28intitle%3A%22Apache2+Ubuntu+Default+Page%22+OR+intitle%3A%22Welcome+to+nginx%22+OR+intitle%3A%22IIS+Windows+Server%22+OR+intitle%3A%22Test+Page+for+the+Apache+HTTP+Server%22%29",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28intitle%3A%22Apache2+Ubuntu+Default+Page%22+OR+intitle%3A%22Welcome+to+nginx%22+OR+intitle%3A%22IIS+Windows+Server%22+OR+intitle%3A%22Test+Page+for+the+Apache+HTTP+Server%22%29",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28intitle%3A%22Apache2+Ubuntu+Default+Page%22+OR+intitle%3A%22Welcome+to+nginx%22+OR+intitle%3A%22IIS+Windows+Server%22+OR+intitle%3A%22Test+Page+for+the+Apache+HTTP+Server%22%29"
+    },
+    {
+      "category": "technical",
+      "category_name": "Technical Exposure",
       "name": "Login pages",
       "query": "site:example.com (inurl:login OR inurl:signin OR inurl:auth OR intitle:\"login\")",
       "severity": "medium",
@@ -794,6 +838,17 @@
       "google_url": "https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Alogin+OR+inurl%3Asignin+OR+inurl%3Aauth+OR+intitle%3A%22login%22%29",
       "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Alogin+OR+inurl%3Asignin+OR+inurl%3Aauth+OR+intitle%3A%22login%22%29",
       "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Alogin+OR+inurl%3Asignin+OR+inurl%3Aauth+OR+intitle%3A%22login%22%29"
+    },
+    {
+      "category": "technical",
+      "category_name": "Technical Exposure",
+      "name": "PHP IDOR pattern (?id=)",
+      "query": "site:example.com inurl:\".php?id=\"",
+      "severity": "medium",
+      "description": "",
+      "google_url": "https://www.google.com/search?q=site%3Aexample.com+inurl%3A%22.php%3Fid%3D%22",
+      "duckduckgo_url": "https://duckduckgo.com/?q=site%3Aexample.com+inurl%3A%22.php%3Fid%3D%22",
+      "bing_url": "https://www.bing.com/search?q=site%3Aexample.com+inurl%3A%22.php%3Fid%3D%22"
     },
     {
       "category": "technical",

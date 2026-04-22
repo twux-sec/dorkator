@@ -1,6 +1,12 @@
 # Dorkator
 
+[![Live demo](https://img.shields.io/badge/live%20demo-twux--sec.github.io%2Fdorkator-a78bfa?style=for-the-badge)](https://twux-sec.github.io/dorkator/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![Dorks](https://img.shields.io/badge/dorks-98-ff5b6f?style=for-the-badge)](dorks.yaml)
+
 > OSINT dork generator for authorized reconnaissance.
+
+**Try it live → https://twux-sec.github.io/dorkator/** — type any target, get clickable Google/DuckDuckGo/Bing links for all 98 dorks.
 
 *Built by twux-sec in pair-coding with Claude (Anthropic).*
 
@@ -16,14 +22,9 @@ dorkator -t example.com -f all -o example-report
 dorkator -t example.com --open --open-severity critical,high
 ```
 
-## Live web version
-
-> **https://twux-sec.github.io/dorkator/** — type a target, get clickable
-> Google / DuckDuckGo / Bing links for every dork, no install needed.
-
 ## Features
 
-- **90+ curated dorks** across 8 categories (identities, documents, technical
+- **98 curated dorks** across 8 categories (identities, documents, technical
   exposure, credentials, subdomains, cloud storage, external leaks, personnel
   intel) — including PII leak patterns and IDOR-prone URL patterns
 - **Interactive wizard** (`--wizard`) — 4 questions, no flags to remember

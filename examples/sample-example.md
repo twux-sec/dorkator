@@ -1,7 +1,7 @@
 # Dorkator Report — `example.com`
 
-- **Generated:** 2026-04-22 16:26:56
-- **Total dorks:** 93
+- **Generated:** 2026-04-22 17:01:51
+- **Total dorks:** 98
 
 > Legal notice: only run against domains you own or are authorized to assess.
 
@@ -94,6 +94,13 @@ site:example.com ext:kdbx
 site:example.com filetype:sql
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+filetype%3Asql) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Asql) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+filetype%3Asql)
+
+### `[CRITICAL]` SQL dumps containing credentials
+
+```
+site:example.com filetype:sql ("INSERT INTO" "password" OR "INSERT INTO" "user" OR "CREATE USER")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+filetype%3Asql+%28%22INSERT+INTO%22+%22password%22+OR+%22INSERT+INTO%22+%22user%22+OR+%22CREATE+USER%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Asql+%28%22INSERT+INTO%22+%22password%22+OR+%22INSERT+INTO%22+%22user%22+OR+%22CREATE+USER%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+filetype%3Asql+%28%22INSERT+INTO%22+%22password%22+OR+%22INSERT+INTO%22+%22user%22+OR+%22CREATE+USER%22%29)
 
 ### `[CRITICAL]` VPN / remote-access profiles
 
@@ -271,6 +278,13 @@ site:example.com (ext:zip OR ext:rar OR ext:7z OR ext:tar OR ext:gz OR ext:tgz)
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28ext%3Azip+OR+ext%3Arar+OR+ext%3A7z+OR+ext%3Atar+OR+ext%3Agz+OR+ext%3Atgz%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28ext%3Azip+OR+ext%3Arar+OR+ext%3A7z+OR+ext%3Atar+OR+ext%3Agz+OR+ext%3Atgz%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28ext%3Azip+OR+ext%3Arar+OR+ext%3A7z+OR+ext%3Atar+OR+ext%3Agz+OR+ext%3Atgz%29)
 
+### `[HIGH]` Log files with admin/root activity
+
+```
+site:example.com filetype:log (intext:"root" OR intext:"sudo" OR intext:"admin login")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+filetype%3Alog+%28intext%3A%22root%22+OR+intext%3A%22sudo%22+OR+intext%3A%22admin+login%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+filetype%3Alog+%28intext%3A%22root%22+OR+intext%3A%22sudo%22+OR+intext%3A%22admin+login%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+filetype%3Alog+%28intext%3A%22root%22+OR+intext%3A%22sudo%22+OR+intext%3A%22admin+login%22%29)
+
 ### `[HIGH]` Office macro-enabled files
 
 ```
@@ -367,6 +381,13 @@ site:example.com (filetype:pdf OR filetype:xlsx) (intext:"facture" OR intext:"in
 site:example.com (inurl:"/files/" OR inurl:"/documents/" OR inurl:"/uploads/" OR inurl:"/getfile/") filetype:pdf
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3A%22%2Ffiles%2F%22+OR+inurl%3A%22%2Fdocuments%2F%22+OR+inurl%3A%22%2Fuploads%2F%22+OR+inurl%3A%22%2Fgetfile%2F%22%29+filetype%3Apdf) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3A%22%2Ffiles%2F%22+OR+inurl%3A%22%2Fdocuments%2F%22+OR+inurl%3A%22%2Fuploads%2F%22+OR+inurl%3A%22%2Fgetfile%2F%22%29+filetype%3Apdf) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3A%22%2Ffiles%2F%22+OR+inurl%3A%22%2Fdocuments%2F%22+OR+inurl%3A%22%2Fuploads%2F%22+OR+inurl%3A%22%2Fgetfile%2F%22%29+filetype%3Apdf)
+
+### `[HIGH]` FTP servers / endpoints exposed
+
+```
+site:example.com (inurl:ftp OR inurl:"/ftp/" OR inurl:":21")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Aftp+OR+inurl%3A%22%2Fftp%2F%22+OR+inurl%3A%22%3A21%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Aftp+OR+inurl%3A%22%2Fftp%2F%22+OR+inurl%3A%22%3A21%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Aftp+OR+inurl%3A%22%2Fftp%2F%22+OR+inurl%3A%22%3A21%22%29)
 
 ### `[HIGH]` Jenkins / CI dashboards
 
@@ -544,12 +565,26 @@ site:shodan.io "example.com"
 
 ## Technical Exposure
 
+### `[MEDIUM]` Default webserver welcome pages (fresh/abandoned installs)
+
+```
+site:example.com (intitle:"Apache2 Ubuntu Default Page" OR intitle:"Welcome to nginx" OR intitle:"IIS Windows Server" OR intitle:"Test Page for the Apache HTTP Server")
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+%28intitle%3A%22Apache2+Ubuntu+Default+Page%22+OR+intitle%3A%22Welcome+to+nginx%22+OR+intitle%3A%22IIS+Windows+Server%22+OR+intitle%3A%22Test+Page+for+the+Apache+HTTP+Server%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28intitle%3A%22Apache2+Ubuntu+Default+Page%22+OR+intitle%3A%22Welcome+to+nginx%22+OR+intitle%3A%22IIS+Windows+Server%22+OR+intitle%3A%22Test+Page+for+the+Apache+HTTP+Server%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28intitle%3A%22Apache2+Ubuntu+Default+Page%22+OR+intitle%3A%22Welcome+to+nginx%22+OR+intitle%3A%22IIS+Windows+Server%22+OR+intitle%3A%22Test+Page+for+the+Apache+HTTP+Server%22%29)
+
 ### `[MEDIUM]` Login pages
 
 ```
 site:example.com (inurl:login OR inurl:signin OR inurl:auth OR intitle:"login")
 ```
 [Google](https://www.google.com/search?q=site%3Aexample.com+%28inurl%3Alogin+OR+inurl%3Asignin+OR+inurl%3Aauth+OR+intitle%3A%22login%22%29) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+%28inurl%3Alogin+OR+inurl%3Asignin+OR+inurl%3Aauth+OR+intitle%3A%22login%22%29) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+%28inurl%3Alogin+OR+inurl%3Asignin+OR+inurl%3Aauth+OR+intitle%3A%22login%22%29)
+
+### `[MEDIUM]` PHP IDOR pattern (?id=)
+
+```
+site:example.com inurl:".php?id="
+```
+[Google](https://www.google.com/search?q=site%3Aexample.com+inurl%3A%22.php%3Fid%3D%22) · [DuckDuckGo](https://duckduckgo.com/?q=site%3Aexample.com+inurl%3A%22.php%3Fid%3D%22) · [Bing](https://www.bing.com/search?q=site%3Aexample.com+inurl%3A%22.php%3Fid%3D%22)
 
 ### `[MEDIUM]` Swagger / API docs exposed
 

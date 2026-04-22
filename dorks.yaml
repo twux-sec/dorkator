@@ -91,6 +91,13 @@ categories:
       - name: "All images (potential EXIF metadata)"
         query: 'site:{target} (filetype:jpg OR filetype:jpeg OR filetype:png OR filetype:tiff)'
         severity: info
+      # --- v0.3 additions (CybelAngel cheatsheet diff) ---
+      - name: "SQL dumps containing credentials"
+        query: 'site:{target} filetype:sql ("INSERT INTO" "password" OR "INSERT INTO" "user" OR "CREATE USER")'
+        severity: critical
+      - name: "Log files with admin/root activity"
+        query: 'site:{target} filetype:log (intext:"root" OR intext:"sudo" OR intext:"admin login")'
+        severity: high
 
   technical:
     name: "Technical Exposure"
@@ -174,6 +181,16 @@ categories:
       - name: "Object IDs in query strings"
         query: 'site:{target} (inurl:"customer_id=" OR inurl:"invoice_id=" OR inurl:"order_id=" OR inurl:"user_id=" OR inurl:"client_id=")'
         severity: high
+      # --- v0.3 additions (CybelAngel cheatsheet diff) ---
+      - name: "FTP servers / endpoints exposed"
+        query: 'site:{target} (inurl:ftp OR inurl:"/ftp/" OR inurl:":21")'
+        severity: high
+      - name: "Default webserver welcome pages (fresh/abandoned installs)"
+        query: 'site:{target} (intitle:"Apache2 Ubuntu Default Page" OR intitle:"Welcome to nginx" OR intitle:"IIS Windows Server" OR intitle:"Test Page for the Apache HTTP Server")'
+        severity: medium
+      - name: "PHP IDOR pattern (?id=)"
+        query: 'site:{target} inurl:".php?id="'
+        severity: medium
 
   credentials:
     name: "Credentials & Secrets"
